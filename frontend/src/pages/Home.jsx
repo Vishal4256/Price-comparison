@@ -9,10 +9,24 @@ import { Search } from 'lucide-react';
 export default function Home() {
   const [trending, setTrending] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ models: 2431, retailers: 98 });
 
   useEffect(() => {
     fetchTrending();
+    fetchStats();
   }, []);
+
+  const fetchStats = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/api/products/public-stats');
+      setStats({
+        models: data.models,
+        retailers: data.retailers
+      });
+    } catch (err) {
+      console.error('Error fetching statistics:', err);
+    }
+  };
 
   const fetchTrending = async () => {
     try {
@@ -43,9 +57,9 @@ export default function Home() {
           <div className="max-w-2xl mx-auto">
             <SearchBar />
             <div className="flex items-center justify-center gap-4 mt-4 text-sm text-slate-500">
-              <span>🔥 2,431 Models</span>
+              <span>🔥 {stats.models.toLocaleString('en-IN')} Models</span>
               <span>•</span>
-              <span>🛍️ 98 Retailers</span>
+              <span>🛍️ {stats.retailers} Retailers</span>
             </div>
           </div>
         </div>
