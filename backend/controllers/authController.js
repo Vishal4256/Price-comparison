@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const { sendOTP } = require('../services/emailService');
+const { sendResetLink } = require('../services/emailService');
 const crypto = require('crypto');
 
 exports.register = async (req, res) => {
@@ -49,15 +49,32 @@ exports.forgotPassword = async (req, res) => {
         const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        user.resetPasswordToken = otp;
-        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
+        // Generate a secure random token
+        const resetToken = crypto.randomBytes(20).toString('hex');
+        
+        // Hash and store the token, set expiration to 10 minutes
+        user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
         await user.save();
 
-        const emailSent = await sendOTP({ toEmail: email, userName: user.name, otp });
+        const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
+
+        const emailSent = await sendResetLink({ toEmail: email, userName: user.name, resetUrl });
         if (emailSent.success) {
-            res.json({ message: 'OTP sent to email' });
+            res.json({ message: 'Password reset link sent to your email.' });
         } else {
+            // Dev fallback: if email fails, log the reset URL to the terminal and return a devFallback success response
+            if (process.env.NODE_ENV === 'development' || !process.env.NODE_ENV) {
+                console.log(`\n==========================================`);
+                console.log(`⚠️  EMAIL SEND FAILED: ${emailSent.error}`);
+                console.log(`🔑 DEV FALLBACK RESET LINK: ${resetUrl}`);
+                console.log(`==========================================\n`);
+                return res.json({ 
+                    message: 'Reset link generated successfully (Dev Mode Fallback: Click the link logged in your backend terminal console)',
+                    resetUrl,
+                    devFallback: true 
+                });
+            }
             res.status(500).json({ message: `Failed to send email: ${emailSent.error || 'Unknown error'}` });
         }
     } catch (error) {
@@ -67,21 +84,25 @@ exports.forgotPassword = async (req, res) => {
 
 exports.resetPassword = async (req, res) => {
     try {
-        const { email, otp, password } = req.body;
+        const { token, password } = req.body;
+        if (!token) return res.status(400).json({ message: 'Reset token is required.' });
+
+        // Hash token to compare with database token
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
         const user = await User.findOne({
-            email,
-            resetPasswordToken: otp,
+            resetPasswordToken: hashedToken,
             resetPasswordExpire: { $gt: Date.now() }
         });
 
-        if (!user) return res.status(400).json({ message: 'Invalid or expired OTP' });
+        if (!user) return res.status(400).json({ message: 'Invalid or expired password reset link.' });
 
         user.password = password;
         user.resetPasswordToken = undefined;
         user.resetPasswordExpire = undefined;
         await user.save();
 
-        res.json({ message: 'Password reset successful' });
+        res.json({ message: 'Password reset successful.' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

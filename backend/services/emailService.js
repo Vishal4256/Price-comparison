@@ -70,36 +70,45 @@ async function sendPriceAlert({ toEmail, userName, productName, currentPrice, ta
   }
 }
 
-async function sendOTP({ toEmail, userName, otp }) {
+async function sendResetLink({ toEmail, userName, resetUrl }) {
   const t = getTransporter();
 
   const mailOptions = {
-    from: `"PriceSense AI 🛒" <${process.env.EMAIL_USER}>`,
+    from: `"PriceSense AI 🛒" <${process.env.EMAIL_USER || 'noreply@pricesense.ai'}>`,
     to: toEmail,
-    subject: '🔑 Password Reset OTP - PriceSense AI',
+    subject: '🔑 Password Reset Request - PriceSense AI',
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-        <h2 style="color: #6366f1; text-align: center;">PriceSense AI</h2>
-        <p>Hello ${userName},</p>
-        <p>You requested a password reset. Use the OTP below to reset your password:</p>
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; text-align: center; margin: 20px 0;">
-          <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e293b;">${otp}</span>
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #0f172a; color: #e2e8f0; border-radius: 12px; overflow: hidden; border: 1px solid #334155;">
+        <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); padding: 30px; text-align: center;">
+          <h1 style="margin: 0; font-size: 28px; color: white;">🛒 PriceSense AI</h1>
+          <p style="margin: 8px 0 0; color: rgba(255,255,255,0.9);">Password Recovery</p>
         </div>
-        <p style="color: #64748b; font-size: 14px;">This code will expire in 10 minutes. If you didn't request this, please ignore this email.</p>
-        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;" />
-        <p style="text-align: center; color: #94a3b8; font-size: 12px;">&copy; 2024 PriceSense AI. All rights reserved.</p>
+        <div style="padding: 30px;">
+          <h2 style="color: #a78bfa; margin-top: 0;">Hello ${userName}! 👋</h2>
+          <p>You requested a password reset. Click the button below to secure your account and set a new password:</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.4);">
+              🔒 Reset Your Password
+            </a>
+          </div>
+          <p style="margin: 0 0 10px 0; color: #64748b; font-size: 13px; line-height: 1.5;">If the button above does not work, copy and paste this URL into your browser:</p>
+          <p style="margin: 0; color: #6366f1; font-size: 12px; word-break: break-all;">${resetUrl}</p>
+          <p style="color: #64748b; font-size: 12px; margin-top: 24px;">This link will expire in 10 minutes. If you did not request this, you can safely ignore this email.</p>
+          <hr style="border: 0; border-top: 1px solid #334155; margin: 24px 0;" />
+          <p style="text-align: center; color: #64748b; font-size: 11px;">&copy; 2024 PriceSense AI. All rights reserved.</p>
+        </div>
       </div>
     `,
   };
 
   try {
     const info = await t.sendMail(mailOptions);
-    console.log(`📧 OTP email sent to ${toEmail}: ${info.messageId}`);
+    console.log(`📧 Reset link email sent to ${toEmail}: ${info.messageId}`);
     return { success: true };
   } catch (err) {
-    console.error('OTP Send error:', err.message);
+    console.error('Reset Link send error:', err.message);
     return { success: false, error: err.message };
   }
 }
 
-module.exports = { sendPriceAlert, sendOTP };
+module.exports = { sendPriceAlert, sendResetLink };

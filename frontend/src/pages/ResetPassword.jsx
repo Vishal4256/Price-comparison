@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Navbar from '../components/Navbar';
-import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
+import { Lock, Loader2, ArrowRight, CheckCircle2, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Register() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+export default function ResetPassword() {
+    const [searchParams] = useSearchParams();
+    const token = searchParams.get('token');
+    
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +21,7 @@ export default function Register() {
     
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
     // Password validation rules
@@ -46,7 +48,7 @@ export default function Register() {
             return;
         }
 
-        let score = 1; // base score for >= 6 chars
+        let score = 1;
         if (rules.hasNumber) score += 1;
         if (rules.hasLetter) score += 1;
         if (rules.hasSpecial && password.length >= 8) score += 1;
@@ -79,6 +81,11 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        if (!token) {
+            setError('Missing or invalid reset token.');
+            return;
+        }
+
         if (password.length < 6) {
             setError('Password must be at least 6 characters long.');
             return;
@@ -92,12 +99,11 @@ export default function Register() {
         setLoading(true);
         setError('');
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
-            localStorage.setItem('user', JSON.stringify(data));
-            localStorage.setItem('token', data.token);
-            navigate('/');
+            await axios.post('http://localhost:5000/api/auth/reset-password', { token, password });
+            setSuccess(true);
+            setTimeout(() => navigate('/login'), 3000);
         } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed. Please try again.');
+            setError(err.response?.data?.message || 'Failed to reset password. The link might be invalid or expired.');
         } finally {
             setLoading(false);
         }
@@ -112,118 +118,58 @@ export default function Register() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, ease: 'easeOut' }}
-                    className="max-w-6xl w-full bg-white rounded-[32px] shadow-2xl shadow-slate-200/60 overflow-hidden flex flex-col md:flex-row border border-slate-100"
+                    className="max-w-md w-full bg-white rounded-[32px] shadow-2xl shadow-slate-200/60 overflow-hidden border border-slate-100 p-10 md:p-14"
                 >
                     
-                    {/* Left Side: Visual/Banner */}
-                    <div className="md:w-1/2 bg-[#0B1E36] p-10 md:p-14 flex flex-col justify-between relative overflow-hidden text-white">
-                        <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-                        <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/10 blur-[120px] translate-y-1/2 -translate-x-1/2"></div>
-                        
-                        <div className="relative z-10">
-                            <motion.div 
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                transition={{ delay: 0.2 }}
-                                className="text-xl font-black mb-14 tracking-tight"
-                            >
-                                PriceWise
-                            </motion.div>
-                            
-                            <motion.h2 
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ delay: 0.3, duration: 0.5 }}
-                                className="text-4xl lg:text-5xl font-black leading-[1.1] mb-6"
-                            >
-                                Smart Comparison. <br />
-                                <span className="text-[#D4AF37]">Precision Savings.</span>
-                            </motion.h2>
-                            <motion.p 
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.4 }}
-                                className="text-blue-100/60 text-sm max-w-sm leading-relaxed mb-12 font-medium"
-                            >
-                                Join thousands of savvy shoppers who use our precision-engineered tools to track prices and secure the best deals across the digital marketplace.
-                            </motion.p>
-                        </div>
-
+                    <div className="mb-10 text-center">
                         <motion.div 
-                            initial={{ opacity: 0, y: 40 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.5, duration: 0.7 }}
-                            className="relative h-64 rounded-3xl overflow-hidden border border-white/10 shadow-inner bg-white/5 p-6 backdrop-blur-sm"
+                            key={success ? 'success' : 'reset'}
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner"
                         >
-                            <img 
-                                src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" 
-                                alt="Savings Chart" 
-                                className="w-full h-full object-contain opacity-80 filter brightness-110"
-                            />
+                            {success ? (
+                                <CheckCircle2 className="w-8 h-8 text-green-500 animate-pulse" />
+                            ) : (
+                                <Lock className="w-8 h-8 text-[#0B1E36]" />
+                            )}
                         </motion.div>
+                        
+                        <h1 className="text-3xl font-black text-[#0B1E36] mb-3">
+                            {success ? 'Password Reset!' : 'Set new password'}
+                        </h1>
+                        
+                        <p className="text-slate-400 text-sm font-medium leading-relaxed">
+                            {success 
+                                ? 'Your password has been reset successfully. Redirecting you to login...' 
+                                : 'Please construct a strong, unique password to secure your account.'}
+                        </p>
                     </div>
 
-                    {/* Right Side: Register Form */}
-                    <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center border-l border-slate-50 bg-white">
-                        <div className="mb-8 text-center md:text-left">
-                            <h1 className="text-3xl font-black text-[#0B1E36] mb-3">Create Account</h1>
-                            <p className="text-slate-400 text-sm font-medium">Start your journey to precision saving today.</p>
-                        </div>
+                    <AnimatePresence>
+                        {error && (
+                            <motion.div 
+                                initial={{ opacity: 0, height: 0, y: -10 }}
+                                animate={{ opacity: 1, height: 'auto', y: 0 }}
+                                exit={{ opacity: 0, height: 0, y: -10 }}
+                                className="mb-8 p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-2xl flex items-center gap-3 overflow-hidden shadow-sm"
+                            >
+                                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                                <span>{error}</span>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
 
-                        <AnimatePresence>
-                            {error && (
-                                <motion.div 
-                                    initial={{ opacity: 0, height: 0, y: -10 }}
-                                    animate={{ opacity: 1, height: 'auto', y: 0 }}
-                                    exit={{ opacity: 0, height: 0, y: -10 }}
-                                    className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-2xl flex items-center gap-3 overflow-hidden shadow-sm"
-                                >
-                                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                                    <span>{error}</span>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Full Name</label>
+                    {!success && (
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">New Password</label>
                                 <div className="relative">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <input 
-                                        type="text" 
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
-                                        placeholder="John Doe"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Email Address</label>
-                                <div className="relative">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                    <input 
-                                        type="email" 
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
-                                        placeholder="name@company.com"
-                                        required
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Password</label>
-                                <div className="relative">
-                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
                                         type={showPassword ? "text" : "password"} 
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-12 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-4 pr-12 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
                                         placeholder="••••••••"
                                         required
                                     />
@@ -279,15 +225,14 @@ export default function Register() {
                                 )}
                             </div>
 
-                            <div className="space-y-1.5">
+                            <div className="space-y-2">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Confirm Password</label>
                                 <div className="relative">
-                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
                                         type={showConfirmPassword ? "text" : "password"} 
                                         value={confirmPassword}
                                         onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-12 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
+                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-4 px-4 pr-12 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
                                         placeholder="••••••••"
                                         required
                                     />
@@ -319,43 +264,29 @@ export default function Register() {
                                 )}
                             </div>
 
-                            <div className="flex items-center gap-3 px-1">
-                                <input type="checkbox" id="terms" required className="w-4 h-4 rounded border-slate-300 text-[#0B1E36] focus:ring-[#0B1E36]" />
-                                <label htmlFor="terms" className="text-xs text-slate-400 font-bold leading-tight">
-                                    I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
-                                </label>
-                            </div>
-
                             <button 
                                 disabled={loading || (password !== confirmPassword && confirmPassword.length > 0) || password.length < 6}
-                                className="w-full py-4 bg-[#0B1E36] hover:bg-[#1a365d] text-white font-bold rounded-2xl transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group/btn disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none"
+                                className="w-full py-4 bg-[#0B1E36] hover:bg-[#1a365d] text-white font-bold rounded-2xl transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group/btn disabled:opacity-60 disabled:cursor-not-allowed"
                             >
                                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                                     <>
-                                        Create Account
+                                        Reset Password
                                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                                     </>
                                 )}
                             </button>
                         </form>
+                    )}
 
-                        <div className="mt-8">
-                            <p className="text-center text-slate-400 text-sm font-medium">
-                                Already have an account? <Link to="/login" className="text-blue-600 font-bold hover:underline">Log in</Link>
-                            </p>
-                        </div>
-                    </div>
+                    <p className="mt-10 text-center text-slate-400 text-sm font-medium">
+                        Remember your password? <Link to="/login" className="text-blue-600 font-bold hover:underline">Back to login</Link>
+                    </p>
                 </motion.div>
             </div>
             
             <footer className="py-8 text-center border-t border-slate-100 mt-auto bg-white/50">
                 <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">© 2024 PriceWise Utility. All rights reserved. Precision in Comparison.</p>
-                    <div className="flex gap-8">
-                        <a href="#" className="text-[10px] font-bold text-slate-400 hover:text-[#0B1E36] tracking-widest uppercase">About Us</a>
-                        <a href="#" className="text-[10px] font-bold text-slate-400 hover:text-[#0B1E36] tracking-widest uppercase">Terms</a>
-                        <a href="#" className="text-[10px] font-bold text-slate-400 hover:text-[#0B1E36] tracking-widest uppercase">Privacy</a>
-                    </div>
+                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">© 2024 PriceWise Utility. All rights reserved.</p>
                 </div>
             </footer>
         </div>
