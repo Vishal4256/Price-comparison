@@ -1,4 +1,31 @@
 const Alert = require('../models/Alert');
+const NewsletterSubscription = require('../models/NewsletterSubscription');
+
+exports.subscribeNewsletter = async (req, res) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        // Check if already subscribed
+        const existing = await NewsletterSubscription.findOne({ email });
+        if (existing) {
+            if (existing.active) {
+                return res.status(400).json({ message: 'This email is already subscribed!' });
+            } else {
+                existing.active = true;
+                await existing.save();
+                return res.status(200).json({ message: 'Subscription reactivated successfully!' });
+            }
+        }
+
+        const subscription = await NewsletterSubscription.create({ email });
+        res.status(201).json({ message: 'Successfully subscribed to daily price drop notifications!', subscription });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 exports.createAlert = async (req, res) => {
     try {

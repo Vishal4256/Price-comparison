@@ -8,7 +8,21 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'], credentials: true }));
+// Allowlist origins via env var `ALLOWED_ORIGINS` (comma-separated).
+// Defaults include common localhost ports and the deployed Vercel frontend.
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:5173,https://pricecomparison4256.vercel.app').split(',');
+app.set('trust proxy', 1);
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow non-browser requests (e.g., server-to-server, curl) when no origin
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS policy: origin not allowed'));
+  },
+  credentials: true,
+}));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
