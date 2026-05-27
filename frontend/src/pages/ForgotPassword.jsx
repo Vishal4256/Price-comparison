@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import { Mail, Loader2, ArrowRight, CheckCircle2, KeyRound, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -20,7 +21,7 @@ export default function ForgotPassword() {
         setDevNotice('');
         setResetUrl('');
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+            const { data } = await api.post('/api/auth/forgot-password', { email });
             if (data.devFallback) {
                 setDevNotice(data.message);
                 setResetUrl(data.resetUrl);

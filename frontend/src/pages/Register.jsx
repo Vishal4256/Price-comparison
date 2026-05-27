@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -92,7 +93,7 @@ export default function Register() {
         setLoading(true);
         setError('');
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/register', { name, email, password });
+            const { data } = await api.post('/api/auth/register', { name, email, password });
             localStorage.setItem('user', JSON.stringify(data));
             localStorage.setItem('token', data.token);
             navigate('/');

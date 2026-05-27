@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { api } from '../api';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
@@ -31,7 +32,7 @@ export default function Home() {
     setSubmissionError('');
 
     try {
-      await axios.post('http://localhost:5000/api/alerts/subscribe', {
+      await api.post('/api/alerts/subscribe', {
         email: subscriberEmail.trim().toLowerCase()
       });
       setSubmissionSuccess(true);
@@ -54,7 +55,7 @@ export default function Home() {
 
   const fetchStats = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/products/public-stats');
+      const { data } = await api.get('/api/products/public-stats');
       setStats({
         models: data.models,
         retailers: data.retailers
@@ -66,7 +67,7 @@ export default function Home() {
 
   const fetchTrending = async () => {
     try {
-      const { data } = await axios.get('http://localhost:5000/api/products/trending');
+      const { data } = await api.get('/api/products/trending');
       setTrending(data);
     } catch (err) {
       console.error(err);

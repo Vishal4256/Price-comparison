@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -21,7 +22,7 @@ export default function Login() {
         setLoading(true);
         setError('');
         try {
-            const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+            const { data } = await api.post('/api/auth/login', { email, password });
             localStorage.setItem('user', JSON.stringify(data));
             localStorage.setItem('token', data.token);
             

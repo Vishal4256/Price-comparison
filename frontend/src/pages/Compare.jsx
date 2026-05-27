@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import { ShoppingBag, Check, X, ExternalLink, Loader2 } from 'lucide-react';
 
@@ -19,7 +20,7 @@ export default function Compare() {
     const fetchComparison = async () => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://localhost:5000/api/products/search?q=${query}`);
+            const response = await api.get(`/api/products/search?q=${query}`);
             setProducts(response.data);
             setLoading(false);
         } catch (err) {

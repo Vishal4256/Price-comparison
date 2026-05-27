@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import ProductCard from '../components/ProductCard';
 import SearchBar from '../components/SearchBar';
@@ -34,7 +35,7 @@ export default function SearchPage() {
         setLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`http://localhost:5000/api/products/search?q=${query}`);
+            const response = await api.get(`/api/products/search?q=${query}`);
             setProducts(response.data);
             setLoading(false);
         } catch (err) {

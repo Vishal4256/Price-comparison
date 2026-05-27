@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Sparkles, X, Clock, ArrowRight, TrendingUp } from 'lucide-react';
 import { debounce } from 'lodash';
 import axios from 'axios';
+import { api } from '../api';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SearchBar({ initialValue = '' }) {
@@ -28,7 +29,7 @@ export default function SearchBar({ initialValue = '' }) {
                 return;
             }
             try {
-                const response = await axios.get(`http://localhost:5000/api/products/suggestions?q=${q}`);
+                const response = await api.get(`/api/products/suggestions?q=${q}`);
                 setSuggestions(response.data);
             } catch (error) {
                 console.error('Error fetching suggestions:', error);

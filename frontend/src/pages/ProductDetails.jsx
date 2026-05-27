@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import PriceChart from '../components/PriceChart';
 import { Star, Bell, ChevronRight, Check } from 'lucide-react';
@@ -21,7 +22,7 @@ export default function ProductDetails() {
 
     const fetchDetails = async () => {
         try {
-            const { data } = await axios.get(`http://localhost:5000/api/products/${id}`);
+            const { data } = await api.get(`/api/products/${id}`);
             setData(data);
         } catch (err) {
             console.error(err);
@@ -35,7 +36,7 @@ export default function ProductDetails() {
         if (!user) return alert('Please login to set alerts');
         
         try {
-            await axios.post('http://localhost:5000/api/alerts', {
+            await api.post('/api/alerts', {
                 productId: id,
                 targetPrice: parseFloat(alertPrice),
                 email: user.email
@@ -53,7 +54,7 @@ export default function ProductDetails() {
         if (!user) return alert('Please login to save products');
         
         try {
-            await axios.post('http://localhost:5000/api/wishlist/add', {
+            await api.post('/api/wishlist/add', {
                 productId: id
             }, {
                 headers: { Authorization: `Bearer ${user.token || localStorage.getItem('token')}` }

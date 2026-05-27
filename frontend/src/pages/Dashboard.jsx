@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import { LayoutDashboard, Settings, History, Shield, LogOut, Trash2 } from 'lucide-react';
 
@@ -32,8 +33,8 @@ export default function Dashboard() {
     try {
       const headers = { Authorization: `Bearer ${token}` };
       const [alertsRes, wishlistRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/alerts', { headers }),
-        axios.get('http://localhost:5000/api/wishlist', { headers })
+        api.get('/api/alerts', { headers }),
+        api.get('/api/wishlist', { headers })
       ]);
       
       setAlerts(Array.isArray(alertsRes.data) ? alertsRes.data : (alertsRes.data.alerts || []));
@@ -53,7 +54,7 @@ export default function Dashboard() {
 
   const handleDeleteAlert = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/alerts/${id}`, {
+      await api.delete(`/api/alerts/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAlerts(alerts.filter(a => a._id !== id));
@@ -67,7 +68,7 @@ export default function Dashboard() {
 
   const handleRemoveWishlist = async (productId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/wishlist/remove/${productId}`, {
+      await api.delete(`/api/wishlist/remove/${productId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWishlist({
