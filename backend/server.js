@@ -12,16 +12,14 @@ const app = express();
 // Defaults include common localhost ports and the deployed Vercel frontend.
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000,http://localhost:3001,http://localhost:5173,https://pricecomparison4256.vercel.app').split(',');
 app.set('trust proxy', 1);
+// Simple CORS array as requested
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow non-browser requests (e.g., server-to-server, curl) when no origin
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    }
-    return callback(new Error('CORS policy: origin not allowed'));
-  },
-  credentials: true,
+  origin: [
+    "https://pricecomparison4256.vercel.app",
+    "http://localhost:5173",
+    "http://localhost:3000"
+  ],
+  credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));

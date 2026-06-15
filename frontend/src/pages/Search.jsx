@@ -189,7 +189,15 @@ export default function SearchPage() {
             if (data.didYouMean) setDidYouMean(data.didYouMean);
         } catch (err) {
             console.error('Search API Error:', err);
-            setError(`Failed to fetch products: ${err.message}. Please try again.`);
+            
+            // Step 7: Log API URL to verify it's not localhost in production
+            const currentApiUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+            console.log('API_URL being used:', currentApiUrl);
+            console.log('Full Request Error:', err);
+
+            // Step 9: Show actual error message instead of generic network error
+            const backendMsg = err.response?.data?.message || err.response?.data?.error || err.message;
+            setError(`Failed to fetch products: ${backendMsg}. Please check console for details.`);
         } finally {
             setLoading(false);
         }
