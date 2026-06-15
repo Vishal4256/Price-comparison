@@ -4,7 +4,7 @@ const PriceHistory = require('../models/PriceHistory');
 const Alert = require('../models/Alert');
 const scrapeAmazon = require('../scrapers/amazonScraper');
 const scrapeFlipkart = require('../scrapers/flipkartScraper');
-const scrapeEbay = require('../scrapers/ebayScraper');
+
 const scrapeActualUrl = require('../scrapers/actualUrlScraper');
 const { sendPriceAlert } = require('./emailService');
 
@@ -28,12 +28,7 @@ const extractFlipkartId = (url) => {
     return null;
 };
 
-// Helper to extract eBay Item ID
-const extractEbayId = (url) => {
-    if (!url) return null;
-    const match = url.match(/\/itm\/(\d{9,15})/i);
-    return match ? match[1] : null;
-};
+
 
 // Advanced product identity comparison
 const isSameProduct = (urlA, urlB, source) => {
@@ -56,11 +51,6 @@ const isSameProduct = (urlA, urlB, source) => {
         return idA !== null && idA === idB;
     }
 
-    if (source === 'eBay') {
-        const idA = extractEbayId(urlA);
-        const idB = extractEbayId(urlB);
-        return idA !== null && idA === idB;
-    }
 
     return false;
 };
@@ -91,8 +81,6 @@ cron.schedule('0 0 * * *', async () => {
                     results = await scrapeAmazon(product.title);
                 } else if (product.source === 'Flipkart') {
                     results = await scrapeFlipkart(product.title);
-                } else if (product.source === 'eBay') {
-                    results = await scrapeEbay(product.title);
                 }
 
                 if (results && results.length > 0) {

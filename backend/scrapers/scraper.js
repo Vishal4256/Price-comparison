@@ -155,51 +155,7 @@ async function scrapeFlipkart(query) {
   }
 }
 
-// ---------------------------------------------------------
-// EBAY SCRAPER
-// ---------------------------------------------------------
-async function scrapeEbay(query) {
-  try {
-    const url = `https://www.ebay.com/sch/i.html?_nkw=${encodeURIComponent(query)}`;
-    const { data } = await axios.get(url, { headers: getHeaders('www.ebay.com'), timeout: 15000 });
-    const $ = cheerio.load(data);
-    
-    const firstResult = $('.s-item').not('.s-item__before-answer').first();
-    if (!firstResult.length) return null;
 
-    const title = firstResult.find('.s-item__title').text().trim().replace(/^New Listing/, '').trim();
-    const priceStr = firstResult.find('.s-item__price').first().text().trim();
-    const originalPriceStr = firstResult.find('.s-item__trending-price').first().text().trim() || priceStr;
-    const link = firstResult.find('.s-item__link').attr('href') || url;
-    const image = firstResult.find('.s-item__image-img').attr('src');
-
-    let price = parsePrice(priceStr.split(' to ')[0]); 
-    if (!price) return null;
-
-    price = Math.round(price * USD_TO_INR); 
-    
-    let originalPrice = parsePrice(originalPriceStr.split(' to ')[0]) || price;
-    originalPrice = Math.round(originalPrice * USD_TO_INR);
-    if (originalPrice < price) originalPrice = price;
-    
-    const discount = originalPrice > 0 ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
-
-    return {
-      website: 'eBay',
-      title: title || query,
-      price,
-      originalPrice,
-      discount,
-      link,
-      image,
-      rating: 4.0,
-      availability: 'In Stock',
-    };
-  } catch (error) {
-    console.warn('[Scraper Warn] eBay failed:', error.message);
-    return null;
-  }
-}
 
 // ---------------------------------------------------------
 // MASTER EXPORTS
@@ -207,22 +163,18 @@ async function scrapeEbay(query) {
 async function scrapeProduct(query) {
   console.log(`🔍 [Scraper] Initiating search for: "${query}"`);
   
-  const [amazon, flipkart, ebay] = await Promise.all([
+  const [amazon, flipkart] = await Promise.all([
     scrapeAmazon(query),
-    scrapeFlipkart(query),
-    scrapeEbay(query)
+    scrapeFlipkart(query)
   ]);
 
-  const results = [amazon, flipkart, ebay].filter(Boolean);
+  const results = [amazon, flipkart].filter(Boolean);
   
   if (amazon) console.log('✅ Amazon: Found product');
   else console.warn('❌ Amazon: Failed (Blocked or No Results)');
   
   if (flipkart) console.log('✅ Flipkart: Found product');
   else console.warn('❌ Flipkart: Failed (Blocked or No Results)');
-  
-  if (ebay) console.log('✅ eBay: Found product');
-  else console.warn('❌ eBay: Failed (Blocked or No Results)');
 
   if (results.length === 0) {
     console.error('CRITICAL: All scrapers failed. Using fallback simulation.');
@@ -251,8 +203,8 @@ async function scrapeProduct(query) {
     };
   }
 
-  // Use the best available result (prioritize Amazon > Flipkart > eBay)
-  const bestResult = amazon || flipkart || ebay;
+  // Use the best available result (prioritize Amazon > Flipkart)
+  const bestResult = amazon || flipkart;
 
   return {
     productInfo: {
@@ -284,7 +236,7 @@ function generatePriceHistory(basePrice, days = 30) {
     currentPrice = currentPrice * (1 + trend + noise);
     currentPrice = Math.max(currentPrice, basePrice * 0.6);
 
-    for (const website of ['Amazon', 'Flipkart', 'eBay']) {
+    for (const website of ['Amazon', 'Flipkart']) {
       const siteMultiplier = (Math.random() * 0.04) + 0.98;
       history.push({
         website,

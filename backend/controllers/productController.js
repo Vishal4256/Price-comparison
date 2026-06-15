@@ -2,62 +2,186 @@ const Product = require('../models/Product');
 const PriceHistory = require('../models/PriceHistory');
 const scrapeAmazon = require('../scrapers/amazonScraper');
 const scrapeFlipkart = require('../scrapers/flipkartScraper');
-const scrapeEbay = require('../scrapers/ebayScraper');
+
 const { analyzeDiscount } = require('../utils/discountAnalyzer');
 const User = require('../models/User');
 const Alert = require('../models/Alert');
 
 
 const Fuse = require('fuse.js');
-const { normalizeTitle, rankResults } = require('../utils/searchEngine');
+const { rankResults, mergeProducts } = require('../utils/searchEngine');
+const { normalizeQuery } = require('../utils/queryNormalizer');
+
+// --- Simple in-memory cache (5-minute TTL) ---
+const searchCache = new Map();
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+const getCached = (key) => {
+    const entry = searchCache.get(key);
+    if (!entry) return null;
+    if (Date.now() - entry.ts > CACHE_TTL_MS) {
+        searchCache.delete(key);
+        return null;
+    }
+    return entry.data;
+};
+
+const setCache = (key, data) => {
+    searchCache.set(key, { ts: Date.now(), data });
+    // Keep cache bounded to 100 entries
+    if (searchCache.size > 100) {
+        const firstKey = searchCache.keys().next().value;
+        searchCache.delete(firstKey);
+    }
+};
 
 exports.searchProducts = async (req, res) => {
     const { q } = req.query;
     if (!q) return res.status(400).json({ message: 'Query is required' });
 
+    // ── Pagination params ─────────────────────────────────────────────────────
+    const page  = Math.max(1, parseInt(req.query.page,  10) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit, 10) || 12));
+
     try {
-        // 1. Save Search History if user is logged in
-        if (req.user) {
-            await User.findByIdAndUpdate(req.user.id, {
-                $push: { searchHistory: { $each: [{ query: q }], $slice: -10 } }
-            });
-        }
+        // 0. Normalize the query
+        const normalizedQ = normalizeQuery(q);
+        console.log(`\n🔎 Search: "${q}" → normalized: "${normalizedQ}" (page ${page}, limit ${limit})`);
 
-        // 2. Fetch from DB (Text Search)
-        const dbProducts = await Product.find(
-            { $text: { $search: q } },
-            { score: { $meta: "textScore" } }
-        ).sort({ score: { $meta: "textScore" } }).limit(20);
+        // Source tag helper (defined here so it's usable in both cache hit and cache miss paths)
+        const formatSource = (src) => {
+            if (!src) return 'Unknown';
+            const lower = (src || '').toLowerCase();
+            if (lower === 'amazon')   return 'Amazon';
+            if (lower === 'flipkart') return 'Flipkart';
+            return src;
+        };
 
-        // 3. Scrape from external sources
-        const [amazon, flipkart, ebay] = await Promise.all([
-            scrapeAmazon(q).catch(() => []),
-            scrapeFlipkart(q).catch(() => []),
-            scrapeEbay(q).catch(() => [])
-        ]);
+        // Cache check — cache the FULL result set (all pages), slice per request
+        const cacheKey = normalizedQ.toLowerCase().trim();
+        let fullData = getCached(cacheKey);
 
-        let combined = [...dbProducts.map(p => ({ ...p._doc, source: p.source || 'Database' })), ...amazon, ...flipkart, ...ebay];
+        if (fullData) {
+            console.log(`⚡ Cache hit: ${fullData.results?.length || 0} total results`);
+        } else {
+            // 1. Save search history
+            if (req.user) {
+                await User.findByIdAndUpdate(req.user.id, {
+                    $push: { searchHistory: { $each: [{ query: q }], $slice: -10 } }
+                }).catch(() => {});
+            }
 
-        // 4. Fuzzy Filtering with Fuse.js
-        const fuse = new Fuse(combined, {
-            keys: ['title', 'brand', 'category'],
-            threshold: 0.6,
-            includeScore: true
+            // 2. Run DB query + BOTH scrapers simultaneously in parallel
+            const withTimeout = (promise, ms) =>
+                Promise.race([
+                    promise,
+                    new Promise(resolve => setTimeout(() => resolve(null), ms))
+                ]);
+
+            const [dbProducts, amazonResult, flipkartResult] = await Promise.all([
+                Product.find(
+                    { $text: { $search: normalizedQ } },
+                    { score: { $meta: 'textScore' } }
+                ).sort({ score: { $meta: 'textScore' } }).limit(10).catch(() => []),
+                withTimeout(
+                    scrapeAmazon(normalizedQ).catch(e => { console.error('Amazon error:', e.message); return []; }),
+                    12000
+                ),
+                withTimeout(
+                    scrapeFlipkart(normalizedQ).catch(e => { console.error('Flipkart error:', e.message); return []; }),
+                    12000
+                ),
+            ]);
+
+            // null means timeout; [] means scraper ran but found nothing
+            const amazon   = amazonResult   ?? [];
+            const flipkart = flipkartResult ?? [];
+
+            if (amazonResult === null && flipkartResult === null) {
+                console.warn('⚠️  Both scrapers timed out.');
+            }
+
+            // Required debug logs
+            console.log('Search:', q);
+            console.log('Amazon:', amazon.length);
+            console.log('Flipkart:', flipkart.length);
+
+            const dbMapped       = dbProducts.map(p => ({ ...p._doc,  source: formatSource(p.source) }));
+            const amazonTagged   = amazon.map(p   => ({ ...p, source: formatSource(p.source   || 'Amazon'),   _fromScraper: true }));
+            const flipkartTagged = flipkart.map(p  => ({ ...p, source: formatSource(p.source  || 'Flipkart'), _fromScraper: true }));
+
+            // Combine — NEVER overwrite one retailer with another
+            const allResults = [...amazonTagged, ...flipkartTagged, ...dbMapped];
+
+            // 4. Rank + classify into sections (strict AND-logic, brand-lock)
+            const { exactMatches, similar, related, all: ranked } = rankResults(allResults, normalizedQ);
+
+            // Per-retailer splits
+            const amazonFinal   = ranked.filter(p => formatSource(p.source) === 'Amazon');
+            const flipkartFinal = ranked.filter(p => formatSource(p.source) === 'Flipkart');
+
+            console.log('Final:', ranked.length);
+            console.log(`  → Exact: ${exactMatches.length} | Similar: ${similar.length} | Related: ${related.length}`);
+            console.log(`  → Amazon: ${amazonFinal.length} | Flipkart: ${flipkartFinal.length}\n`);
+
+            // 5. Build and cache the FULL (unpaginated) response
+            fullData = {
+                amazon:       amazonFinal,
+                flipkart:     flipkartFinal,
+                exactMatches,
+                similar,
+                related,
+                results: ranked,
+            };
+
+            // 6. Cache full result for 5 minutes
+            setCache(cacheKey, fullData);
+        } // end cache miss block
+        // ── 7. Apply pagination to the full ranked list ──────────────────────
+        // Works for BOTH cache hits and fresh scrapes.
+        const { exactMatches: allExact, similar: allSimilar, related: allRelated } = fullData;
+
+        // Flat ordered list: exact first → similar → related
+        const allRanked    = [...allExact, ...allSimilar, ...allRelated];
+        const totalResults = allRanked.length;
+        const totalPages   = Math.max(1, Math.ceil(totalResults / limit));
+        const safePage     = Math.min(page, totalPages);
+        const skip         = (safePage - 1) * limit;
+        const pageSlice    = allRanked.slice(skip, skip + limit);
+
+        // Re-classify paginated slice into sections
+        const exactSet   = new Set(allExact.map(p => p.url));
+        const similarSet = new Set(allSimilar.map(p => p.url));
+        const pageExact   = pageSlice.filter(p => exactSet.has(p.url));
+        const pageSimilar = pageSlice.filter(p => similarSet.has(p.url));
+        const pageRelated = pageSlice.filter(p => !exactSet.has(p.url) && !similarSet.has(p.url));
+
+        console.log(`📄 Page ${safePage}/${totalPages}: items ${skip + 1}–${Math.min(skip + limit, totalResults)} of ${totalResults}`);
+
+        res.json({
+            // Paginated sections
+            exactMatches: pageExact,
+            similar:      pageSimilar,
+            related:      pageRelated,
+            results:      pageSlice,
+            // Per-retailer (filtered to this page)
+            amazon:       pageSlice.filter(p => formatSource(p.source) === 'Amazon'),
+            flipkart:     pageSlice.filter(p => formatSource(p.source) === 'Flipkart'),
+            // Pagination metadata (Requirement 1)
+            page:         safePage,
+            limit,
+            totalResults,
+            totalPages,
         });
 
-        const fuzzyResults = fuse.search(q).map(r => ({
-            ...r.item,
-            fuzzyScore: r.score
-        }));
-
-        // 5. Intelligent Ranking
-        const finalResults = rankResults(fuzzyResults.length > 0 ? fuzzyResults : combined, q);
-
-        res.json(finalResults);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('❌ searchProducts error:', error);
+        res.status(500).json({ message: 'Unable to fetch products. Please try again.' });
     }
 };
+
+
+
 
 exports.getSuggestions = async (req, res) => {
     const { q } = req.query;
@@ -201,9 +325,9 @@ exports.saveProduct = async (req, res) => {
 exports.getPublicStats = async (req, res) => {
     try {
         const totalProducts = await Product.countDocuments();
-        // Extract distinct scraper sources, fallback to Amazon, Flipkart, eBay (3)
+        // Extract distinct scraper sources, fallback to Amazon, Flipkart (2)
         const uniqueSources = await Product.distinct('source');
-        const retailerCount = Math.max(uniqueSources.filter(Boolean).length, 3);
+        const retailerCount = Math.max(uniqueSources.filter(Boolean).length, 2);
         
         // Dynamic models count with premium base pad
         const modelCount = totalProducts > 0 ? totalProducts + 2400 : 2431;

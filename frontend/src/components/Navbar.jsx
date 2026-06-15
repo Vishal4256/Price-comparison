@@ -66,9 +66,7 @@ export default function Navbar() {
             <Link to="/search?q=fashion" className="text-sm font-semibold text-slate-500 hover:text-[#0B1E36] transition-colors relative py-1">
               Fashion
             </Link>
-            <Link to="/compare" className="text-sm font-semibold text-slate-500 hover:text-[#0B1E36] transition-colors relative py-1">
-              Compare
-            </Link>
+
           </div>
 
           {/* Right Controls */}
@@ -236,9 +234,7 @@ export default function Navbar() {
                 <Link to="/search?q=fashion" className="px-3 py-3 hover:bg-slate-50 rounded-xl text-sm font-semibold text-slate-700 hover:text-[#0B1E36] transition-colors">
                   Fashion
                 </Link>
-                <Link to="/compare" className="px-3 py-3 hover:bg-slate-50 rounded-xl text-sm font-semibold text-slate-700 hover:text-[#0B1E36] transition-colors">
-                  Compare Products
-                </Link>
+
               </div>
 
               {/* Protected Links & Actions (Mobile) */}

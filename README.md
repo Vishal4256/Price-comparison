@@ -5,7 +5,6 @@ PriceSense is a full-stack MERN (MongoDB, Express, React, Node.js) price trackin
 ## Prerequisites
 - Node.js (v20+)
 - MongoDB
-- Docker (optional)
 
 ## Local Setup
 
@@ -30,11 +29,6 @@ Start the frontend:
 npm run dev
 ```
 
-## Docker Setup
-From the root directory:
-```bash
-docker-compose up --build
-```
 
 ## Key Features
 - **Scraping**: Uses Puppeteer with Stealth plugin to fetch prices from Amazon, Flipkart, and eBay.
