@@ -35,10 +35,16 @@ export default function ProductCard({ product }) {
 
             {/* Source + Discount badges */}
             <div className="absolute top-3 left-3 z-20 flex flex-col gap-1.5">
-                {product.source && (
-                    <span className={`px-2 py-1 border text-[10px] font-bold rounded shadow-sm uppercase tracking-wider ${style.bg} ${style.text} ${style.border}`}>
-                        {product.source}
+                {product.prices && product.prices.length > 1 ? (
+                    <span className="px-2 py-1 bg-[#0B1E36] text-white text-[10px] font-bold rounded shadow-sm uppercase tracking-wider">
+                        Compared Deals
                     </span>
+                ) : (
+                    product.source && (
+                        <span className={`px-2 py-1 border text-[10px] font-bold rounded shadow-sm uppercase tracking-wider ${style.bg} ${style.text} ${style.border}`}>
+                            {product.source}
+                        </span>
+                    )
                 )}
                 {product.discountPercentage > 10 && (
                     <span className="px-2 py-1 bg-green-500 text-white text-[10px] font-bold rounded shadow-sm">
@@ -83,37 +89,66 @@ export default function ProductCard({ product }) {
 
                 {/* Price */}
                 <div className="mt-auto">
-                    <div className="flex flex-col mb-3">
-                        <span className="text-xl font-black text-[#0B1E36]">
-                            ₹{price.toLocaleString('en-IN')}
-                        </span>
-                        {product.originalPrice > price && (
-                            <span className="text-xs font-medium text-slate-400 line-through mt-0.5">
-                                ₹{product.originalPrice.toLocaleString('en-IN')}
-                            </span>
-                        )}
-                    </div>
-
-                    {/* View Deal — single action button */}
-                    {validUrl ? (
-                        <a
-                            href={product.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#0B1E36] hover:bg-[#1a365d] text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
-                        >
-                            <ShoppingCart className="w-3.5 h-3.5" />
-                            View Deal
-                        </a>
+                    {product.prices && product.prices.length > 1 ? (
+                        <div className="flex flex-col gap-2 mt-3">
+                            {product.prices.map((p, idx) => {
+                                const isAmz = p.source === 'Amazon';
+                                return (
+                                    <a
+                                        key={idx}
+                                        href={p.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className={`flex items-center justify-between px-3 py-2 border rounded-xl transition-colors shadow-sm ${
+                                            isAmz ? 'bg-orange-50 border-orange-200 hover:bg-orange-100 text-orange-800' : 'bg-blue-50 border-blue-200 hover:bg-blue-100 text-blue-800'
+                                        }`}
+                                    >
+                                        <div className="flex flex-col">
+                                            <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">{p.source}</span>
+                                            <span className="text-sm font-black">₹{(p.currentPrice || 0).toLocaleString('en-IN')}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-xs font-bold bg-white/60 px-2 py-1 rounded-lg">
+                                            View
+                                        </div>
+                                    </a>
+                                );
+                            })}
+                        </div>
                     ) : (
-                        <button
-                            disabled
-                            title="Product link unavailable"
-                            className="flex items-center justify-center gap-2 w-full py-2.5 bg-gray-100 text-gray-400 text-xs font-bold rounded-xl cursor-not-allowed"
-                        >
-                            <AlertCircle className="w-3.5 h-3.5" />
-                            Link Unavailable
-                        </button>
+                        <div className="flex flex-col mt-3">
+                            <div className="flex flex-col mb-3">
+                                <span className="text-xl font-black text-[#0B1E36]">
+                                    ₹{price.toLocaleString('en-IN')}
+                                </span>
+                                {product.originalPrice > price && (
+                                    <span className="text-xs font-medium text-slate-400 line-through mt-0.5">
+                                        ₹{product.originalPrice.toLocaleString('en-IN')}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* View Deal — single action button */}
+                            {validUrl ? (
+                                <a
+                                    href={product.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-[#0B1E36] hover:bg-[#1a365d] text-white text-xs font-bold rounded-xl transition-colors shadow-sm"
+                                >
+                                    <ShoppingCart className="w-3.5 h-3.5" />
+                                    View Deal
+                                </a>
+                            ) : (
+                                <button
+                                    disabled
+                                    title="Product link unavailable"
+                                    className="flex items-center justify-center gap-2 w-full py-2.5 bg-gray-100 text-gray-400 text-xs font-bold rounded-xl cursor-not-allowed"
+                                >
+                                    <AlertCircle className="w-3.5 h-3.5" />
+                                    Link Unavailable
+                                </button>
+                            )}
+                        </div>
                     )}
                 </div>
             </div>

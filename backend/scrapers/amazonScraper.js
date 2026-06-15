@@ -217,7 +217,7 @@ const extractAmazonPrices = ($, el) => {
 };
 
 // ─── Main scraper ─────────────────────────────────────────────────────────────
-const scrapeAmazon = async (query) => {
+const scrapeAmazon = async (query, isCategory = false) => {
     try {
         const parsedQuery          = parseQuery(query);
         const primaryModelToken    = extractQueryModel(parsedQuery);
@@ -288,7 +288,15 @@ const scrapeAmazon = async (query) => {
         const rejected = [];
 
         for (const p of rawProducts) {
-            const { keep, reason } = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens);
+            let keep = true;
+            let reason = 'category bypass';
+
+            if (!isCategory) {
+                const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens);
+                keep = validation.keep;
+                reason = validation.reason;
+            }
+
             const parsedTitle = parseProductTitle(p.title);
 
             // Required debug log (Step 9)

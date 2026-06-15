@@ -207,7 +207,7 @@ const extractPrices = ($, el) => {
 };
 
 // ─── Main scraper ─────────────────────────────────────────────────────────────
-const scrapeFlipkart = async (query) => {
+const scrapeFlipkart = async (query, isCategory = false) => {
     try {
         const parsedQuery          = parseQuery(query);
         const primaryModelToken    = extractQueryModel(parsedQuery);
@@ -239,7 +239,11 @@ const scrapeFlipkart = async (query) => {
             if (/currently unavailable/i.test(fullText)) return;
 
             const img = $(el).find('img').first();
-            const title = img.attr('alt') || '';
+            let title = img.attr('alt') || '';
+            if (!title || title.length < 5) {
+                // Apparel and fashion items often have empty alt attributes.
+                title = $(el).find('a').text().split('₹')[0].trim();
+            }
             if (!title || title.length < 5) return;
 
             const rawHref =
@@ -298,7 +302,15 @@ const scrapeFlipkart = async (query) => {
         const rejected = [];
 
         for (const p of rawProducts) {
-            const { keep, reason } = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens);
+            let keep = true;
+            let reason = 'category bypass';
+
+            if (!isCategory) {
+                const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens);
+                keep = validation.keep;
+                reason = validation.reason;
+            }
+
             const parsedTitle = parseProductTitle(p.title);
 
             // Required debug log (Step 9)

@@ -218,7 +218,13 @@ export default function SearchPage() {
 
     const applySection = (arr) => {
         let out = [...arr];
-        if (filters.stores.length > 0) out = out.filter(p => filters.stores.includes(p.source));
+        if (filters.stores.length > 0) {
+            out = out.filter(p => {
+                if (filters.stores.includes(p.source)) return true;
+                if (p.prices && p.prices.some(pr => filters.stores.includes(pr.source))) return true;
+                return false;
+            });
+        }
         if (filters.minPrice) out = out.filter(p => (p.currentPrice || 0) >= parseFloat(filters.minPrice));
         if (filters.maxPrice) out = out.filter(p => (p.currentPrice || 0) <= parseFloat(filters.maxPrice));
         if      (filters.sortBy === 'Price: Low to High')  out.sort((a, b) => (a.currentPrice || 0) - (b.currentPrice || 0));

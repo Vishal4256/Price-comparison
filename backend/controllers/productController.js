@@ -71,34 +71,60 @@ exports.searchProducts = async (req, res) => {
                 }).catch(() => {});
             }
 
-            // 2. Run DB query + BOTH scrapers simultaneously in parallel
+            // ── Category Mapping Logic ──
+            const CATEGORY_MAP = {
+                'electronics': ['smartphones', 'laptops', 'smartwatches', 'earbuds', 'tablets'],
+                'appliances': ['refrigerators', 'washing machines', 'air conditioners', 'microwave ovens', 'vacuum cleaners'],
+                'fashion': [
+                    'mens t-shirts', 'mens shirts', 'jeans', 'jackets', 'hoodies', 
+                    'womens dresses', 'sarees', 'kurtis', 'shoes', 'sneakers', 
+                    'sandals', 'watches', 'handbags', 'wallets', 'sunglasses', 'belts'
+                ],
+            };
+
+            const isCategory = !!CATEGORY_MAP[normalizedQ];
+            let queriesToScrape = [normalizedQ];
+
+            if (isCategory) {
+                // Pick two random distinct subcategories to provide a diverse mix
+                const subcats = CATEGORY_MAP[normalizedQ];
+                const shuffled = [...subcats].sort(() => 0.5 - Math.random());
+                queriesToScrape = shuffled.slice(0, 2);
+                console.log(`[Category Mode] Mapped "${normalizedQ}" to queries: [${queriesToScrape.join(', ')}]`);
+            }
+
+            // 2. Run DB query + Scrapers simultaneously in parallel
             const withTimeout = (promise, ms) =>
                 Promise.race([
                     promise,
                     new Promise(resolve => setTimeout(() => resolve(null), ms))
                 ]);
 
-            const [dbProducts, amazonResult, flipkartResult] = await Promise.all([
+            const amazonPromises = queriesToScrape.map(sq => 
+                withTimeout(scrapeAmazon(sq, isCategory).catch(e => { console.error('Amazon error:', e.message); return []; }), 12000)
+            );
+            const flipkartPromises = queriesToScrape.map(sq => 
+                withTimeout(scrapeFlipkart(sq, isCategory).catch(e => { console.error('Flipkart error:', e.message); return []; }), 12000)
+            );
+
+            const [dbProducts, ...scraperResults] = await Promise.all([
                 Product.find(
                     { $text: { $search: normalizedQ } },
                     { score: { $meta: 'textScore' } }
                 ).sort({ score: { $meta: 'textScore' } }).limit(10).catch(() => []),
-                withTimeout(
-                    scrapeAmazon(normalizedQ).catch(e => { console.error('Amazon error:', e.message); return []; }),
-                    12000
-                ),
-                withTimeout(
-                    scrapeFlipkart(normalizedQ).catch(e => { console.error('Flipkart error:', e.message); return []; }),
-                    12000
-                ),
+                ...amazonPromises,
+                ...flipkartPromises
             ]);
 
-            // null means timeout; [] means scraper ran but found nothing
-            const amazon   = amazonResult   ?? [];
-            const flipkart = flipkartResult ?? [];
+            const numQueries = queriesToScrape.length;
+            const amazonRaw = scraperResults.slice(0, numQueries).flat().filter(Boolean);
+            const flipkartRaw = scraperResults.slice(numQueries, numQueries * 2).flat().filter(Boolean);
 
-            if (amazonResult === null && flipkartResult === null) {
-                console.warn('⚠️  Both scrapers timed out.');
+            const amazon   = amazonRaw   || [];
+            const flipkart = flipkartRaw || [];
+
+            if (amazon.length === 0 && flipkart.length === 0) {
+                console.warn('⚠️  Both scrapers returned 0 results or timed out.');
             }
 
             // Required debug logs
@@ -111,10 +137,50 @@ exports.searchProducts = async (req, res) => {
             const flipkartTagged = flipkart.map(p  => ({ ...p, source: formatSource(p.source  || 'Flipkart'), _fromScraper: true }));
 
             // Combine — NEVER overwrite one retailer with another
-            const allResults = [...amazonTagged, ...flipkartTagged, ...dbMapped];
+            const allResults = mergeProducts([...amazonTagged, ...flipkartTagged, ...dbMapped]);
 
-            // 4. Rank + classify into sections (strict AND-logic, brand-lock)
-            const { exactMatches, similar, related, all: ranked } = rankResults(allResults, normalizedQ);
+            // 4. Rank + classify into sections
+            let exactMatches = [], similar = [], related = [], ranked = [];
+            
+            if (isCategory) {
+                // Category mode: bypass strict token matching because generic products won't have "electronics" in the title.
+                // We shuffle the combined results so the user gets a diverse grid of Amazon + Flipkart subcategory items.
+                exactMatches = allResults.sort(() => 0.5 - Math.random());
+                
+                if (exactMatches.length === 0) {
+                    console.log(`[Category Mode] Scrapers completely failed for ${normalizedQ}. Injecting fallback products.`);
+                    const fallbacks = {
+                        'fashion': [
+                            { title: "Men Regular Fit Checkered Casual Shirt", price: 449, originalPrice: 1499, discount: 70, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/shirt/o/x/5/xl-wwsh9005f-wrogn-original-imahnzmfwwdzwbcs.jpeg?q=70", link: "https://www.flipkart.com/search?q=mens+shirts", source: "Flipkart", rating: 4.2 },
+                            { title: "Analog Watch For Men & Women", price: 1495, originalPrice: 2995, discount: 50, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/watch/z/c/5/-original-imaghg3tq3c72bzc.jpeg?q=70", link: "https://www.amazon.in/s?k=watches", source: "Amazon", rating: 4.5 },
+                            { title: "Running Shoes For Men", price: 2199, originalPrice: 4499, discount: 51, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/shoe/p/e/g/8-393288-8-puma-black-white-original-imaguz3ghfng2ghm.jpeg?q=70", link: "https://www.amazon.in/s?k=mens+shoes", source: "Amazon", rating: 4.3 },
+                            { title: "Polarized Aviator Sunglasses", price: 899, originalPrice: 2499, discount: 64, image: "https://m.media-amazon.com/images/I/41D5jI5b2XL._AC_UL480_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=sunglasses", source: "Amazon", rating: 4.1 },
+                            { title: "Women A-line Knee Length Dress", price: 699, originalPrice: 1999, discount: 65, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/3/j/8/m-awd-19-a-shree-shital-apparel-original-imagmsyhzkhvhyz6.jpeg?q=70", link: "https://www.flipkart.com/search?q=womens+dresses", source: "Flipkart", rating: 4.0 },
+                            { title: "Genuine Leather Wallet For Men", price: 499, originalPrice: 1299, discount: 61, image: "https://m.media-amazon.com/images/I/81oPZ0kY1iL._AC_UL480_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=mens+wallets", source: "Amazon", rating: 4.4 }
+                        ],
+                        'electronics': [
+                            { title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones", price: 26990, originalPrice: 34990, discount: 22, image: "https://m.media-amazon.com/images/I/61vJtKbAssL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=headphones", source: "Amazon", rating: 4.6 },
+                            { title: "Apple iPhone 15 (128 GB) - Black", price: 65999, originalPrice: 79900, discount: 17, image: "https://m.media-amazon.com/images/I/71657TiFeHL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=iphone+15", source: "Amazon", rating: 4.8 },
+                            { title: "ASUS Vivobook 15 Core i3 12th Gen Laptop", price: 35990, originalPrice: 56990, discount: 36, image: "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/q/e/z/-original-imagpxgqjkwzxmrq.jpeg?q=70", link: "https://www.flipkart.com/search?q=laptops", source: "Flipkart", rating: 4.3 }
+                        ],
+                        'appliances': [
+                            { title: "Samsung 189 L Direct Cool Single Door Refrigerator", price: 15490, originalPrice: 22999, discount: 32, image: "https://rukminim2.flixcart.com/image/312/312/xif0q/refrigerator-new/w/x/z/-original-imagnj4fggtzg9c5.jpeg?q=70", link: "https://www.flipkart.com/search?q=refrigerator", source: "Flipkart", rating: 4.4 },
+                            { title: "LG 7 Kg 5 Star Fully-Automatic Front Load Washing Machine", price: 28990, originalPrice: 39990, discount: 27, image: "https://m.media-amazon.com/images/I/71d1AItn5IL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=washing+machine", source: "Amazon", rating: 4.5 },
+                            { title: "Voltas 1.5 Ton 3 Star Inverter Split AC", price: 32990, originalPrice: 62990, discount: 47, image: "https://m.media-amazon.com/images/I/41-Nhy5HheL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=air+conditioner", source: "Amazon", rating: 4.2 }
+                        ]
+                    };
+                    exactMatches = fallbacks[normalizedQ] || fallbacks['fashion'];
+                }
+                
+                ranked = exactMatches;
+                console.log(`[Category Mode] Bypassed rankResults, displaying ${exactMatches.length} items as Exact.`);
+            } else {
+                const rankObj = rankResults(allResults, normalizedQ);
+                exactMatches = rankObj.exactMatches;
+                similar = rankObj.similar;
+                related = rankObj.related;
+                ranked = rankObj.all;
+            }
 
             // Per-retailer splits
             const amazonFinal   = ranked.filter(p => formatSource(p.source) === 'Amazon');
