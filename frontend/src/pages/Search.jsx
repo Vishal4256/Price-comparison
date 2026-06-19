@@ -220,16 +220,20 @@ export default function SearchPage() {
         let out = [...arr];
         if (filters.stores.length > 0) {
             out = out.filter(p => {
-                if (filters.stores.includes(p.source)) return true;
-                if (p.prices && p.prices.some(pr => filters.stores.includes(pr.source))) return true;
+                if (filters.stores.includes(p.lowestRetailer)) return true;
+                if (p.prices && p.prices.some(pr => filters.stores.includes(pr.retailer || pr.source))) return true;
                 return false;
             });
         }
-        if (filters.minPrice) out = out.filter(p => (p.currentPrice || 0) >= parseFloat(filters.minPrice));
-        if (filters.maxPrice) out = out.filter(p => (p.currentPrice || 0) <= parseFloat(filters.maxPrice));
-        if      (filters.sortBy === 'Price: Low to High')  out.sort((a, b) => (a.currentPrice || 0) - (b.currentPrice || 0));
-        else if (filters.sortBy === 'Price: High to Low')  out.sort((a, b) => (b.currentPrice || 0) - (a.currentPrice || 0));
+        if (filters.minPrice) out = out.filter(p => (p.lowestPrice || p.currentPrice || 0) >= parseFloat(filters.minPrice));
+        if (filters.maxPrice) out = out.filter(p => (p.lowestPrice || p.currentPrice || 0) <= parseFloat(filters.maxPrice));
+        
+        // Sorting logic based on new grouped fields
+        if      (filters.sortBy === 'Price: Low to High')  out.sort((a, b) => (a.lowestPrice || 0) - (b.lowestPrice || 0));
+        else if (filters.sortBy === 'Price: High to Low')  out.sort((a, b) => (b.lowestPrice || 0) - (a.lowestPrice || 0));
         else if (filters.sortBy === 'Top Rated')           out.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+        else if (filters.sortBy === 'Biggest Discount')    out.sort((a, b) => (b.discountPercentage || 0) - (a.discountPercentage || 0));
+        
         return out;
     };
 
@@ -403,6 +407,7 @@ export default function SearchPage() {
                                         <option value="Recommended">Recommended</option>
                                         <option value="Price: Low to High">Price: Low to High</option>
                                         <option value="Price: High to Low">Price: High to Low</option>
+                                        <option value="Biggest Discount">Biggest Discount</option>
                                         <option value="Top Rated">Top Rated</option>
                                     </select>
                                     <ChevronDown className="w-4 h-4 text-slate-500 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />

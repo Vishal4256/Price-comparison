@@ -5,7 +5,6 @@ const Alert = require('../models/Alert');
 const scrapeAmazon = require('../scrapers/amazonScraper');
 const scrapeFlipkart = require('../scrapers/flipkartScraper');
 
-const scrapeActualUrl = require('../scrapers/actualUrlScraper');
 const { sendPriceAlert } = require('./emailService');
 
 // Helper to extract Amazon ASIN
@@ -64,16 +63,7 @@ cron.schedule('0 0 * * *', async () => {
         try {
             let updatedData = null;
 
-            // 1. Try scraping the direct product URL first (if anti-bot allows it)
-            if (product.url) {
-                try {
-                    updatedData = await scrapeActualUrl(product.url, product.source);
-                } catch (urlScrapeErr) {
-                    console.warn(`⚠️ Direct URL scrape failed for ${product.title}: ${urlScrapeErr.message}`);
-                }
-            }
-
-            // 2. Fall back to search query scraper, utilizing exact ID matching
+            // 1. Query search engine for: product title
             if (!updatedData) {
                 console.log(`🔍 Direct scrape bypassed. Querying search engine for: "${product.title}" (${product.source})`);
                 let results = [];

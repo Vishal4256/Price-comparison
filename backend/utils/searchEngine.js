@@ -20,6 +20,7 @@
 const stringSimilarity = require('string-similarity');
 const { parseProductTitle, parseQuery } = require('./productParser');
 const { tokenizeQuery } = require('./queryNormalizer');
+const { calculateRelevance, groupProducts, isAccessory } = require('./ProductMatcher');
 
 // ─── Weights ──────────────────────────────────────────────────────────────────
 const W = {
@@ -204,57 +205,40 @@ function passesBrandLock(parsedQuery, parsedProduct, productTitle) {
 
 // ─── Main ranking function ────────────────────────────────────────────────────
 
-/**
- * Classify and rank all products into three sections:
- *   exactMatches — brand + series + model all match, AND-logic satisfied
- *   similar      — same brand/series, slightly different variant
- *   related      — same category but different brand (shown last, separated)
- *
- * @param {object[]} products       - Combined scraper + DB results
- * @param {string}   normalizedQuery - Already-normalized query string
- * @returns {{ exactMatches, similar, related, all }}
- */
-function rankResults(products, normalizedQuery) {
+function rankResults(groupedProducts, normalizedQuery) {
     const parsedQuery = parseQuery(normalizedQuery);
     const queryTokens = tokenizeQuery(normalizedQuery);
-
-    console.log(`[searchEngine] Query parsed → brand:"${parsedQuery.brand}" series:"${parsedQuery.series}" model:"${parsedQuery.model}" storage:"${parsedQuery.storage}"`);
-    console.log(`[searchEngine] Query tokens → [${queryTokens.join(', ')}]`);
 
     const exactMatches = [];
     const similar      = [];
     const related      = [];
 
-    for (const product of products) {
-        const title = product.title || '';
-        const parsedProduct = parseProductTitle(title);
-        const score = scoreProduct(parsedQuery, parsedProduct);
+    for (const group of groupedProducts) {
+        const title = group.title || '';
+        
+        // Filter out accessories if the query didn't ask for one
+        if (!isAccessory(normalizedQuery) && isAccessory(title)) {
+            continue; 
+        }
 
-        // Rating micro-bonus (max +2 pts — never overrides relevance)
-        const ratingBonus = product.rating ? Math.min(product.rating * 0.4, 2) : 0;
+        const score = calculateRelevance(normalizedQuery, title);
+
+        // Rating micro-bonus (max +2 pts)
+        const ratingBonus = group.rating ? Math.min(group.rating * 0.4, 2) : 0;
         const finalScore  = score + ratingBonus;
 
-        // AND-token check: all query tokens must appear in the title
-        const tokenCheck = andTokenCheck(queryTokens, title);
+        const enriched = { ...group, searchScore: finalScore };
 
-        // Brand lock: if query has a brand, different-brand products cannot be exact matches
-        const brandOk = passesBrandLock(parsedQuery, parsedProduct, title);
-
-        const enriched = { ...product, searchScore: finalScore, _parsedProduct: parsedProduct };
-
-        if (tokenCheck.allMatch && brandOk && finalScore >= EXACT_MIN_SCORE) {
-            // ✅ EXACT match: all tokens present, brand matches, score high enough
-            exactMatches.push(enriched);
-        } else if (brandOk && finalScore >= SIMILAR_MIN_SCORE) {
-            // 🔶 SIMILAR: same brand/series, possibly different variant
-            // e.g. "iphone 14" or "iphone 15 pro" when searching "iphone 15"
-            similar.push(enriched);
-        } else if (finalScore >= 15 || tokenCheck.matchedCount > 0) {
-            // 🔷 RELATED: partial match, different brand, or low score
-            // Only include if it has some relevance at all
-            related.push(enriched);
+        // Requirement: Only show products with score > 50
+        if (finalScore > 50) {
+            if (finalScore >= 100) {
+                exactMatches.push(enriched);
+            } else if (finalScore >= 80) {
+                similar.push(enriched);
+            } else {
+                related.push(enriched);
+            }
         }
-        // Products with zero relevance are silently dropped
     }
 
     // Sort each section by score descending
@@ -263,21 +247,11 @@ function rankResults(products, normalizedQuery) {
     similar.sort(sortByScore);
     related.sort(sortByScore);
 
-    // Strip internal fields before returning
-    const clean = arr => arr.map(({ _parsedProduct, _fromScraper, _overlap, ...rest }) => rest);
-
-    const cleanExact   = clean(exactMatches);
-    const cleanSimilar = clean(similar);
-    const cleanRelated = clean(related);
-
-    console.log(`[searchEngine] Sections → exact:${cleanExact.length} similar:${cleanSimilar.length} related:${cleanRelated.length}`);
-
     return {
-        exactMatches: cleanExact,
-        similar:      cleanSimilar,
-        related:      cleanRelated,
-        // Flat combined list for backward compat (exact first, then similar, then related)
-        all: [...cleanExact, ...cleanSimilar, ...cleanRelated],
+        exactMatches,
+        similar,
+        related,
+        all: [...exactMatches, ...similar, ...related],
     };
 }
 
@@ -301,60 +275,9 @@ function areSameProduct(a, b, titleA, titleB) {
     return false;
 }
 
-/**
- * Merge duplicate products from Amazon and Flipkart.
- * Keeps ALL retailer entries in a `prices` array — never drops one retailer.
- */
 function mergeProducts(products) {
-    const merged = [];
-    const used   = new Set();
-
-    for (let i = 0; i < products.length; i++) {
-        if (used.has(i)) continue;
-        const base = products[i];
-        const parsedBase = parseProductTitle(base.title || '');
-        const priceEntries = [{
-            source:             base.source,
-            currentPrice:       base.currentPrice,
-            originalPrice:      base.originalPrice,
-            discountPercentage: base.discountPercentage,
-            rating:             base.rating,
-            url:                base.url,
-        }];
-
-        for (let j = i + 1; j < products.length; j++) {
-            if (used.has(j)) continue;
-            const candidate = products[j];
-            if (candidate.source === base.source) continue;
-            const parsedCandidate = parseProductTitle(candidate.title || '');
-            if (areSameProduct(parsedBase, parsedCandidate, base.title, candidate.title)) {
-                priceEntries.push({
-                    source:             candidate.source,
-                    currentPrice:       candidate.currentPrice,
-                    originalPrice:      candidate.originalPrice,
-                    discountPercentage: candidate.discountPercentage,
-                    rating:             candidate.rating,
-                    url:                candidate.url,
-                });
-                used.add(j);
-            }
-        }
-
-        if (priceEntries.length > 1) {
-            merged.push({
-                ...base,
-                isMerged:           true,
-                prices:             priceEntries,
-                currentPrice:       Math.min(...priceEntries.map(e => e.currentPrice || Infinity)),
-                originalPrice:      base.originalPrice,
-                discountPercentage: base.discountPercentage,
-            });
-        } else {
-            merged.push(base);
-        }
-        used.add(i);
-    }
-    return merged;
+    // Deprecated in favor of ProductMatcher.groupProducts, but keeping interface intact.
+    return groupProducts(products);
 }
 
 // ─── Did-you-mean ─────────────────────────────────────────────────────────────

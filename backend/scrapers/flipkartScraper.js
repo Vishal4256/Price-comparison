@@ -1,6 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { parseProductTitle, parseQuery } = require('../utils/productParser');
+const { isAccessory } = require('../utils/ProductMatcher');
 
 const USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -32,7 +33,7 @@ const parsePrice = (str) => {
 
 function norm(str) {
     if (!str) return '';
-    return str.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    return str.toLowerCase().replace(/[^a-z0-9.\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -101,9 +102,13 @@ function extractRequiredModelTokens(parsedQuery) {
  * "15" is not in that title. Previously this was skipped because primaryModelToken
  * was "iphone" (no digit), causing the check to be bypassed.
  */
-function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTokens) {
+function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTokens, rawQuery) {
     const titleNorm = norm(title);
     const parsedProduct = parseProductTitle(title);
+
+    if (rawQuery && !isAccessory(rawQuery) && isAccessory(title)) {
+        return { keep: false, reason: 'rejected accessory' };
+    }
 
     // ── 1. Series check ──────────────────────────────────────────────────────
     if (parsedQuery.series) {
@@ -114,16 +119,9 @@ function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTok
     }
 
     // ── 2. Model token checks (strict AND) ───────────────────────────────────
-    if (requiredModelTokens && requiredModelTokens.length > 0) {
-        for (const token of requiredModelTokens) {
-            if (!tokenPresent(titleNorm, token)) {
-                return {
-                    keep: false,
-                    reason: `required model token "${token}" not in title ("${title.slice(0, 60)}")`,
-                };
-            }
-        }
-    }
+    // Removed strict numeric check at the scraper level to allow the relevance 
+    // engine (ProductMatcher) to handle closest matches (e.g. newer models when 
+    // the requested model is out of stock).
 
     // ── 3. Brand check ───────────────────────────────────────────────────────
     if (parsedQuery.brand) {
@@ -213,10 +211,6 @@ const scrapeFlipkart = async (query, isCategory = false) => {
         const primaryModelToken    = extractQueryModel(parsedQuery);
         const requiredModelTokens  = extractRequiredModelTokens(parsedQuery);
 
-        console.log(`\n[Flipkart] Scraping: "${query}"`);
-        console.log(`[Flipkart] Parsed → brand:"${parsedQuery.brand}" series:"${parsedQuery.series}" model:"${parsedQuery.model}"`);
-        console.log(`[Flipkart] Enforcement → primaryToken:"${primaryModelToken}" requiredTokens:[${requiredModelTokens.join(', ')}]`);
-
         const searchUrl = `https://www.flipkart.com/search?q=${encodeURIComponent(query)}`;
         const { data } = await axios.get(searchUrl, {
             headers: getHeaders(),
@@ -232,8 +226,8 @@ const scrapeFlipkart = async (query, isCategory = false) => {
         const rawProducts = [];
 
         // ── Step 1: Collect raw results ──────────────────────────────────────
-        $('div[data-id]').each((i, el) => {
-            if (rawProducts.length >= 20) return false;
+        $('div[data-id], div._75nlfW, div.tUxRFH, div._1xHGtK').each((i, el) => {
+            if (rawProducts.length >= 60) return false;
 
             const fullText = $(el).text();
             if (/currently unavailable/i.test(fullText)) return;
@@ -273,7 +267,6 @@ const scrapeFlipkart = async (query, isCategory = false) => {
             const { currentPrice, originalPrice } = extractPrices($limited, $limited('#root'));
 
             if (currentPrice === 0) {
-                console.log(`[Flipkart] ⚠️  No selling price for: "${title.slice(0, 60)}"`);
                 return;
             }
 
@@ -289,13 +282,8 @@ const scrapeFlipkart = async (query, isCategory = false) => {
             const ratingMatch = fullText.match(/\b([1-5]\.\d)\b/);
             const rating = ratingMatch ? parseFloat(ratingMatch[1]) : 4.0;
 
-            // Required debug log
-            console.log(`[Flipkart] Found: { title: "${title.slice(0, 50)}", scrapedPrice: ${currentPrice}, mrp: ${originalPrice}, discount: ${discountPercentage}%, url: "${url}" }`);
-
             rawProducts.push({ title, currentPrice, originalPrice, discountPercentage, rating, image: imageSrc, url, source: 'Flipkart' });
         });
-
-        console.log(`[Flipkart] Raw scraped: ${rawProducts.length} products`);
 
         // ── Step 2: Validate each product ────────────────────────────────────
         const accepted = [];
@@ -305,16 +293,19 @@ const scrapeFlipkart = async (query, isCategory = false) => {
             let keep = true;
             let reason = 'category bypass';
 
-            if (!isCategory) {
-                const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens);
+            const lowerUrl = p.url.toLowerCase();
+            const isSearchUrl = lowerUrl.includes('/search') || lowerUrl.includes('?q=') || lowerUrl.includes('query=');
+
+            if (isSearchUrl) {
+                keep = false;
+                reason = 'rejected due to search URL';
+            } else if (!isCategory) {
+                const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens, query);
                 keep = validation.keep;
                 reason = validation.reason;
             }
 
             const parsedTitle = parseProductTitle(p.title);
-
-            // Required debug log (Step 9)
-            console.log(`[Flipkart] Search: "${query}" | Scraped: "${p.title.slice(0, 60)}" | Model parsed: "${parsedTitle.model}" | Decision: ${keep ? 'Accepted' : `Rejected (${reason})`}`);
 
             if (keep) {
                 accepted.push(p);
@@ -324,13 +315,6 @@ const scrapeFlipkart = async (query, isCategory = false) => {
             }
         }
 
-        console.log(`[Flipkart] Accepted: ${accepted.length} | Rejected: ${rejected.length}`);
-        if (rejected.length > 0) {
-            console.log('[Flipkart] Rejected products:');
-            rejected.forEach(r => console.log(`  ✗ "${r.title.slice(0, 70)}" → ${r.reason}`));
-        }
-
-        console.log(`✅ Flipkart: ${accepted.length} relevant products for "${query}"`);
         return accepted;
 
     } catch (error) {

@@ -99,7 +99,6 @@ function normalizeQuery(rawQuery) {
     // Final cleanup
     q = q.replace(/\s+/g, ' ').trim();
 
-    console.log(`🔍 Query normalized: "${rawQuery}" → "${q}"`);
     return q;
 }
 

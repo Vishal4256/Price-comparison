@@ -3,6 +3,12 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
+if (process.env.NODE_ENV === "production") {
+    console.log = function() {};
+    console.debug = function() {};
+    console.info = function() {};
+}
+
 dotenv.config();
 
 const app = express();

@@ -1,26 +1,10 @@
-const axios = require('axios');
 const cheerio = require('cheerio');
+const puppeteer = require('puppeteer-extra');
+const StealthPlugin = require('puppeteer-extra-plugin-stealth');
+puppeteer.use(StealthPlugin());
+
 const { parseProductTitle, parseQuery } = require('../utils/productParser');
-
-const USER_AGENTS = [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:125.0) Gecko/20100101 Firefox/125.0',
-];
-
-const getHeaders = () => ({
-    'User-Agent': USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)],
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-    'Accept-Language': 'en-IN,en;q=0.9',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Connection': 'keep-alive',
-    'Cache-Control': 'max-age=0',
-    'Host': 'www.amazon.in',
-    'sec-fetch-dest': 'document',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'none',
-    'sec-fetch-user': '?1',
-});
+const { isAccessory } = require('../utils/ProductMatcher');
 
 /**
  * Parse a price string like "₹54,900" → 54900. Returns 0 on failure.
@@ -35,7 +19,8 @@ const parsePrice = (str) => {
 // ─── Normalisation helper ─────────────────────────────────────────────────────
 function norm(str) {
     if (!str) return '';
-    return str.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+    // Preserve dots so that decimal numbers like "15.40" stay intact for tokenPresent
+    return str.toLowerCase().replace(/[^a-z0-9.\s]/g, ' ').replace(/\s+/g, ' ').trim();
 }
 
 /**
@@ -146,9 +131,14 @@ function extractRequiredModelTokens(parsedQuery) {
  *
  * Returns { keep: boolean, reason: string }
  */
-function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTokens) {
+function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTokens, rawQuery) {
     const titleNorm = norm(title);
     const parsedProduct = parseProductTitle(title);
+
+    // ── 0. Accessory check ───────────────────────────────────────────────────
+    if (rawQuery && !isAccessory(rawQuery) && isAccessory(title)) {
+        return { keep: false, reason: 'rejected accessory' };
+    }
 
     // ── 1. Series check ──────────────────────────────────────────────────────
     if (parsedQuery.series) {
@@ -159,17 +149,9 @@ function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTok
     }
 
     // ── 2. Model token checks (strict AND) ───────────────────────────────────
-    // Every numeric-origin token from the query model MUST appear in the title.
-    if (requiredModelTokens.length > 0) {
-        for (const token of requiredModelTokens) {
-            if (!tokenPresent(titleNorm, token)) {
-                return {
-                    keep: false,
-                    reason: `required model token "${token}" not in title ("${title.slice(0, 60)}")`,
-                };
-            }
-        }
-    }
+    // Removed strict numeric check at the scraper level to allow the relevance 
+    // engine (ProductMatcher) to handle closest matches (e.g. newer models when 
+    // the requested model is out of stock).
 
     // ── 3. Brand check ───────────────────────────────────────────────────────
     if (parsedQuery.brand) {
@@ -223,100 +205,158 @@ const scrapeAmazon = async (query, isCategory = false) => {
         const primaryModelToken    = extractQueryModel(parsedQuery);
         const requiredModelTokens  = extractRequiredModelTokens(parsedQuery);
 
-        console.log(`\n[Amazon] Scraping: "${query}"`);
-        console.log(`[Amazon] Parsed → brand:"${parsedQuery.brand}" series:"${parsedQuery.series}" model:"${parsedQuery.model}"`);
-        console.log(`[Amazon] Enforcement → primaryToken:"${primaryModelToken}" requiredTokens:[${requiredModelTokens.join(', ')}]`);
-
-        const searchUrl = `https://www.amazon.in/s?k=${encodeURIComponent(query)}`;
-        const { data } = await axios.get(searchUrl, {
-            headers: getHeaders(),
-            timeout: 12000,
-        });
-
-        if (
-            data.includes('api-services-support@amazon.com') ||
-            data.includes('Enter the characters you see below') ||
-            data.includes('Type the characters you see in this image')
-        ) {
-            console.warn('[Amazon] ⚠️  CAPTCHA detected — returning []');
-            return [];
-        }
-
-        const $ = cheerio.load(data);
-        const rawProducts = [];
-
-        // ── Step 1: Collect raw results ──────────────────────────────────────
-        $('div[data-component-type="s-search-result"]').each((i, el) => {
-            if (rawProducts.length >= 20) return false;
-
-            const asin = $(el).attr('data-asin');
-            if (!asin) return;
-            const url = `https://www.amazon.in/dp/${asin}`;
-
-            // Title
-            const spanTexts = [];
-            $(el).find('h2 span').each((_, span) => {
-                const t = $(span).text().trim();
-                if (t && !/sponsored/i.test(t)) spanTexts.push(t);
-            });
-            let title = spanTexts.join(' ').replace(/\s+/g, ' ').trim();
-            if (!title || title.length < 5) {
-                title = $(el).find('h2').text().replace(/^(Sponsored\s*)+/gi, '').replace(/\s+/g, ' ').trim();
-            }
-            if (!title || title.length < 5) return;
-
-            // Price
-            const { currentPrice, originalPrice } = extractAmazonPrices($, el);
-            if (!currentPrice) return;
-
-            const image = $(el).find('img.s-image').attr('src') || '';
-            const ratingStr = $(el).find('.a-icon-alt').first().text().trim();
-            const rating = ratingStr ? parseFloat(ratingStr.split(' ')[0]) : 4.0;
-            const discountPercentage = originalPrice > currentPrice
-                ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
-                : 0;
-
-            console.log(`[Amazon] Raw: { title: "${title.slice(0, 60)}", price: ${currentPrice} }`);
-
-            rawProducts.push({ title, currentPrice, originalPrice, discountPercentage, rating, image, url, source: 'Amazon' });
-        });
-
-        console.log(`[Amazon] Raw scraped: ${rawProducts.length} products`);
-
-        // ── Step 2: Validate — strict AND filtering ───────────────────────────
+        const searchUrl = `https://www.amazon.in/s?k=${encodeURIComponent(query).replace(/%20/g, '+')}`;
+        
+        let browser = null;
         const accepted = [];
         const rejected = [];
 
-        for (const p of rawProducts) {
-            let keep = true;
-            let reason = 'category bypass';
+        try {
+            browser = await puppeteer.launch({
+                headless: 'new',
+                args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
+            });
+            const page = await browser.newPage();
+            
+            // Set realistic browser headers and viewport
+            await page.setExtraHTTPHeaders({
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://www.amazon.in/'
+            });
+            await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36');
+            await page.setViewport({ width: 1280, height: 800 });
 
-            if (!isCategory) {
-                const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens);
-                keep = validation.keep;
-                reason = validation.reason;
-            }
-
-            const parsedTitle = parseProductTitle(p.title);
-
-            // Required debug log (Step 9)
-            console.log(`[Amazon] Search: "${query}" | Scraped: "${p.title.slice(0, 60)}" | Model parsed: "${parsedTitle.model}" | Decision: ${keep ? 'Accepted' : `Rejected (${reason})`}`);
-
-            if (keep) {
-                accepted.push(p);
+            // Fetch up to 3 pages to ensure we get at least 5 products
+            for (let pageNum = 1; pageNum <= 3; pageNum++) {
                 if (accepted.length >= 12) break;
-            } else {
-                rejected.push({ title: p.title, reason });
+
+                const pageUrl = pageNum === 1 ? searchUrl : `${searchUrl}&page=${pageNum}`;
+                console.log(`[Amazon Debug] Fetching search URL (Page ${pageNum}): ${pageUrl}`);
+                
+                // Add a random delay to avoid blocking
+                const delay = ms => new Promise(res => setTimeout(res, ms));
+                await delay(Math.floor(Math.random() * 2000) + 1000); // 1-3 seconds delay
+
+                // Let all resources load to avoid Bot Manager
+                await page.goto(pageUrl, { waitUntil: 'domcontentloaded', timeout: 15000 });
+                
+                // Scroll down to trigger lazy loading of more search results
+                await page.evaluate(async () => {
+                    await new Promise((resolve) => {
+                        let totalHeight = 0;
+                        const distance = 500;
+                        const timer = setInterval(() => {
+                            const scrollHeight = document.body.scrollHeight;
+                            window.scrollBy(0, distance);
+                            totalHeight += distance;
+                            if(totalHeight >= scrollHeight || totalHeight > 5000){
+                                clearInterval(timer);
+                                resolve();
+                            }
+                        }, 100);
+                    });
+                });
+
+                const data = await page.content();
+
+                if (
+                    data.includes('api-services-support@amazon.com') ||
+                    data.includes('Enter the characters you see below') ||
+                    data.includes('Type the characters you see in this image') ||
+                    data.includes('bm-verify') ||
+                    data.includes('interstitial')
+                ) {
+                    console.error('[Amazon] ⚠️ Anti-Bot/CAPTCHA challenge detected on page ' + pageNum);
+                    break; // Stop fetching more pages if blocked
+                }
+
+                const $ = cheerio.load(data);
+                const rawProducts = [];
+
+                // ── Step 1: Collect raw results ──────────────────────────────────────
+                let resultCount = $('div[data-component-type="s-search-result"]').length;
+                console.log(`[Amazon Debug] Loaded HTML for Page ${pageNum}. Found ${resultCount} search result divs.`);
+                
+                $('div[data-component-type="s-search-result"]').each((i, el) => {
+                    if (rawProducts.length >= 60) return false;
+
+                    const asin = $(el).attr('data-asin');
+                    if (!asin) return;
+                    const url = `https://www.amazon.in/dp/${asin}`;
+
+                    // Title
+                    const spanTexts = [];
+                    $(el).find('h2 span').each((_, span) => {
+                        const t = $(span).text().trim();
+                        if (t && !/sponsored/i.test(t)) spanTexts.push(t);
+                    });
+                    let title = spanTexts.join(' ').replace(/\s+/g, ' ').trim();
+                    if (!title || title.length < 5) {
+                        title = $(el).find('h2').text().replace(/^(Sponsored\s*)+/gi, '').replace(/\s+/g, ' ').trim();
+                    }
+                    if (!title || title.length < 5) return;
+
+                    // Price
+                    const { currentPrice, originalPrice } = extractAmazonPrices($, el);
+                    if (!currentPrice) return;
+
+                    const image = $(el).find('img.s-image').attr('src') || '';
+                    const ratingStr = $(el).find('.a-icon-alt').first().text().trim();
+                    const rating = ratingStr ? parseFloat(ratingStr.split(' ')[0]) : 4.0;
+                    const discountPercentage = originalPrice > currentPrice
+                        ? Math.round(((originalPrice - currentPrice) / originalPrice) * 100)
+                        : 0;
+
+                    rawProducts.push({ title, currentPrice, originalPrice, discountPercentage, rating, image, url, source: 'Amazon' });
+                });
+
+                console.log(`[Amazon Debug] Number of products extracted on Page ${pageNum}: ${rawProducts.length}`);
+                if (rawProducts.length > 0) {
+                    console.log(`[Amazon Debug] First product title on Page ${pageNum}: ${rawProducts[0].title}`);
+                    console.log(`[Amazon Debug] First product price on Page ${pageNum}: ${rawProducts[0].currentPrice}`);
+                }
+
+                // ── Step 2: Validate — strict AND filtering ───────────────────────────
+                for (const p of rawProducts) {
+                    let keep = true;
+                    let reason = 'category bypass';
+
+                    const lowerUrl = p.url.toLowerCase();
+                    const isSearchUrl = lowerUrl.includes('/search') || lowerUrl.includes('?q=') || lowerUrl.includes('query=');
+
+                    if (isSearchUrl) {
+                        keep = false;
+                        reason = 'rejected due to search URL';
+                    } else if (!isCategory) {
+                        const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens, query);
+                        keep = validation.keep;
+                        reason = validation.reason;
+                        if (!keep) console.log(`[Amazon Debug] Rejected: "${p.title}" - Reason: ${reason}`);
+                    }
+
+                    // To prevent duplicates across pages
+                    const isDuplicate = accepted.some(acc => acc.url === p.url);
+
+                    if (keep && !isDuplicate) {
+                        accepted.push(p);
+                        if (accepted.length >= 12) break;
+                    } else if (!keep) {
+                        rejected.push({ title: p.title, reason });
+                    }
+                }
+
+                // If we found at least 5 products, we don't need to fetch the next page
+                if (accepted.length >= 5) {
+                    break;
+                }
             }
+
+        } catch (e) {
+            console.error('[Amazon] ⚠️ Puppeteer fetch error:', e.message);
+        } finally {
+            if (browser) await browser.close();
         }
 
-        console.log(`[Amazon] Accepted: ${accepted.length} | Rejected: ${rejected.length}`);
-        if (rejected.length > 0) {
-            console.log('[Amazon] Rejected products:');
-            rejected.forEach(r => console.log(`  ✗ "${r.title.slice(0, 70)}" → ${r.reason}`));
-        }
-
-        console.log(`✅ Amazon: ${accepted.length} relevant products for "${query}"`);
         return accepted;
 
     } catch (error) {

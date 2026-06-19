@@ -2,14 +2,13 @@ const Product = require('../models/Product');
 const PriceHistory = require('../models/PriceHistory');
 const scrapeAmazon = require('../scrapers/amazonScraper');
 const scrapeFlipkart = require('../scrapers/flipkartScraper');
+const { groupProducts } = require('../utils/ProductMatcher');
 
 const { analyzeDiscount } = require('../utils/discountAnalyzer');
 const User = require('../models/User');
 const Alert = require('../models/Alert');
 
-
-const Fuse = require('fuse.js');
-const { rankResults, mergeProducts } = require('../utils/searchEngine');
+const { rankResults } = require('../utils/searchEngine');
 const { normalizeQuery } = require('../utils/queryNormalizer');
 
 // --- Simple in-memory cache (5-minute TTL) ---
@@ -46,7 +45,6 @@ exports.searchProducts = async (req, res) => {
     try {
         // 0. Normalize the query
         const normalizedQ = normalizeQuery(q);
-        console.log(`\n🔎 Search: "${q}" → normalized: "${normalizedQ}" (page ${page}, limit ${limit})`);
 
         // Source tag helper (defined here so it's usable in both cache hit and cache miss paths)
         const formatSource = (src) => {
@@ -61,9 +59,7 @@ exports.searchProducts = async (req, res) => {
         const cacheKey = normalizedQ.toLowerCase().trim();
         let fullData = getCached(cacheKey);
 
-        if (fullData) {
-            console.log(`⚡ Cache hit: ${fullData.results?.length || 0} total results`);
-        } else {
+        if (!fullData) {
             // 1. Save search history
             if (req.user) {
                 await User.findByIdAndUpdate(req.user.id, {
@@ -90,7 +86,6 @@ exports.searchProducts = async (req, res) => {
                 const subcats = CATEGORY_MAP[normalizedQ];
                 const shuffled = [...subcats].sort(() => 0.5 - Math.random());
                 queriesToScrape = shuffled.slice(0, 2);
-                console.log(`[Category Mode] Mapped "${normalizedQ}" to queries: [${queriesToScrape.join(', ')}]`);
             }
 
             // 2. Run DB query + Scrapers simultaneously in parallel
@@ -101,13 +96,13 @@ exports.searchProducts = async (req, res) => {
                 ]);
 
             const amazonPromises = queriesToScrape.map(sq => 
-                withTimeout(scrapeAmazon(sq, isCategory).catch(e => { console.error('Amazon error:', e.message); return []; }), 12000)
+                withTimeout(scrapeAmazon(sq, isCategory).catch(e => { console.error('Amazon error:', e.message); return []; }), 45000)
             );
             const flipkartPromises = queriesToScrape.map(sq => 
-                withTimeout(scrapeFlipkart(sq, isCategory).catch(e => { console.error('Flipkart error:', e.message); return []; }), 12000)
+                withTimeout(scrapeFlipkart(sq, isCategory).catch(e => { console.error('Flipkart error:', e.message); return []; }), 45000)
             );
 
-            const [dbProducts, ...scraperResults] = await Promise.all([
+            const resultsSets = await Promise.all([
                 Product.find(
                     { $text: { $search: normalizedQ } },
                     { score: { $meta: 'textScore' } }
@@ -116,28 +111,31 @@ exports.searchProducts = async (req, res) => {
                 ...flipkartPromises
             ]);
 
+            const dbProducts = resultsSets[0];
             const numQueries = queriesToScrape.length;
-            const amazonRaw = scraperResults.slice(0, numQueries).flat().filter(Boolean);
-            const flipkartRaw = scraperResults.slice(numQueries, numQueries * 2).flat().filter(Boolean);
+            
+            const startAmz = 1;
+            const startFk = startAmz + numQueries;
 
-            const amazon   = amazonRaw   || [];
-            const flipkart = flipkartRaw || [];
+            const amazon = resultsSets.slice(startAmz, startAmz + numQueries).flat().filter(Boolean);
+            const flipkart = resultsSets.slice(startFk, startFk + numQueries).flat().filter(Boolean);
 
             if (amazon.length === 0 && flipkart.length === 0) {
-                console.warn('⚠️  Both scrapers returned 0 results or timed out.');
+                console.error('⚠️  Both scrapers returned 0 results or timed out.');
             }
 
-            // Required debug logs
-            console.log('Search:', q);
-            console.log('Amazon:', amazon.length);
-            console.log('Flipkart:', flipkart.length);
+            const dbMapped = dbProducts.map(p => ({ ...p._doc, source: formatSource(p.source) }));
+            const amazonTagged = amazon.map(p => ({ ...p, source: formatSource(p.source || 'Amazon'), _fromScraper: true }));
+            const flipkartTagged = flipkart.map(p => ({ ...p, source: formatSource(p.source || 'Flipkart'), _fromScraper: true }));
 
-            const dbMapped       = dbProducts.map(p => ({ ...p._doc,  source: formatSource(p.source) }));
-            const amazonTagged   = amazon.map(p   => ({ ...p, source: formatSource(p.source   || 'Amazon'),   _fromScraper: true }));
-            const flipkartTagged = flipkart.map(p  => ({ ...p, source: formatSource(p.source  || 'Flipkart'), _fromScraper: true }));
+            const flatResults = [
+                ...amazonTagged, ...flipkartTagged, ...dbMapped
+            ];
 
-            // Combine — NEVER overwrite one retailer with another
-            const allResults = mergeProducts([...amazonTagged, ...flipkartTagged, ...dbMapped]);
+            console.log(`[API Debug] Scrape finished. Amazon raw count: ${amazon.length}. Tagged count: ${amazonTagged.length}.`);
+
+            // 3. Group products using ProductMatcher
+            const allResults = groupProducts(flatResults);
 
             // 4. Rank + classify into sections
             let exactMatches = [], similar = [], related = [], ranked = [];
@@ -146,34 +144,7 @@ exports.searchProducts = async (req, res) => {
                 // Category mode: bypass strict token matching because generic products won't have "electronics" in the title.
                 // We shuffle the combined results so the user gets a diverse grid of Amazon + Flipkart subcategory items.
                 exactMatches = allResults.sort(() => 0.5 - Math.random());
-                
-                if (exactMatches.length === 0) {
-                    console.log(`[Category Mode] Scrapers completely failed for ${normalizedQ}. Injecting fallback products.`);
-                    const fallbacks = {
-                        'fashion': [
-                            { title: "Men Regular Fit Checkered Casual Shirt", price: 449, originalPrice: 1499, discount: 70, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/shirt/o/x/5/xl-wwsh9005f-wrogn-original-imahnzmfwwdzwbcs.jpeg?q=70", link: "https://www.flipkart.com/search?q=mens+shirts", source: "Flipkart", rating: 4.2 },
-                            { title: "Analog Watch For Men & Women", price: 1495, originalPrice: 2995, discount: 50, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/watch/z/c/5/-original-imaghg3tq3c72bzc.jpeg?q=70", link: "https://www.amazon.in/s?k=watches", source: "Amazon", rating: 4.5 },
-                            { title: "Running Shoes For Men", price: 2199, originalPrice: 4499, discount: 51, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/shoe/p/e/g/8-393288-8-puma-black-white-original-imaguz3ghfng2ghm.jpeg?q=70", link: "https://www.amazon.in/s?k=mens+shoes", source: "Amazon", rating: 4.3 },
-                            { title: "Polarized Aviator Sunglasses", price: 899, originalPrice: 2499, discount: 64, image: "https://m.media-amazon.com/images/I/41D5jI5b2XL._AC_UL480_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=sunglasses", source: "Amazon", rating: 4.1 },
-                            { title: "Women A-line Knee Length Dress", price: 699, originalPrice: 1999, discount: 65, image: "https://rukminim2.flixcart.com/image/612/612/xif0q/dress/3/j/8/m-awd-19-a-shree-shital-apparel-original-imagmsyhzkhvhyz6.jpeg?q=70", link: "https://www.flipkart.com/search?q=womens+dresses", source: "Flipkart", rating: 4.0 },
-                            { title: "Genuine Leather Wallet For Men", price: 499, originalPrice: 1299, discount: 61, image: "https://m.media-amazon.com/images/I/81oPZ0kY1iL._AC_UL480_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=mens+wallets", source: "Amazon", rating: 4.4 }
-                        ],
-                        'electronics': [
-                            { title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones", price: 26990, originalPrice: 34990, discount: 22, image: "https://m.media-amazon.com/images/I/61vJtKbAssL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=headphones", source: "Amazon", rating: 4.6 },
-                            { title: "Apple iPhone 15 (128 GB) - Black", price: 65999, originalPrice: 79900, discount: 17, image: "https://m.media-amazon.com/images/I/71657TiFeHL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=iphone+15", source: "Amazon", rating: 4.8 },
-                            { title: "ASUS Vivobook 15 Core i3 12th Gen Laptop", price: 35990, originalPrice: 56990, discount: 36, image: "https://rukminim2.flixcart.com/image/312/312/xif0q/computer/q/e/z/-original-imagpxgqjkwzxmrq.jpeg?q=70", link: "https://www.flipkart.com/search?q=laptops", source: "Flipkart", rating: 4.3 }
-                        ],
-                        'appliances': [
-                            { title: "Samsung 189 L Direct Cool Single Door Refrigerator", price: 15490, originalPrice: 22999, discount: 32, image: "https://rukminim2.flixcart.com/image/312/312/xif0q/refrigerator-new/w/x/z/-original-imagnj4fggtzg9c5.jpeg?q=70", link: "https://www.flipkart.com/search?q=refrigerator", source: "Flipkart", rating: 4.4 },
-                            { title: "LG 7 Kg 5 Star Fully-Automatic Front Load Washing Machine", price: 28990, originalPrice: 39990, discount: 27, image: "https://m.media-amazon.com/images/I/71d1AItn5IL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=washing+machine", source: "Amazon", rating: 4.5 },
-                            { title: "Voltas 1.5 Ton 3 Star Inverter Split AC", price: 32990, originalPrice: 62990, discount: 47, image: "https://m.media-amazon.com/images/I/41-Nhy5HheL._AC_UY327_FMwebp_QL65_.jpg", link: "https://www.amazon.in/s?k=air+conditioner", source: "Amazon", rating: 4.2 }
-                        ]
-                    };
-                    exactMatches = fallbacks[normalizedQ] || fallbacks['fashion'];
-                }
-                
                 ranked = exactMatches;
-                console.log(`[Category Mode] Bypassed rankResults, displaying ${exactMatches.length} items as Exact.`);
             } else {
                 const rankObj = rankResults(allResults, normalizedQ);
                 exactMatches = rankObj.exactMatches;
@@ -182,13 +153,10 @@ exports.searchProducts = async (req, res) => {
                 ranked = rankObj.all;
             }
 
-            // Per-retailer splits
-            const amazonFinal   = ranked.filter(p => formatSource(p.source) === 'Amazon');
-            const flipkartFinal = ranked.filter(p => formatSource(p.source) === 'Flipkart');
+            const amazonFinal   = ranked.filter(p => formatSource(p.source) === 'Amazon' || (p.prices && p.prices.some(pr => pr.retailer === 'Amazon')));
+            const flipkartFinal = ranked.filter(p => formatSource(p.source) === 'Flipkart' || (p.prices && p.prices.some(pr => pr.retailer === 'Flipkart')));
 
-            console.log('Final:', ranked.length);
-            console.log(`  → Exact: ${exactMatches.length} | Similar: ${similar.length} | Related: ${related.length}`);
-            console.log(`  → Amazon: ${amazonFinal.length} | Flipkart: ${flipkartFinal.length}\n`);
+            console.log(`[API Debug] Ranking finished. Amazon final count: ${amazonFinal.length}. Ranked total: ${ranked.length}. exact: ${exactMatches.length}`);
 
             // 5. Build and cache the FULL (unpaginated) response
             fullData = {
@@ -216,13 +184,11 @@ exports.searchProducts = async (req, res) => {
         const pageSlice    = allRanked.slice(skip, skip + limit);
 
         // Re-classify paginated slice into sections
-        const exactSet   = new Set(allExact.map(p => p.url));
-        const similarSet = new Set(allSimilar.map(p => p.url));
-        const pageExact   = pageSlice.filter(p => exactSet.has(p.url));
-        const pageSimilar = pageSlice.filter(p => similarSet.has(p.url));
-        const pageRelated = pageSlice.filter(p => !exactSet.has(p.url) && !similarSet.has(p.url));
-
-        console.log(`📄 Page ${safePage}/${totalPages}: items ${skip + 1}–${Math.min(skip + limit, totalResults)} of ${totalResults}`);
+        const exactSet   = new Set(allExact.map(p => p.id));
+        const similarSet = new Set(allSimilar.map(p => p.id));
+        const pageExact   = pageSlice.filter(p => exactSet.has(p.id));
+        const pageSimilar = pageSlice.filter(p => similarSet.has(p.id));
+        const pageRelated = pageSlice.filter(p => !exactSet.has(p.id) && !similarSet.has(p.id));
 
         res.json({
             // Paginated sections
@@ -231,8 +197,8 @@ exports.searchProducts = async (req, res) => {
             related:      pageRelated,
             results:      pageSlice,
             // Per-retailer (filtered to this page)
-            amazon:       pageSlice.filter(p => formatSource(p.source) === 'Amazon'),
-            flipkart:     pageSlice.filter(p => formatSource(p.source) === 'Flipkart'),
+            amazon:       pageSlice.filter(p => formatSource(p.source) === 'Amazon' || (p.prices && p.prices.some(pr => pr.retailer === 'Amazon'))),
+            flipkart:     pageSlice.filter(p => formatSource(p.source) === 'Flipkart' || (p.prices && p.prices.some(pr => pr.retailer === 'Flipkart'))),
             // Pagination metadata (Requirement 1)
             page:         safePage,
             limit,
