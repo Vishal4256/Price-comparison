@@ -212,10 +212,25 @@ const scrapeAmazon = async (query, isCategory = false) => {
         const rejected = [];
 
         try {
-            browser = await puppeteer.launch({
+            const launchOptions = {
                 headless: 'new',
                 args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu', '--disable-dev-shm-usage']
-            });
+            };
+
+            if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+                launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+            } else if (process.env.NODE_ENV === 'production' || process.env.NODE_ENV === 'prod') {
+                const fs = require('fs');
+                if (fs.existsSync('/usr/bin/google-chrome-stable')) {
+                    launchOptions.executablePath = '/usr/bin/google-chrome-stable';
+                } else if (fs.existsSync('/usr/bin/chromium-browser')) {
+                    launchOptions.executablePath = '/usr/bin/chromium-browser';
+                } else if (fs.existsSync('/usr/bin/chromium')) {
+                    launchOptions.executablePath = '/usr/bin/chromium';
+                }
+            }
+
+            browser = await puppeteer.launch(launchOptions);
             const page = await browser.newPage();
             
             // Set realistic browser headers and viewport
