@@ -28,7 +28,8 @@ Start the frontend:
 ```bash
 npm run dev
 ```
-
+Live:
+https://pricecomparison512.vercel.app/
 
 ## Key Features
 - **Scraping**: Uses Puppeteer with Stealth plugin to fetch prices from Amazon, Flipkart, and eBay.
