@@ -537,23 +537,7 @@ export default function Dashboard() {
             <p className="text-sm text-slate-500 font-medium mb-1">Last Login</p>
             <p className="font-medium text-slate-900">{user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'N/A'}</p>
           </div>
-          <div>
-            <p className="text-sm text-slate-500 font-medium mb-1">Email Verification</p>
-            <p className="font-medium text-slate-900 flex items-center gap-2">
-              {user.isEmailVerified ? (
-                <><Check className="w-4 h-4 text-green-500" /> Verified</>
-              ) : (
-                <div className="flex items-center gap-3">
-                  <span className="flex items-center gap-1 text-orange-500">
-                    <AlertCircle className="w-4 h-4" /> Unverified
-                  </span>
-                  <button onClick={handleResendVerification} className="text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded hover:bg-orange-200">
-                    Resend Email
-                  </button>
-                </div>
-              )}
-            </p>
-          </div>
+          {/* Removing Email Verification Section per user request */}
         </div>
 
         {/* Change Password */}
