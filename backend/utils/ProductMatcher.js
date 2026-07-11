@@ -1,4 +1,4 @@
-const { parseProductTitle, parseQuery } = require('./productParser');
+const { parseProductTitle, parseQuery, normalizeProductTitle } = require('./productParser');
 
 const ACCESSORY_KEYWORDS = [
     "case", "cover", "back panel", "screen guard", "tempered", 
@@ -27,24 +27,8 @@ function extractColor(title) {
 }
 
 function normalizeProduct(title) {
-    const parsed = parseProductTitle(title);
-    
-    // Construct the normalized key based on brand, series, model, color, storage
-    const parts = [
-        parsed.brand,
-        parsed.series,
-        parsed.model,
-        parsed.color,
-        parsed.storage
-    ].filter(Boolean);
-    
-    if (parts.length === 0) {
-        // Fallback if parsing fails
-        return title.toLowerCase().replace(/[^a-z0-9]/g, '');
-    }
-
-    // e.g. apple_iphone_15_black_128gb
-    return parts.join('_').replace(/\s+/g, '_').toLowerCase();
+    // We now use the strict normalizeProductTitle from productParser
+    return normalizeProductTitle(title).replace(/\s+/g, '_');
 }
 
 /**
@@ -138,7 +122,7 @@ function groupProducts(products) {
             groups[key] = {
                 id: key,
                 title: p.title, // Use the title of the first product in the group as base
-                image: p.image,
+                image: p.image, // Will update this at the end based on lowest price
                 rating: p.rating,
                 prices: [],
                 parsed: parseProductTitle(p.title),
@@ -161,12 +145,14 @@ function groupProducts(products) {
                 existingOffer.price = itemPrice;
                 existingOffer.originalPrice = itemOriginal;
                 existingOffer.url = p.url;
+                existingOffer.image = p.image;
             } else {
                 groups[key].prices.push({
                     retailer: retailerName,
                     price: itemPrice,
                     originalPrice: itemOriginal,
                     url: p.url,
+                    image: p.image,
                     availability: p.availability || true
                 });
             }
@@ -182,6 +168,10 @@ function groupProducts(products) {
         if (lowestOffer) {
             group.lowestPrice = lowestOffer.price;
             group.lowestRetailer = lowestOffer.retailer;
+            // Replace image with lowest price image
+            if (lowestOffer.image) {
+                group.image = lowestOffer.image;
+            }
             
             // Calculate max savings: Highest original price (or highest price) minus lowest price
             const maxPrice = Math.max(...group.prices.map(p => p.price || p.originalPrice || 0));

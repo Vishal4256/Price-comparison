@@ -8,8 +8,20 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     searchHistory: [{
         query: { type: String, required: true },
+        resultsFound: { type: Number, default: 0 },
         timestamp: { type: Date, default: Date.now }
     }],
+    phone: { type: String, default: '' },
+    profilePicture: { type: String, default: '' },
+    isEmailVerified: { type: Boolean, default: false },
+    verificationToken: String,
+    verificationTokenExpire: Date,
+    lastLogin: { type: Date, default: Date.now },
+    tokenVersion: { type: Number, default: 0 },
+    notificationPreferences: {
+        email: { type: Boolean, default: true },
+        browser: { type: Boolean, default: true }
+    },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
 }, { timestamps: true });

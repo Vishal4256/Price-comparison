@@ -268,7 +268,7 @@ export default function SearchPage() {
     const totalVisible = filteredExact.length + filteredSimilar.length + filteredRelated.length;
 
     const ResultGrid = ({ products }) => (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+        <div className="grid gap-[24px] mb-6" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
             {products.map((product, idx) => (
                 <ProductCard key={product.url ? `${product.url}-${idx}` : idx} product={product} />
             ))}

@@ -117,4 +117,33 @@ function parseQuery(normalizedQuery) {
     return parseProductTitle(normalizedQuery);
 }
 
-module.exports = { parseProductTitle, parseQuery };
+function normalizeProductTitle(title) {
+    if (!title) return '';
+    const parsed = parseProductTitle(title);
+    
+    // Strict grouping: brand + model + storage + color
+    const parts = [];
+    if (parsed.brand) parts.push(parsed.brand);
+    if (parsed.model) parts.push(parsed.model);
+    if (parsed.storage) parts.push(parsed.storage);
+    if (parsed.color) parts.push(parsed.color);
+    
+    if (parts.length > 0) {
+        return parts.join(' ').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+    
+    // Fallback if parsing completely fails (unlikely for phones, but possible for generic items)
+    let normalized = title.toLowerCase();
+    normalized = normalized.replace(/[()[\]{},]/g, ' ');
+    normalized = normalized.replace(/(\d+)\s*(gb|tb|mb)\b/gi, '$1$2');
+    const safeFluffWords = [
+        'smartphone', 'mobile', 'phone', 'new launch', 'latest', 'renewed', 'refurbished',
+        'bestseller', 'sale', 'deal', 'offer', 'discount', 'free delivery'
+    ];
+    for (const fw of safeFluffWords) {
+        normalized = normalized.replace(new RegExp(`\\b${fw}\\b`, 'gi'), ' ');
+    }
+    return normalized.replace(/\s+/g, ' ').trim();
+}
+
+module.exports = { parseProductTitle, parseQuery, normalizeProductTitle };

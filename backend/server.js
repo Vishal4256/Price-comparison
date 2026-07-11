@@ -32,6 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/products', require('./routes/productRoutes'));
 app.use('/api/price-history', require('./routes/priceHistoryRoutes'));
 app.use('/api/prices', require('./routes/priceRoutes'));
@@ -39,6 +40,7 @@ app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 app.use('/api/alerts', require('./routes/alertRoutes'));
 app.use('/api/prediction', require('./routes/predictionRoutes'));
 app.use('/api/admin', require('./routes/adminRoutes'));
+app.use('/api/stats', require('./routes/statsRoutes'));
 
 // Health check
 app.get('/api/health', (req, res) => {

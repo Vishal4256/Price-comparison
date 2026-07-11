@@ -36,4 +36,36 @@ const sendPriceAlert = async (email, productTitle, currentPrice, targetPrice, pr
     }
 };
 
-module.exports = { sendPriceAlert };
+const sendVerificationEmail = async (email, verificationToken) => {
+    // Determine the frontend URL based on the environment
+    // For local dev, usually localhost:5173
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const verifyUrl = `${frontendUrl}/verify-email/${verificationToken}`;
+
+    const mailOptions = {
+        from: `"PriceWise" <${process.env.EMAIL_USER}>`,
+        to: email,
+        subject: `Verify your PriceWise Account`,
+        html: `
+            <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                <h2 style="color: #0B1E36;">Welcome to PriceWise!</h2>
+                <p>Please click the button below to verify your email address and secure your account.</p>
+                <div style="margin: 30px 0; text-align: center;">
+                    <a href="${verifyUrl}" style="display: inline-block; background: #0B1E36; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">Verify Email Address</a>
+                </div>
+                <p style="color: #64748b; font-size: 14px;">If the button doesn't work, copy and paste this link into your browser:</p>
+                <p style="color: #2563eb; font-size: 14px; word-break: break-all;">${verifyUrl}</p>
+                <p style="margin-top: 20px; color: #94a3b8; font-size: 12px;">This link will expire in 24 hours.</p>
+            </div>
+        `
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Verification email sent to ${email}`);
+    } catch (error) {
+        console.error('Error sending verification email:', error);
+    }
+};
+
+module.exports = { sendPriceAlert, sendVerificationEmail };

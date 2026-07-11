@@ -119,13 +119,22 @@ cron.schedule('0 0 * * *', async () => {
                     });
 
                     for (const alert of alerts) {
-                        await sendPriceAlert(
-                            alert.email, 
-                            product.title, 
-                            product.currentPrice, 
-                            alert.targetPrice, 
-                            product.url
-                        );
+                        if (alert.active === false) continue;
+
+                        if (alert.emailNotification) {
+                            await sendPriceAlert(
+                                alert.email, 
+                                product.title, 
+                                product.currentPrice, 
+                                alert.targetPrice, 
+                                product.url
+                            );
+                        }
+
+                        if (alert.browserNotification) {
+                            // In a real app with WebPush/FCM, trigger push payload here
+                            console.log(`[Browser Push] Triggering notification for ${alert.userId} on ${product.title}`);
+                        }
                     }
                 }
 

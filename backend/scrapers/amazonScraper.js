@@ -210,6 +210,7 @@ const scrapeAmazon = async (query, isCategory = false) => {
         let browser = null;
         const accepted = [];
         const rejected = [];
+        let finalProducts = [];
 
         try {
             const launchOptions = {
@@ -246,7 +247,6 @@ const scrapeAmazon = async (query, isCategory = false) => {
                 if (accepted.length >= 12) break;
 
                 const pageUrl = pageNum === 1 ? searchUrl : `${searchUrl}&page=${pageNum}`;
-                console.log(`[Amazon Debug] Fetching search URL (Page ${pageNum}): ${pageUrl}`);
                 
                 // Add a random delay to avoid blocking
                 const delay = ms => new Promise(res => setTimeout(res, ms));
@@ -290,7 +290,6 @@ const scrapeAmazon = async (query, isCategory = false) => {
 
                 // ── Step 1: Collect raw results ──────────────────────────────────────
                 let resultCount = $('div[data-component-type="s-search-result"]').length;
-                console.log(`[Amazon Debug] Loaded HTML for Page ${pageNum}. Found ${resultCount} search result divs.`);
                 
                 $('div[data-component-type="s-search-result"]').each((i, el) => {
                     if (rawProducts.length >= 60) return false;
@@ -325,12 +324,6 @@ const scrapeAmazon = async (query, isCategory = false) => {
                     rawProducts.push({ title, currentPrice, originalPrice, discountPercentage, rating, image, url, source: 'Amazon' });
                 });
 
-                console.log(`[Amazon Debug] Number of products extracted on Page ${pageNum}: ${rawProducts.length}`);
-                if (rawProducts.length > 0) {
-                    console.log(`[Amazon Debug] First product title on Page ${pageNum}: ${rawProducts[0].title}`);
-                    console.log(`[Amazon Debug] First product price on Page ${pageNum}: ${rawProducts[0].currentPrice}`);
-                }
-
                 // ── Step 2: Validate — strict AND filtering ───────────────────────────
                 for (const p of rawProducts) {
                     let keep = true;
@@ -346,7 +339,6 @@ const scrapeAmazon = async (query, isCategory = false) => {
                         const validation = validateProduct(p.title, parsedQuery, primaryModelToken, requiredModelTokens, query);
                         keep = validation.keep;
                         reason = validation.reason;
-                        if (!keep) console.log(`[Amazon Debug] Rejected: "${p.title}" - Reason: ${reason}`);
                     }
 
                     // To prevent duplicates across pages
@@ -366,13 +358,69 @@ const scrapeAmazon = async (query, isCategory = false) => {
                 }
             }
 
+            // ── Step 3: Visit Product Pages for Accurate Pricing ───────────────────────────
+            const itemsToFetch = accepted.slice(0, 5); // Limit to top 5 to avoid extreme delays
+            
+            for (const p of itemsToFetch) {
+                try {
+                    await page.goto(p.url, { waitUntil: 'networkidle2', timeout: 60000 });
+                    
+                    const selectors = [
+                        '#corePriceDisplay_desktop_feature_div .a-price .a-offscreen',
+                        '#corePrice_feature_div .a-price .a-offscreen',
+                        '#priceblock_ourprice',
+                        '#priceblock_dealprice',
+                        '.a-price .a-offscreen'
+                    ];
+
+                    let extractedPrice = null;
+                    let cleanedPrice = 0;
+                    let usedSelector = '';
+
+                    for (const selector of selectors) {
+                        try {
+                            const rawPrice = await page.$eval(selector, el => el.textContent.trim());
+                            if (rawPrice) {
+                                // "₹27,290.00" -> 27290
+                                // Remove decimal part, then keep digits
+                                const noDecimal = rawPrice.split('.')[0];
+                                const cleanedStr = noDecimal.replace(/[^\d]/g, '');
+                                const num = parseInt(cleanedStr, 10);
+                                
+                                if (!isNaN(num) && num >= 100) {
+                                    extractedPrice = rawPrice;
+                                    cleanedPrice = num;
+                                    usedSelector = selector;
+                                    break;
+                                }
+                            }
+                        } catch (err) {
+                            // Selector not found or error, try next
+                        }
+                    }
+
+                    if (cleanedPrice > 0) {
+                        finalProducts.push({
+                            title: p.title,
+                            price: cleanedPrice,
+                            image: p.image,
+                            retailer: 'Amazon',
+                            url: p.url,
+                            rating: p.rating
+                        });
+                    }
+                } catch (err) {
+                    console.error(`[Amazon] Failed to fetch product page ${p.url}: ${err.message}`);
+                }
+            }
+
         } catch (e) {
             console.error('[Amazon] ⚠️ Puppeteer fetch error:', e.message);
         } finally {
             if (browser) await browser.close();
         }
 
-        return accepted;
+        return finalProducts;
 
     } catch (error) {
         console.warn('[Amazon] ❌ Scrape Error:', error.message);

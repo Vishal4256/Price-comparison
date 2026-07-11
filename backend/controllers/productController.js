@@ -10,6 +10,7 @@ const Alert = require('../models/Alert');
 
 const { rankResults } = require('../utils/searchEngine');
 const { normalizeQuery } = require('../utils/queryNormalizer');
+const ProductService = require('../services/ProductService');
 
 // --- Simple in-memory cache (5-minute TTL) ---
 const searchCache = new Map();
@@ -60,13 +61,6 @@ exports.searchProducts = async (req, res) => {
         let fullData = getCached(cacheKey);
 
         if (!fullData) {
-            // 1. Save search history
-            if (req.user) {
-                await User.findByIdAndUpdate(req.user.id, {
-                    $push: { searchHistory: { $each: [{ query: q }], $slice: -10 } }
-                }).catch(() => {});
-            }
-
             // ── Category Mapping Logic ──
             const CATEGORY_MAP = {
                 'electronics': ['smartphones', 'laptops', 'smartwatches', 'earbuds', 'tablets'],
@@ -132,8 +126,6 @@ exports.searchProducts = async (req, res) => {
                 ...amazonTagged, ...flipkartTagged, ...dbMapped
             ];
 
-            console.log(`[API Debug] Scrape finished. Amazon raw count: ${amazon.length}. Tagged count: ${amazonTagged.length}.`);
-
             // 3. Group products using ProductMatcher
             const allResults = groupProducts(flatResults);
 
@@ -155,8 +147,6 @@ exports.searchProducts = async (req, res) => {
 
             const amazonFinal   = ranked.filter(p => formatSource(p.source) === 'Amazon' || (p.prices && p.prices.some(pr => pr.retailer === 'Amazon')));
             const flipkartFinal = ranked.filter(p => formatSource(p.source) === 'Flipkart' || (p.prices && p.prices.some(pr => pr.retailer === 'Flipkart')));
-
-            console.log(`[API Debug] Ranking finished. Amazon final count: ${amazonFinal.length}. Ranked total: ${ranked.length}. exact: ${exactMatches.length}`);
 
             // 5. Build and cache the FULL (unpaginated) response
             fullData = {
@@ -189,6 +179,13 @@ exports.searchProducts = async (req, res) => {
         const pageExact   = pageSlice.filter(p => exactSet.has(p.id));
         const pageSimilar = pageSlice.filter(p => similarSet.has(p.id));
         const pageRelated = pageSlice.filter(p => !exactSet.has(p.id) && !similarSet.has(p.id));
+
+        // Save search history with results count if page 1
+        if (req.user && page === 1) {
+            await User.findByIdAndUpdate(req.user.id, {
+                $push: { searchHistory: { $each: [{ query: q, resultsFound: totalResults }], $slice: -100 } }
+            }).catch(() => {});
+        }
 
         res.json({
             // Paginated sections
@@ -370,5 +367,26 @@ exports.getPublicStats = async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getFeaturedProducts = async (req, res) => {
+    try {
+        const featured = await ProductService.getFeaturedProducts();
+        
+        if (!featured || featured.length === 0) {
+            return res.status(503).json({
+                success: false,
+                message: "Price currently unavailable"
+            });
+        }
+
+        res.json(featured);
+    } catch (error) {
+        console.error("Error in getFeaturedProducts:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Price currently unavailable" 
+        });
     }
 };

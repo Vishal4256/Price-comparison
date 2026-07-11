@@ -7,21 +7,22 @@ const {
     getAdminStats,
     getSuggestions,
     getSimilarProducts,
-    getPublicStats
+    getPublicStats,
+    getFeaturedProducts
 } = require('../controllers/productController');
 const router = express.Router();
-const { optionalProtect } = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
-router.get('/search', optionalProtect, searchProducts);
-router.get('/suggestions', optionalProtect, getSuggestions);
+router.get('/search', protect, searchProducts);
+router.get('/suggestions', protect, getSuggestions);
 
+router.get('/featured', getFeaturedProducts);
 router.get('/trending', getTrendingDeals);
 router.get('/admin/stats', getAdminStats);
 router.get('/public-stats', getPublicStats);
-router.get('/similar/:id', getSimilarProducts);
-router.get('/:id', getProductDetails);
-router.post('/save', saveProduct);
-
+router.get('/similar/:id', protect, getSimilarProducts);
+router.get('/:id', protect, getProductDetails);
+router.post('/save', protect, saveProduct);
 
 module.exports = router;
 

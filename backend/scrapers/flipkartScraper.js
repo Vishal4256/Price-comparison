@@ -20,12 +20,13 @@ const getHeaders = () => ({
 });
 
 /**
- * Parse a price string like "₹54,900" → 54900. Returns 0 on failure.
+ * Parse a price string like "₹54,900.00" → 54900. Returns 0 on failure.
  */
 const parsePrice = (str) => {
     if (!str) return 0;
-    const cleaned = str.replace(/[₹,\s]/g, '').trim();
-    const num = parseFloat(cleaned.match(/[\d.]+/)?.[0] || '');
+    const noDecimal = str.split('.')[0];
+    const cleaned = noDecimal.replace(/[^\d]/g, '');
+    const num = parseInt(cleaned, 10);
     return isNaN(num) ? 0 : num;
 };
 
@@ -38,49 +39,23 @@ function norm(str) {
 
 /**
  * True if `needle` appears as a standalone word in `haystack`.
- *
- * Stricter boundary check:
- *   - "15" MUST NOT match "15.40 cm" (decimal) or "15e" (alphanumeric suffix)
- *   - "15" MUST match "iphone 15 pro" or "iphone 15 (128 GB)"
  */
 function tokenPresent(haystack, needle) {
     if (!haystack || !needle) return false;
     const h = norm(haystack);
     const n = norm(needle).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    // Right boundary excludes dot — prevents "15" matching "15.40 cm"
     return new RegExp(`(?:^|[^a-z0-9])${n}(?:[^a-z0-9.]|$)`).test(h);
 }
 
-/**
- * Extract the primary numeric model token from a parsed query.
- *
- * Fix: the old code took model.split(' ')[0] which for "iphone 15" returned
- * "iphone" — no digit — silently skipping the model-number check.
- * Now we scan ALL tokens and return the FIRST one containing a digit.
- *
- * Examples:
- *   model = "iphone 15"        → "15"
- *   model = "iphone 15 pro max" → "15"
- *   model = "galaxy s24 ultra"  → "s24"
- *   model = "iphone"            → null  (no digit → no enforcement)
- */
 function extractQueryModel(parsedQuery) {
     const model = (parsedQuery.model || '').trim().toLowerCase();
     if (!model) return null;
     for (const token of model.split(' ')) {
         if (token && /\d/.test(token)) return token;
     }
-    return null; // no numeric model → no enforcement
+    return null;
 }
 
-/**
- * Extract ALL required model tokens (AND-logic enforcement).
- *
- * Returns every token from the first numeric token onwards.
- * e.g. "iphone 15 pro" → ["15", "pro"]  (both must be present in the title)
- *      "iphone 15"      → ["15"]
- *      "iphone"         → []
- */
 function extractRequiredModelTokens(parsedQuery) {
     const model = (parsedQuery.model || '').trim().toLowerCase();
     if (!model) return [];
@@ -90,18 +65,6 @@ function extractRequiredModelTokens(parsedQuery) {
     return tokens.slice(firstNumericIdx);
 }
 
-/**
- * Validate a scraped product title against the search query.
- *
- * Layers (AND logic — ALL must pass):
- *  1. Series check  — e.g. "iphone" must be a whole word in the title
- *  2. Model tokens  — every required token (e.g. "15", "pro") must be present
- *  3. Brand check   — product brand must match query brand (if specified)
- *
- * Key fix: "iphone 15" query now correctly rejects "Apple iPhone 17e" because
- * "15" is not in that title. Previously this was skipped because primaryModelToken
- * was "iphone" (no digit), causing the check to be bypassed.
- */
 function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTokens, rawQuery) {
     const titleNorm = norm(title);
     const parsedProduct = parseProductTitle(title);
@@ -117,11 +80,6 @@ function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTok
             return { keep: false, reason: `series "${qSeries}" not in title` };
         }
     }
-
-    // ── 2. Model token checks (strict AND) ───────────────────────────────────
-    // Removed strict numeric check at the scraper level to allow the relevance 
-    // engine (ProductMatcher) to handle closest matches (e.g. newer models when 
-    // the requested model is out of stock).
 
     // ── 3. Brand check ───────────────────────────────────────────────────────
     if (parsedQuery.brand) {
@@ -139,67 +97,63 @@ function validateProduct(title, parsedQuery, primaryModelToken, requiredModelTok
 }
 
 // ─── Price extraction using SCOPED DOM selectors ───────────────────────────────
-/**
- * Flipkart search-page price DOM structure (verified live 2025-06):
- *
- *   div[data-id="..."]                ← product card
- *     div.QiMO5r                      ← price container (selling price + MRP)
- *       div.hZ3P6w.DeU9vF             ← ✅ SELLING PRICE (₹54,900)
- *       div.kRYCnD.gxR4EY            ← MRP strikethrough (₹59,900)
- *     div.hx1EGN                      ← exchange offer container ← DO NOT READ
- *       div.HZ0E6r.Rm9_cy            ← ❌ Exchange offer price (₹38,300)
- *
- * Strategy:
- *  1. Find the price container div (look for common parent of selling+MRP prices).
- *  2. Extract the FIRST price inside that container → selling price.
- *  3. Extract the SECOND price (if present, usually struck-through) → MRP.
- *  4. NEVER read from the exchange/bank-offer container (hx1EGN).
- *
- * Since Flipkart uses random/hashed class names that change across deployments,
- * we cannot rely on a single hardcoded class. Instead we use a STRUCTURAL
- * approach: within the product card, find the outermost div that contains
- * EXACTLY the first ₹ price. That is the selling price section.
- * The exchange offer is always listed AFTER the main price section with
- * the text "Upto ... Off on Exchange" or "Exchange Offer".
- */
 
 /**
  * Extract selling price and MRP from a product card element.
- *
  * Returns { currentPrice: number, originalPrice: number }
  */
 const extractPrices = ($, el) => {
-    // Approach: collect ALL leaf text nodes containing ₹ in document order.
-    // The first price is always the selling price.
-    // The second price (if higher than first) is MRP.
-    // Any subsequent price(s) are exchange/EMI prices — IGNORE them.
+    let currentPrice = 0;
+    const selectors = ['._30jeq3', '.Nx9bqj', "div[class*='price']"];
     
-    const priceElements = [];
+    // Priority selector checking for actual selling price
+    for (const sel of selectors) {
+        // We find all matches of this selector in the element
+        const matches = $(el).find(sel);
+        for (let i = 0; i < matches.length; i++) {
+            const text = $(matches[i]).text().trim();
+            if (text && text.includes('₹')) {
+                const price = parsePrice(text);
+                // The main selling price is usually the first valid one we encounter that is > 100
+                // and we ignore exchange offers text because we already scoped the HTML before passing it here
+                if (price > 100) {
+                    currentPrice = price;
+                    break;
+                }
+            }
+        }
+        if (currentPrice > 0) break;
+    }
+
+    // Fallback: collect ALL leaf text nodes containing ₹ in document order.
+    if (currentPrice === 0) {
+        const priceElements = [];
+        $(el).find('div, span').each((i, child) => {
+            const ownText = $(child).clone().children().remove().end().text().trim();
+            if (ownText && ownText.includes('₹') && ownText.length < 30) {
+                const price = parsePrice(ownText);
+                if (price > 100) {
+                    priceElements.push({ price, text: ownText, el: child });
+                }
+            }
+        });
+        if (priceElements.length > 0) {
+            currentPrice = priceElements[0].price;
+        }
+    }
+
+    let originalPrice = currentPrice;
     
-    $(el).find('div, span').each((i, child) => {
-        // Only leaf-like elements (no child divs/spans with their own ₹)
-        const ownText = $(child).clone().children().remove().end().text().trim();
-        if (ownText && ownText.includes('₹') && ownText.length < 30) {
-            const price = parsePrice(ownText);
-            if (price > 100) {
-                priceElements.push({ price, text: ownText, el: child });
+    // Attempt to extract MRP from struck-through text if it exists
+    $(el).find('div, span, strike, s').each((i, child) => {
+        const text = $(child).text().trim();
+        if (text.includes('₹')) {
+            const price = parsePrice(text);
+            if (price > currentPrice) {
+                originalPrice = Math.max(originalPrice, price);
             }
         }
     });
-
-    if (priceElements.length === 0) return { currentPrice: 0, originalPrice: 0 };
-
-    // First price in DOM order = selling price (NOT the minimum price)
-    const currentPrice = priceElements[0].price;
-
-    // Second price = MRP (if exists and is higher)
-    let originalPrice = currentPrice;
-    if (priceElements.length >= 2) {
-        const second = priceElements[1].price;
-        if (second > currentPrice) {
-            originalPrice = second;
-        }
-    }
 
     return { currentPrice, originalPrice };
 };

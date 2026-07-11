@@ -5,7 +5,9 @@ const alertSchema = new mongoose.Schema({
     productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     targetPrice: { type: Number, required: true },
     active: { type: Boolean, default: true },
-    email: { type: String, required: true },
+    emailNotification: { type: Boolean, default: true },
+    browserNotification: { type: Boolean, default: true },
+    email: { type: String }, // optional, fall back to user email
 }, { timestamps: true });
 
 module.exports = mongoose.model('Alert', alertSchema);

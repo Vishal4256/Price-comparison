@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAlert, getUserAlerts, deleteAlert, subscribeNewsletter } = require('../controllers/alertController');
+const { createAlert, getUserAlerts, deleteAlert, updateAlert, subscribeNewsletter } = require('../controllers/alertController');
 const { protect } = require('../utils/authMiddleware');
 const router = express.Router();
 
@@ -10,6 +10,7 @@ router.post('/subscribe', subscribeNewsletter);
 router.use(protect);
 router.post('/', createAlert);
 router.get('/', getUserAlerts);
+router.put('/:id', updateAlert);
 router.delete('/:id', deleteAlert);
 
 module.exports = router;

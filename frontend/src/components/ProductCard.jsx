@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Star, ShoppingCart, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 
 const SOURCE_STYLE = {
@@ -11,13 +12,26 @@ const getStyle = (source) =>
 
 export default function ProductCard({ product }) {
     const [expanded, setExpanded] = useState(false);
+    const navigate = useNavigate();
+    
     if (!product) return null;
+
+    const handleLinkClick = (e) => {
+        if (!localStorage.getItem('token')) {
+            e.preventDefault();
+            navigate(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+        }
+    };
 
     // Backward compatibility or flat products
     const isGrouped = product.prices && product.prices.length > 0;
-    const lowestPrice = isGrouped ? product.lowestPrice : (product.currentPrice || product.price || 0);
-    const lowestRetailer = isGrouped ? product.lowestRetailer : product.source;
-    const savings = isGrouped ? product.savings : (product.originalPrice - lowestPrice > 0 ? product.originalPrice - lowestPrice : 0);
+    const lowestPrice = isGrouped ? product.lowestPrice : (product.lowestPrice || product.currentPrice || product.price || 0);
+    const lowestRetailer = isGrouped ? product.lowestRetailer : (product.retailer || product.source);
+    const savings = isGrouped ? product.savings : (product.savings || (product.originalPrice - lowestPrice > 0 ? product.originalPrice - lowestPrice : 0));
+    const targetUrl = isGrouped ? (product.url || (product.prices[0] && product.prices[0].url)) : (product.productUrl || product.url);
+
+    const isValidPrice = !isNaN(lowestPrice) && lowestPrice > 0;
+    const isValidUrl = targetUrl && typeof targetUrl === 'string' && targetUrl.startsWith('http');
 
     const style = getStyle(lowestRetailer);
 
@@ -39,11 +53,12 @@ export default function ProductCard({ product }) {
             </div>
 
             {/* Product image */}
-            <div className="relative p-6 h-48 sm:h-52 overflow-hidden bg-gray-50 flex items-center justify-center border-b border-gray-100 shrink-0">
+            <div className="relative p-6 w-full aspect-square overflow-hidden bg-gray-50 flex items-center justify-center border-b border-gray-100 shrink-0">
                 <img
                     src={product.image || 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80'}
                     alt={product.title}
-                    className="max-h-full object-contain mix-blend-multiply relative z-10 group-hover:scale-105 transition-transform duration-500"
+                    loading="lazy"
+                    className="w-full h-full object-contain mix-blend-multiply relative z-10 group-hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
                         e.target.src = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
                     }}
@@ -51,44 +66,55 @@ export default function ProductCard({ product }) {
             </div>
 
             {/* Content */}
-            <div className="p-4 flex flex-col flex-grow">
-                {/* Title */}
-                <h3 className="font-bold text-sm text-slate-900 mb-2 line-clamp-2 leading-snug">
-                    {product.title || product.name || 'Unknown Product'}
-                </h3>
+            <div className="p-4 flex flex-col flex-1 justify-between">
+                <div>
+                    {/* Title */}
+                    <h3 className="font-bold text-sm text-slate-900 mb-2 line-clamp-2 leading-snug">
+                        {product.title || product.name || 'Unknown Product'}
+                    </h3>
 
-                {/* Rating */}
-                {product.rating > 0 && (
-                    <div className="flex items-center gap-1 mb-3">
-                        <div className="flex text-[#D4AF37]">
-                            {[1, 2, 3, 4, 5].map(i => (
-                                <Star
-                                    key={i}
-                                    className={`w-3 h-3 ${i <= Math.round(product.rating) ? 'fill-current' : 'text-gray-300'}`}
-                                />
-                            ))}
+                    {/* Rating */}
+                    {product.rating > 0 && (
+                        <div className="flex items-center gap-1 mb-3">
+                            <div className="flex text-[#D4AF37]">
+                                {[1, 2, 3, 4, 5].map(i => (
+                                    <Star
+                                        key={i}
+                                        className={`w-3 h-3 ${i <= Math.round(product.rating) ? 'fill-current' : 'text-gray-300'}`}
+                                    />
+                                ))}
+                            </div>
+                            <span className="text-xs font-semibold text-slate-600">{Number(product.rating).toFixed(1)}</span>
                         </div>
-                        <span className="text-xs font-semibold text-slate-600">{Number(product.rating).toFixed(1)}</span>
-                    </div>
-                )}
+                    )}
+                </div>
 
                 {/* Lowest Price Highlight */}
                 <div className="mt-auto bg-slate-50 p-3 rounded-xl border border-slate-100">
-                    <p className="text-xs text-slate-500 font-semibold mb-1">Lowest Price:</p>
-                    <div className="flex items-end gap-2 mb-1">
-                        <span className="text-xl font-black text-[#0B1E36]">
-                            ₹{lowestPrice.toLocaleString('en-IN')}
-                        </span>
-                        {lowestRetailer && (
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${style.bg} ${style.text} border ${style.border}`}>
-                                {lowestRetailer}
-                            </span>
-                        )}
-                    </div>
-                    {savings > 0 && (
-                        <p className="text-xs font-bold text-green-600">
-                            You Save: ₹{savings.toLocaleString('en-IN')}
-                        </p>
+                    {isValidPrice ? (
+                        <>
+                            <p className="text-xs text-slate-500 font-semibold mb-1">Lowest Price:</p>
+                            <div className="flex items-end gap-2 mb-1">
+                                <span className="text-xl font-black text-[#0B1E36]">
+                                    ₹{lowestPrice.toLocaleString('en-IN')}
+                                </span>
+                                {lowestRetailer && (
+                                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${style.bg} ${style.text} border ${style.border}`}>
+                                        {lowestRetailer}
+                                    </span>
+                                )}
+                            </div>
+                            {savings > 0 && (
+                                <p className="text-xs font-bold text-green-600">
+                                    You Save: ₹{savings.toLocaleString('en-IN')}
+                                </p>
+                            )}
+                        </>
+                    ) : (
+                        <div className="flex flex-col items-center justify-center py-2 text-slate-500">
+                            <AlertCircle className="w-5 h-5 mb-1 text-slate-400" />
+                            <span className="text-xs font-semibold">Price currently unavailable</span>
+                        </div>
                     )}
                 </div>
 
@@ -113,6 +139,7 @@ export default function ProductCard({ product }) {
                                             href={p.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
+                                            onClick={handleLinkClick}
                                             className={`flex items-center justify-between px-3 py-2 border rounded-xl transition-colors shadow-sm ${rStyle.bg} ${rStyle.border} hover:opacity-80`}
                                         >
                                             <div className="flex flex-col">
@@ -132,6 +159,30 @@ export default function ProductCard({ product }) {
                             </div>
                         )}
                     </div>
+                )}
+                
+                {/* Primary View Deal Button */}
+                {(!isGrouped || targetUrl) && (
+                    isValidUrl && isValidPrice ? (
+                        <a
+                            href={targetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={handleLinkClick}
+                            className="mt-4 flex items-center justify-center gap-2 w-full py-2.5 bg-[#0B1E36] text-white font-bold rounded-xl hover:bg-[#1a365d] transition-colors shadow-sm"
+                        >
+                            View Deal
+                            <ShoppingCart className="w-4 h-4" />
+                        </a>
+                    ) : (
+                        <button
+                            disabled
+                            className="mt-4 flex items-center justify-center gap-2 w-full py-2.5 bg-slate-200 text-slate-400 font-bold rounded-xl cursor-not-allowed shadow-sm"
+                        >
+                            View Deal
+                            <ShoppingCart className="w-4 h-4 opacity-50" />
+                        </button>
+                    )
                 )}
             </div>
         </div>

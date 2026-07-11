@@ -3,6 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
 const historyRoutes = require('./routes/historyRoutes');
 const alertRoutes = require('./routes/alertRoutes');
@@ -13,11 +14,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+app.use(express.json({ limit: '10mb' })); // ensure large payload for base64 images
 app.use(cors());
-app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/history', historyRoutes);
 app.use('/api/alerts', alertRoutes);

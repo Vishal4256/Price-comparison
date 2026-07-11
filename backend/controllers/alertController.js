@@ -62,3 +62,24 @@ exports.deleteAlert = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.updateAlert = async (req, res) => {
+    try {
+        const { targetPrice, active, emailNotification, browserNotification } = req.body;
+        const alert = await Alert.findOne({ _id: req.params.id, userId: req.user.id });
+        
+        if (!alert) {
+            return res.status(404).json({ message: 'Alert not found' });
+        }
+
+        if (targetPrice !== undefined) alert.targetPrice = targetPrice;
+        if (active !== undefined) alert.active = active;
+        if (emailNotification !== undefined) alert.emailNotification = emailNotification;
+        if (browserNotification !== undefined) alert.browserNotification = browserNotification;
+
+        await alert.save();
+        res.json({ message: 'Alert updated successfully', alert });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

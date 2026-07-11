@@ -1,88 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { api } from '../api';
 import { Link } from 'react-router-dom';
+import { api } from '../api';
 import Navbar from '../components/Navbar';
 import SearchBar from '../components/SearchBar';
 import ProductCard from '../components/ProductCard';
-import { Search, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import CategoryCard from '../components/CategoryCard';
+import PriceAlert from '../components/PriceAlert';
 
-export default function Home() {
-  const [trending, setTrending] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [stats, setStats] = useState({ models: 2431, retailers: 98 });
-  const [subscriberEmail, setSubscriberEmail] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [submissionSuccess, setSubmissionSuccess] = useState(false);
-  const [submissionError, setSubmissionError] = useState('');
-
-  const handleSubscribe = async (e) => {
-    e.preventDefault();
-    if (!subscriberEmail.trim()) return;
-
-    // Email regex validation
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (!emailRegex.test(subscriberEmail.trim())) {
-      setSubmissionError('Please enter a valid email address.');
-      return;
-    }
-
-    setSubmitting(true);
-    setSubmissionError('');
-
-    try {
-      await api.post('/api/alerts/subscribe', {
-        email: subscriberEmail.trim().toLowerCase()
-      });
-      setSubmissionSuccess(true);
-      setSubscriberEmail('');
-      setTimeout(() => {
-        setSubmissionSuccess(false);
-      }, 6000);
-    } catch (err) {
-      const errMsg = err.response?.data?.message || 'Something went wrong. Please try again.';
-      setSubmissionError(errMsg);
-    } finally {
-      setSubmitting(false);
-    }
-  };
+// Custom CountUp Component
+const CountUp = ({ end, duration = 2000 }) => {
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    fetchTrending();
+    let startTimestamp = null;
+    const step = (timestamp) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      // easeOutExpo
+      const easeProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      setCount(Math.floor(easeProgress * end));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [end, duration]);
+
+  return <span>{count.toLocaleString('en-IN')}</span>;
+};
+
+export default function Home() {
+  const [featured, setFeatured] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({ models: 0, retailers: 0 });
+
+  useEffect(() => {
+    fetchFeatured();
     fetchStats();
   }, []);
 
   const fetchStats = async () => {
     try {
-      const { data } = await api.get('/api/products/public-stats');
+      const { data } = await api.get('/api/stats');
       setStats({
-        models: data.models,
-        retailers: data.retailers
+        models: data.totalProducts || 0,
+        retailers: data.totalRetailers || 0
       });
     } catch (err) {
       console.error('Error fetching statistics:', err);
+      // Fallback
+      setStats({ models: 2404, retailers: 2 });
     }
   };
 
-  const fetchTrending = async () => {
+  const fetchFeatured = async () => {
     try {
-      const { data } = await api.get('/api/products/trending');
-      setTrending(data);
+      const { data } = await api.get('/api/products/featured');
+      setFeatured(data);
     } catch (err) {
       console.error(err);
-      setTrending([]);
+      setFeatured([]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-4">
+      <section className="pt-24 px-4" style={{ marginBottom: '80px' }}>
         <div className="max-w-4xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl font-black mb-6 tracking-tight text-[#0B1E36]">
             Compare. Save. Smile.
@@ -93,186 +81,110 @@ export default function Home() {
           
           <div className="max-w-2xl mx-auto">
             <SearchBar />
-            <div className="flex items-center justify-center gap-4 mt-4 text-sm text-slate-500">
-              <span>🔥 {stats.models.toLocaleString('en-IN')} Models</span>
+            <div className="flex items-center justify-center gap-4 mt-6 text-sm font-bold text-slate-500">
+              <span className="flex items-center gap-1">🔥 <CountUp end={stats.models} /> Total Products</span>
               <span>•</span>
-              <span>🛍️ {stats.retailers} Retailers</span>
+              <span className="flex items-center gap-1">🛒 <CountUp end={stats.retailers} /> Retailers Supported</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Trending Categories Section */}
-      <section className="py-12 px-4 max-w-7xl mx-auto">
+      <section className="px-4 max-w-7xl mx-auto w-full" style={{ marginTop: '80px', marginBottom: '100px' }}>
         <div className="flex justify-between items-end mb-8">
           <h2 className="text-2xl font-bold text-[#0B1E36]">Trending Categories</h2>
-          <a href="#" className="text-sm font-semibold text-blue-600 hover:underline">See All ↗</a>
+          <Link to="/search" className="text-sm font-semibold text-blue-600 hover:underline">See All ↗</Link>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[400px]">
-          <Link to="/search?q=Electronics" className="relative rounded-2xl overflow-hidden group cursor-pointer block">
-            <img src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&q=80" alt="Electronics" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0B1E36]/90 to-transparent flex items-end p-6">
-              <div>
-                <h3 className="text-white text-2xl font-bold mb-2">Electronics</h3>
-                <p className="text-blue-200 text-sm">Smartphones, Laptops, Audio & more</p>
-              </div>
-            </div>
-          </Link>
+        {/* Responsive Grid: Using repeat auto-fill as requested */}
+        <div className="grid gap-[24px] min-h-fit h-auto" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))' }}>
+          <div className="lg:col-span-2 h-auto min-h-[250px] flex flex-col">
+            <CategoryCard 
+              title="Electronics" 
+              subtitle="Smartphones, Laptops, Audio & more"
+              image="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&q=80"
+              path="/search?q=electronics"
+              className="w-full h-full flex-1"
+            />
+          </div>
           
-          <div className="grid grid-rows-2 gap-4">
-            <Link to="/search?q=Home%20&%20Kitchen" className="relative rounded-2xl overflow-hidden group cursor-pointer block">
-              <img src="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80" alt="Home & Kitchen" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0B1E36]/90 to-transparent flex items-end p-6">
-                <h3 className="text-white text-xl font-bold">Home & Kitchen</h3>
-              </div>
-            </Link>
+          <div className="grid grid-cols-1 gap-6 lg:col-span-2 lg:grid-rows-2 h-auto min-h-[250px]">
+            <div className="h-auto min-h-[150px] flex flex-col">
+              <CategoryCard 
+                title="Home & Kitchen" 
+                image="https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=800&q=80"
+                path="/search?q=home kitchen"
+                className="w-full h-full flex-1"
+              />
+            </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <Link to="/search?q=Fashion" className="relative rounded-2xl overflow-hidden group cursor-pointer bg-[#0B1E36] block">
-                <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=80" alt="Fashion" className="w-full h-full object-cover mix-blend-overlay group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 flex items-end justify-center pb-6">
-                  <h3 className="text-white text-lg font-bold">Fashion</h3>
-                </div>
-              </Link>
-              <Link to="/search?q=Beauty" className="relative rounded-2xl overflow-hidden group cursor-pointer bg-[#0B1E36] block">
-                <img src="https://images.unsplash.com/photo-1596462502278-27bf85033c44?w=500&q=80" alt="Beauty" className="w-full h-full object-cover mix-blend-overlay group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 flex items-end justify-center pb-6">
-                  <h3 className="text-white text-lg font-bold">Beauty</h3>
-                </div>
-              </Link>
+            <div className="grid grid-cols-2 gap-6 h-auto min-h-[150px]">
+              <CategoryCard 
+                title="Fashion" 
+                image="https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=80"
+                path="/search?q=fashion"
+                className="w-full h-full bg-[#0B1E36] flex-1"
+              />
+              <CategoryCard 
+                title="Beauty" 
+                image="https://images.unsplash.com/photo-1596462502278-27bf85033c44?w=500&q=80"
+                path="/search?q=beauty"
+                className="w-full h-full bg-[#0B1E36] flex-1"
+              />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Hot Deals Section */}
-      <section className="py-12 px-4 max-w-7xl mx-auto">
+      {/* Featured Products Section */}
+      <section className="featured-products px-4 max-w-7xl mx-auto w-full" style={{ marginTop: '80px', marginBottom: '100px' }}>
         <h2 className="text-2xl font-bold text-[#0B1E36] mb-8 flex items-center gap-2">
-          <span>🔥</span> Hot Deals
+          <span>🔥</span> Featured Products
         </h2>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="featured-grid grid gap-[24px]" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
             {[1,2,3,4].map(i => (
-              <div key={i} className="bg-white rounded-xl h-[350px] animate-pulse border border-gray-100 p-4">
-                <div className="h-40 bg-slate-100 rounded-lg mb-4"></div>
+              <div key={i} className="bg-white rounded-xl h-auto min-h-[350px] animate-pulse border border-gray-100 p-4 flex flex-col">
+                <div className="h-48 bg-slate-100 rounded-lg mb-4 w-full aspect-square"></div>
                 <div className="h-4 bg-slate-100 rounded w-3/4 mb-2"></div>
                 <div className="h-4 bg-slate-100 rounded w-1/2 mb-6"></div>
-                <div className="h-8 bg-slate-100 rounded w-full"></div>
+                <div className="mt-auto h-16 bg-slate-100 rounded w-full mb-4"></div>
+                <div className="h-10 bg-slate-200 rounded w-full"></div>
               </div>
             ))}
           </div>
-        ) : trending.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {trending.map((product) => (
-              <ProductCard key={product._id} product={product} />
+        ) : featured.length > 0 ? (
+          <div className="featured-grid grid gap-[24px] items-stretch" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+            {featured.map((product) => (
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center text-slate-500">
-            <p>No trending deals available at the moment.</p>
-            <p className="text-sm mt-2">Try searching for a product above!</p>
+          <div className="bg-white rounded-2xl border border-gray-200 p-12 text-center text-slate-500 shadow-sm">
+            <p className="text-lg font-semibold text-slate-600 mb-2">No featured deals available right now.</p>
+            <p className="text-sm">Check back later or search for a specific product!</p>
           </div>
         )}
       </section>
 
-      {/* Newsletter Footer Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-7xl mx-auto bg-[#0B1E36] rounded-3xl p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-2xl border border-slate-800">
-          {/* Subtle glowing decorative gradient */}
-          <div className="absolute -right-16 -top-16 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-          <div className="absolute -left-16 -bottom-16 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl pointer-events-none"></div>
+      {/* Newsletter / Price Alert Section */}
+      <div style={{ marginTop: '80px', marginBottom: '80px' }}>
+        <PriceAlert />
+      </div>
 
-          <div className="max-w-xl text-left z-10">
-            <h2 className="text-3xl font-bold text-white mb-4 tracking-tight">Never miss a price drop again.</h2>
-            <p className="text-blue-200/90 text-base leading-relaxed">
-              Set alerts for your favorite products and we'll notify you the moment the price hits your target.
-            </p>
-          </div>
-
-          <div className="w-full md:w-auto z-10">
-            <AnimatePresence mode="wait">
-              {submissionSuccess ? (
-                <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="flex items-center gap-3 bg-emerald-500/15 border border-emerald-500/30 px-6 py-4 rounded-2xl text-emerald-300 backdrop-blur-md"
-                >
-                  <CheckCircle className="w-6 h-6 shrink-0 text-emerald-400" />
-                  <div>
-                    <p className="font-bold text-white">Subscription Successful!</p>
-                    <p className="text-sm text-emerald-200/80">You're all set to receive price alerts.</p>
-                  </div>
-                </motion.div>
-              ) : (
-                <motion.form 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  onSubmit={handleSubscribe} 
-                  className="w-full flex flex-col gap-2"
-                >
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <input 
-                      type="email" 
-                      value={subscriberEmail}
-                      onChange={(e) => {
-                        setSubscriberEmail(e.target.value);
-                        if (submissionError) setSubmissionError('');
-                      }}
-                      disabled={submitting}
-                      placeholder="Enter your email" 
-                      className="px-6 py-3.5 rounded-xl bg-white border border-slate-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/25 w-full sm:w-80 outline-none text-slate-900 shadow-sm transition-all disabled:bg-slate-100 disabled:text-slate-500 placeholder-slate-400"
-                    />
-                    <button 
-                      type="submit"
-                      disabled={submitting || !subscriberEmail.trim()}
-                      className="px-6 py-3.5 bg-[#D4AF37] hover:bg-[#c49e29] disabled:bg-slate-700 disabled:text-slate-400 text-slate-950 font-bold rounded-xl transition-all duration-300 whitespace-nowrap shadow-md active:scale-95 flex items-center justify-center gap-2 min-w-[130px]"
-                    >
-                      {submitting ? (
-                        <>
-                          <Loader2 className="w-5 h-5 animate-spin" />
-                          <span>Subscribing...</span>
-                        </>
-                      ) : (
-                        'Get Alerts'
-                      )}
-                    </button>
-                  </div>
-                  
-                  <AnimatePresence>
-                    {submissionError && (
-                      <motion.div 
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="flex items-center gap-2 text-rose-400 text-sm mt-1 px-1"
-                      >
-                        <AlertCircle className="w-4 h-4 shrink-0" />
-                        <span>{submissionError}</span>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.form>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer minimal */}
-      <footer className="py-8 px-4 text-center text-sm text-slate-500 border-t border-gray-200 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      {/* Footer Links */}
+      <footer className="px-4 text-center text-sm text-slate-500 border-t border-gray-200 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 py-8" style={{ marginTop: '80px' }}>
         <div className="flex items-center gap-2">
           <span className="font-bold text-slate-900">PriceWise</span>
-          <span>© 2024 PriceWise Utility. All rights reserved.</span>
+          <span>© {new Date().getFullYear()} PriceWise. All rights reserved.</span>
         </div>
-        <div className="flex gap-6">
-          <a href="#" className="hover:text-slate-900">About Us</a>
-          <a href="#" className="hover:text-slate-900">Terms of Service</a>
-          <a href="#" className="hover:text-slate-900">Privacy Policy</a>
-          <a href="#" className="hover:text-slate-900">Contact Support</a>
+        <div className="flex flex-wrap justify-center gap-6">
+          <Link to="/about" className="hover:text-slate-900 font-medium transition-colors">About Us</Link>
+          <Link to="/terms" className="hover:text-slate-900 font-medium transition-colors">Terms of Service</Link>
+          <Link to="/privacy" className="hover:text-slate-900 font-medium transition-colors">Privacy Policy</Link>
+          <Link to="/contact" className="hover:text-slate-900 font-medium transition-colors">Contact Support</Link>
         </div>
       </footer>
     </div>
