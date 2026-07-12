@@ -17,7 +17,7 @@ exports.register = async (req, res) => {
         if (userExists) {
             // If user exists but is not verified, we can resend OTP here or just return error
             // For security, just say user already exists
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: 'Email already exists' });
         }
 
         const otp = generateOTP();
@@ -71,7 +71,7 @@ exports.verifyOtp = async (req, res) => {
         if (user.otpAttempts >= 5) {
             // Wait 15 minutes
             if (Date.now() < user.otpExpiry.getTime() + 15 * 60 * 1000) {
-                return res.status(429).json({ message: 'Too many failed attempts. Please try again after 15 minutes.' });
+                return res.status(429).json({ message: 'Too many attempts. Please try again after 15 minutes.' });
             } else {
                 // Reset attempts if lockout period passed
                 user.otpAttempts = 0;
@@ -84,14 +84,14 @@ exports.verifyOtp = async (req, res) => {
         }
 
         if (Date.now() > user.otpExpiry) {
-            return res.status(400).json({ message: 'OTP has expired' });
+            return res.status(400).json({ message: 'OTP expired' });
         }
 
         const isMatch = await bcrypt.compare(otp, user.otpHash);
         if (!isMatch) {
             user.otpAttempts += 1;
             await user.save();
-            return res.status(400).json({ message: 'Invalid OTP' });
+            return res.status(400).json({ message: 'OTP incorrect' });
         }
 
         // Success
@@ -99,6 +99,8 @@ exports.verifyOtp = async (req, res) => {
         user.otpHash = undefined;
         user.otpExpiry = undefined;
         user.otpAttempts = 0;
+        user.otpResendCount = 0;
+        user.lastOtpSentAt = undefined;
         await user.save();
 
         const token = jwt.sign({ id: user._id, tokenVersion: user.tokenVersion || 0 }, process.env.JWT_SECRET, { expiresIn: '30d' });
@@ -180,12 +182,6 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Backward compatibility migration
-        if (user.isEmailVerified && !user.isVerified) {
-            user.isVerified = true;
-            await user.save({ validateBeforeSave: false });
-        }
-
         if (!user.isVerified) {
             return res.status(403).json({ message: 'Please verify your email before logging in.', email: user.email });
         }
@@ -215,6 +211,10 @@ exports.forgotPassword = async (req, res) => {
         const { email } = req.body;
         const user = await User.findOne({ email });
         if (!user) return res.status(404).json({ message: 'User not found' });
+
+        if (!user.isVerified) {
+            return res.status(403).json({ message: 'Please verify your email.' });
+        }
 
         const resetToken = crypto.randomBytes(20).toString('hex');
         user.resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');

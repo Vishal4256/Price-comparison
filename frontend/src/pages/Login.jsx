@@ -141,9 +141,9 @@ export default function Login() {
                                             <button 
                                                 type="button"
                                                 onClick={() => navigate(`/verify-otp?email=${encodeURIComponent(unverifiedEmail)}`)}
-                                                className="block mt-2 text-blue-600 underline hover:text-blue-800"
+                                                className="block mt-2 text-blue-600 font-bold underline hover:text-blue-800"
                                             >
-                                                Verify Email Now
+                                                Verify OTP
                                             </button>
                                         )}
                                     </div>

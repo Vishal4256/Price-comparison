@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api } from '../api';
-import { Mail, ArrowRight, Loader2, RefreshCw } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowRight, Loader2, RefreshCw, CheckCircle, TrendingUp } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const VerifyOTP = () => {
   const [searchParams] = useSearchParams();
@@ -141,90 +141,152 @@ const VerifyOTP = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-900 to-slate-900"></div>
-      </div>
+    <div className="min-h-screen bg-slate-50 font-sans flex flex-col relative overflow-hidden">
+      {/* Background pattern from image */}
+      <div className="absolute inset-0 bg-[#f1f3f8]" style={{
+        backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)',
+        backgroundSize: '24px 24px'
+      }}></div>
       
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md bg-slate-800 rounded-2xl shadow-2xl p-8 relative z-10 border border-slate-700"
-      >
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
-            <Mail className="w-8 h-8 text-blue-400" />
-          </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Check your email</h2>
-          <p className="text-slate-400 text-sm">
-            We sent a verification code to<br />
-            <span className="text-white font-medium">{email}</span>
-          </p>
-        </div>
+      {/* Header Logo */}
+      <div className="absolute top-8 left-8 flex items-center gap-2 z-20">
+        <TrendingUp className="w-6 h-6 text-[#0B1E36]" strokeWidth={2.5} />
+        <span className="text-xl font-bold text-[#0B1E36] tracking-tight">PriceWise</span>
+      </div>
 
-        {error && (
-          <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
-            <p className="text-red-400 text-sm text-center font-medium">{error}</p>
-          </div>
-        )}
-        
-        {success && (
-          <div className="mb-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl">
-            <p className="text-green-400 text-sm text-center font-medium">{success}</p>
-          </div>
-        )}
-
-        <form onSubmit={handleVerify}>
-          <div className="flex justify-between gap-2 mb-8" onPaste={handlePaste}>
-            {otp.map((digit, index) => (
-              <input
-                key={index}
-                ref={el => inputRefs.current[index] = el}
-                type="text"
-                inputMode="numeric"
-                maxLength={1}
-                value={digit}
-                onChange={(e) => handleChange(index, e)}
-                onKeyDown={(e) => handleKeyDown(index, e)}
-                className="w-12 h-14 sm:w-14 sm:h-16 bg-slate-900 border border-slate-700 rounded-xl text-center text-xl sm:text-2xl font-bold text-white focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none transition-all"
-                disabled={loading}
-              />
-            ))}
-          </div>
-          
-          <div className="flex items-center justify-between text-sm mb-8">
-            <span className="text-slate-400">
-              Code expires in: <span className={timeLeft < 60 ? "text-red-400 font-medium" : "text-blue-400 font-medium"}>{formatTime(timeLeft)}</span>
-            </span>
-            <button
-              type="button"
-              onClick={handleResend}
-              disabled={resendCooldown > 0 || resending}
-              className={`flex items-center gap-1 font-medium transition-colors ${
-                resendCooldown > 0 ? 'text-slate-500 cursor-not-allowed' : 'text-blue-400 hover:text-blue-300'
-              }`}
-            >
-              {resending ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className={`w-4 h-4 ${resendCooldown > 0 ? '' : 'hover:rotate-180 transition-transform duration-300'}`} />}
-              {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend Code'}
-            </button>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="w-full max-w-[480px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-10 md:p-12 relative z-10"
+        >
+          <div className="text-center mb-10 flex flex-col items-center">
+            {/* Custom Envelope Icon matching the image */}
+            <div className="mb-6">
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#0B1E36" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                {/* Envelope body */}
+                <path d="M4 8h16a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2v-9a2 2 0 012-2z" />
+                <path d="M2 9l10 7 10-7" />
+                {/* Arrow coming out */}
+                <path d="M14 3h7v7" />
+                <path d="M12 12l9-9" />
+              </svg>
+            </div>
+            <h2 className="text-[28px] font-bold text-[#0B1E36] mb-3">Check your email</h2>
+            <p className="text-slate-600 text-[15px] leading-relaxed">
+              We sent a verification code to<br />
+              <span className="text-[#0B1E36] font-semibold">{email}</span>
+            </p>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading || otp.join('').length !== 6}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-medium hover:from-blue-500 hover:to-indigo-500 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed group"
-          >
-            {loading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <>
-                Verify Account
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </>
+          <AnimatePresence>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl"
+              >
+                <p className="text-red-600 text-sm text-center font-medium">{error}</p>
+              </motion.div>
             )}
-          </button>
-        </form>
-      </motion.div>
+          </AnimatePresence>
+
+          <form onSubmit={handleVerify}>
+            <div className="flex justify-between gap-3 mb-8" onPaste={handlePaste}>
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={el => inputRefs.current[index] = el}
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={1}
+                  value={digit}
+                  onChange={(e) => handleChange(index, e)}
+                  onKeyDown={(e) => handleKeyDown(index, e)}
+                  placeholder="0"
+                  className="w-12 h-14 sm:w-[52px] sm:h-[60px] bg-white border-[1.5px] border-[#0B1E36] rounded-[12px] text-center text-xl font-bold text-[#0B1E36] focus:border-[#0B1E36] focus:ring-1 focus:ring-[#0B1E36] outline-none transition-all placeholder:text-slate-200 shadow-sm"
+                  disabled={loading}
+                />
+              ))}
+            </div>
+            
+            <div className="flex items-center justify-between text-[13px] mb-8 px-1">
+              <span className="text-slate-600 font-medium">
+                Code expires in: <span className={timeLeft < 60 ? "text-red-500 font-bold" : "text-[#0B1E36] font-bold"}>{formatTime(timeLeft)}</span>
+              </span>
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={resendCooldown > 0 || resending}
+                className={`flex items-center gap-1.5 font-medium transition-colors ${
+                  resendCooldown > 0 ? 'text-slate-400 cursor-not-allowed' : 'text-slate-600 hover:text-[#0B1E36]'
+                }`}
+              >
+                {resending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className={`w-3.5 h-3.5 ${resendCooldown > 0 ? '' : 'hover:rotate-180 transition-transform duration-300'}`} />}
+                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend Code'}
+              </button>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || otp.join('').length !== 6}
+              className="w-full bg-[#008080] text-white py-4 rounded-[12px] font-semibold text-[15px] hover:bg-[#007070] focus:ring-2 focus:ring-[#008080]/50 outline-none transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed group shadow-md"
+            >
+              {loading ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <>
+                  Verify Account
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <AnimatePresence>
+            {success && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 z-50 bg-white rounded-[24px] flex flex-col items-center justify-center p-8 text-center"
+              >
+                <motion.div
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ type: 'spring', bounce: 0.5 }}
+                  className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6"
+                >
+                  <CheckCircle className="w-10 h-10 text-green-500" />
+                </motion.div>
+                <motion.h3 
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-2xl font-bold text-[#0B1E36] mb-2"
+                >
+                  Verified!
+                </motion.h3>
+                <motion.p 
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-slate-600 font-medium"
+                >
+                  {success}
+                </motion.p>
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.3, duration: 1 }}
+                  className="h-1.5 w-full bg-green-500 rounded-b-[24px] absolute bottom-0 left-0 origin-left"
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
     </div>
   );
 };

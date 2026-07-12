@@ -1,16 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 import { api } from '../api';
 import Navbar from '../components/Navbar';
 import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
+const registerSchema = z.object({
+  name: z.string()
+    .min(3, 'Name required (min 3 chars)')
+    .max(50, 'Name max 50 chars')
+    .regex(/^[a-zA-Z\s]+$/, 'Only alphabets and spaces allowed')
+    .transform(val => val.trim()),
+  email: z.string()
+    .min(1, 'Email is required')
+    .email('Invalid email')
+    .transform(val => val.toLowerCase()),
+  password: z.string()
+    .min(8, 'Weak password (min 8 chars)')
+    .max(64, 'Password max 64 chars')
+    .regex(/[A-Z]/, 'Weak password (must contain uppercase)')
+    .regex(/[a-z]/, 'Weak password (must contain lowercase)')
+    .regex(/[0-9]/, 'Weak password (must contain number)')
+    .regex(/[^A-Za-z0-9]/, 'Weak password (must contain special character)'),
+  confirmPassword: z.string(),
+  terms: z.boolean().refine(val => val === true, 'Terms must be accepted')
+}).refine(data => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
 
 export default function Register() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const { register, handleSubmit, watch, formState: { errors, isValid, isSubmitting } } = useForm({
+        resolver: zodResolver(registerSchema),
+        mode: 'onChange',
+        defaultValues: { terms: false }
+    });
+    
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     
@@ -19,38 +47,41 @@ export default function Register() {
     const [strengthLabel, setStrengthLabel] = useState('Too Short');
     const [strengthColor, setStrengthColor] = useState('bg-slate-200');
     
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const [apiError, setApiError] = useState('');
+    const [successMsg, setSuccessMsg] = useState('');
     const navigate = useNavigate();
 
-    // Password validation rules
+    const passwordValue = watch('password', '');
+    const confirmPasswordValue = watch('confirmPassword', '');
+
+    // Password validation rules for UI
     const rules = {
-        length: password.length >= 6,
-        hasNumber: /\d/.test(password),
-        hasLetter: /[a-zA-Z]/.test(password),
-        hasSpecial: /[^A-Za-z0-9]/.test(password)
+        length: passwordValue.length >= 8,
+        hasNumber: /\d/.test(passwordValue),
+        hasLetter: /[a-zA-Z]/.test(passwordValue),
+        hasSpecial: /[^A-Za-z0-9]/.test(passwordValue)
     };
 
     // Calculate password strength
     useEffect(() => {
-        if (!password) {
+        if (!passwordValue) {
             setStrengthScore(0);
             setStrengthLabel('Empty');
             setStrengthColor('bg-slate-200');
             return;
         }
 
-        if (password.length < 6) {
+        if (passwordValue.length < 8) {
             setStrengthScore(1);
             setStrengthLabel('Too Short');
             setStrengthColor('bg-red-400');
             return;
         }
 
-        let score = 1; // base score for >= 6 chars
+        let score = 1; // base score for >= 8 chars
         if (rules.hasNumber) score += 1;
         if (rules.hasLetter) score += 1;
-        if (rules.hasSpecial && password.length >= 8) score += 1;
+        if (rules.hasSpecial && passwordValue.length >= 8) score += 1;
 
         setStrengthScore(score);
 
@@ -75,30 +106,25 @@ export default function Register() {
                 setStrengthLabel('Weak');
                 setStrengthColor('bg-red-500');
         }
-    }, [password]);
+    }, [passwordValue]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (password.length < 6) {
-            setError('Password must be at least 6 characters long.');
-            return;
-        }
-
-        if (password !== confirmPassword) {
-            setError('Passwords do not match.');
-            return;
-        }
-
-        setLoading(true);
-        setError('');
+    const onSubmit = async (data) => {
+        setApiError('');
+        setSuccessMsg('');
         try {
-            const { data } = await api.post('/api/auth/register', { name, email, password });
-            navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
+            const res = await api.post('/api/auth/register', { 
+                name: data.name, 
+                email: data.email, 
+                password: data.password 
+            });
+            
+            setSuccessMsg('OTP has been sent to your email.');
+            setTimeout(() => {
+                navigate(`/verify-otp?email=${encodeURIComponent(res.data.email)}`);
+            }, 1500);
+            
         } catch (err) {
-            setError(err.response?.data?.message || 'Registration failed. Please try again.');
-        } finally {
-            setLoading(false);
+            setApiError(err.response?.data?.message || 'Registration failed. Please try again.');
         }
     };
 
@@ -163,14 +189,14 @@ export default function Register() {
                     </div>
 
                     {/* Right Side: Register Form */}
-                    <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center border-l border-slate-50 bg-white">
+                    <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center border-l border-slate-50 bg-white relative">
                         <div className="mb-8 text-center md:text-left">
                             <h1 className="text-3xl font-black text-[#0B1E36] mb-3">Create Account</h1>
                             <p className="text-slate-400 text-sm font-medium">Start your journey to precision saving today.</p>
                         </div>
 
                         <AnimatePresence>
-                            {error && (
+                            {apiError && (
                                 <motion.div 
                                     initial={{ opacity: 0, height: 0, y: -10 }}
                                     animate={{ opacity: 1, height: 'auto', y: 0 }}
@@ -178,53 +204,60 @@ export default function Register() {
                                     className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-2xl flex items-center gap-3 overflow-hidden shadow-sm"
                                 >
                                     <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                                    <span>{error}</span>
+                                    <span>{apiError}</span>
+                                </motion.div>
+                            )}
+                            {successMsg && (
+                                <motion.div 
+                                    initial={{ opacity: 0, height: 0, y: -10 }}
+                                    animate={{ opacity: 1, height: 'auto', y: 0 }}
+                                    exit={{ opacity: 0, height: 0, y: -10 }}
+                                    className="mb-6 p-4 bg-green-50 border border-green-100 text-green-700 text-xs font-bold rounded-2xl flex items-center gap-3 overflow-hidden shadow-sm"
+                                >
+                                    <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                    <span>{successMsg}</span>
                                 </motion.div>
                             )}
                         </AnimatePresence>
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
-                            <div className="space-y-1.5">
+                        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                            <div className="space-y-1.5 relative">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Full Name</label>
                                 <div className="relative">
                                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
                                         type="text" 
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
+                                        {...register('name')}
+                                        className={`w-full bg-slate-50 border ${errors.name ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-[#0B1E36] focus:ring-[#0B1E36]'} rounded-2xl py-3.5 pl-12 pr-4 text-slate-900 text-sm outline-none focus:bg-white focus:ring-1 transition-all placeholder:text-slate-300`}
                                         placeholder="John Doe"
-                                        required
                                     />
                                 </div>
+                                {errors.name && <span className="text-red-500 text-[10px] font-bold ml-1 absolute -bottom-4">{errors.name.message}</span>}
                             </div>
 
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 relative pt-2">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Email Address</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
                                         type="email" 
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
+                                        {...register('email')}
+                                        className={`w-full bg-slate-50 border ${errors.email ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-[#0B1E36] focus:ring-[#0B1E36]'} rounded-2xl py-3.5 pl-12 pr-4 text-slate-900 text-sm outline-none focus:bg-white focus:ring-1 transition-all placeholder:text-slate-300`}
                                         placeholder="name@company.com"
-                                        required
                                     />
                                 </div>
+                                {errors.email && <span className="text-red-500 text-[10px] font-bold ml-1 absolute -bottom-4">{errors.email.message}</span>}
                             </div>
 
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 relative pt-2">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Password</label>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
                                         type={showPassword ? "text" : "password"} 
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-12 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
+                                        {...register('password')}
+                                        className={`w-full bg-slate-50 border ${errors.password ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-[#0B1E36] focus:ring-[#0B1E36]'} rounded-2xl py-3.5 pl-12 pr-12 text-slate-900 text-sm outline-none focus:bg-white focus:ring-1 transition-all placeholder:text-slate-300`}
                                         placeholder="••••••••"
-                                        required
                                     />
                                     <button 
                                         type="button"
@@ -234,13 +267,14 @@ export default function Register() {
                                         {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button>
                                 </div>
+                                {errors.password && <span className="text-red-500 text-[10px] font-bold ml-1 absolute -bottom-4">{errors.password.message}</span>}
 
                                 {/* Password Strength Meter */}
-                                {password && (
+                                {passwordValue && (
                                     <motion.div 
                                         initial={{ opacity: 0, height: 0 }}
                                         animate={{ opacity: 1, height: 'auto' }}
-                                        className="pt-2 px-1 space-y-1"
+                                        className="pt-4 px-1 space-y-1"
                                     >
                                         <div className="flex justify-between items-center text-[10px] font-bold">
                                             <span className="text-slate-400 uppercase tracking-wider">Security Strength:</span>
@@ -259,7 +293,7 @@ export default function Register() {
                                         <div className="grid grid-cols-2 gap-x-4 gap-y-1 pt-1.5">
                                             <div className="flex items-center gap-1.5 text-[10px] font-medium">
                                                 {rules.length ? <Check className="w-3.5 h-3.5 text-green-500" /> : <X className="w-3.5 h-3.5 text-slate-300" />}
-                                                <span className={rules.length ? "text-slate-600 font-bold" : "text-slate-400"}>At least 6 chars</span>
+                                                <span className={rules.length ? "text-slate-600 font-bold" : "text-slate-400"}>At least 8 chars</span>
                                             </div>
                                             <div className="flex items-center gap-1.5 text-[10px] font-medium">
                                                 {rules.hasLetter ? <Check className="w-3.5 h-3.5 text-green-500" /> : <X className="w-3.5 h-3.5 text-slate-300" />}
@@ -278,17 +312,15 @@ export default function Register() {
                                 )}
                             </div>
 
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 relative pt-4">
                                 <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] ml-1">Confirm Password</label>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                     <input 
                                         type={showConfirmPassword ? "text" : "password"} 
-                                        value={confirmPassword}
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-12 text-slate-900 text-sm outline-none focus:border-[#0B1E36] focus:bg-white focus:ring-1 focus:ring-[#0B1E36] transition-all placeholder:text-slate-300"
+                                        {...register('confirmPassword')}
+                                        className={`w-full bg-slate-50 border ${errors.confirmPassword ? 'border-red-300 focus:border-red-500 focus:ring-red-500' : 'border-slate-200 focus:border-[#0B1E36] focus:ring-[#0B1E36]'} rounded-2xl py-3.5 pl-12 pr-12 text-slate-900 text-sm outline-none focus:bg-white focus:ring-1 transition-all placeholder:text-slate-300`}
                                         placeholder="••••••••"
-                                        required
                                     />
                                     <button 
                                         type="button"
@@ -298,38 +330,39 @@ export default function Register() {
                                         {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                     </button>
                                 </div>
-                                {confirmPassword && password !== confirmPassword && (
+                                {errors.confirmPassword && (
                                     <motion.span 
                                         initial={{ opacity: 0 }} 
                                         animate={{ opacity: 1 }} 
-                                        className="text-[10px] font-bold text-red-500 pl-1 inline-block"
+                                        className="text-[10px] font-bold text-red-500 pl-1 inline-block absolute -bottom-4"
                                     >
-                                        Passwords do not match yet.
+                                        {errors.confirmPassword.message}
                                     </motion.span>
                                 )}
-                                {confirmPassword && password === confirmPassword && (
+                                {!errors.confirmPassword && confirmPasswordValue && confirmPasswordValue === passwordValue && (
                                     <motion.span 
                                         initial={{ opacity: 0 }} 
                                         animate={{ opacity: 1 }} 
-                                        className="text-[10px] font-bold text-green-600 pl-1 inline-block"
+                                        className="text-[10px] font-bold text-green-600 pl-1 inline-block absolute -bottom-4"
                                     >
                                         Passwords match!
                                     </motion.span>
                                 )}
                             </div>
 
-                            <div className="flex items-center gap-3 px-1">
-                                <input type="checkbox" id="terms" required className="w-4 h-4 rounded border-slate-300 text-[#0B1E36] focus:ring-[#0B1E36]" />
+                            <div className="flex items-center gap-3 px-1 pt-3 relative">
+                                <input type="checkbox" id="terms" {...register('terms')} className="w-4 h-4 rounded border-slate-300 text-[#0B1E36] focus:ring-[#0B1E36]" />
                                 <label htmlFor="terms" className="text-xs text-slate-400 font-bold leading-tight">
                                     I agree to the <a href="#" className="text-blue-600 hover:underline">Terms of Service</a> and <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
                                 </label>
                             </div>
 
                             <button 
-                                disabled={loading || (password !== confirmPassword && confirmPassword.length > 0) || password.length < 6}
+                                type="submit"
+                                disabled={isSubmitting || !isValid}
                                 className="w-full py-4 bg-[#0B1E36] hover:bg-[#1a365d] text-white font-bold rounded-2xl transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-2 group/btn disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none"
                             >
-                                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                                {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : (
                                     <>
                                         Create Account
                                         <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
