@@ -13,9 +13,14 @@ const userSchema = new mongoose.Schema({
     }],
     phone: { type: String, default: '' },
     profilePicture: { type: String, default: '' },
-    isEmailVerified: { type: Boolean, default: false },
-    verificationToken: String,
-    verificationTokenExpire: Date,
+    isEmailVerified: { type: Boolean, default: false }, // For backward compatibility
+    isVerified: { type: Boolean, default: false },
+    otpHash: { type: String },
+    otpExpiry: { type: Date },
+    otpAttempts: { type: Number, default: 0 },
+    lastOtpSentAt: { type: Date },
+    otpResendCount: { type: Number, default: 0 },
+    otpResendResetTime: { type: Date },
     lastLogin: { type: Date, default: Date.now },
     tokenVersion: { type: Number, default: 0 },
     notificationPreferences: {

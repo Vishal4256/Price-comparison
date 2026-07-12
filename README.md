@@ -35,7 +35,7 @@ https://pricecomparison512.vercel.app/
 - **Scraping**: Uses Puppeteer with Stealth plugin to fetch prices from Amazon, Flipkart, and eBay.
 - **Fake Discount Detection**: Analyzes historical price changes to flag artificial price hikes before sales.
 - **Price History**: Visualizes price trends using Recharts.
-- **Price Alerts**: Set target prices and receive email notifications via Nodemailer.
+- **Price Alerts**: Set target prices and receive email notifications via Brevo API.
 - **Comparison Table**: Compare prices across multiple stores in a single view.
 - **User System**: Secure JWT-based authentication for wishlists and alerts.
 

@@ -12,7 +12,7 @@ import About from './pages/About';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
-import VerifyEmail from './pages/VerifyEmail';
+import VerifyOTP from './pages/VerifyOTP';
 import ProtectedRoute from './components/ProtectedRoute';
 import GuestRoute from './components/GuestRoute';
 
@@ -35,7 +35,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/verify-email/:token" element={<VerifyEmail />} />
+        <Route path="/verify-otp" element={<GuestRoute><VerifyOTP /></GuestRoute>} />
         
         {/* Protected Dashboard Route */}
         <Route 

@@ -12,6 +12,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [unverifiedEmail, setUnverifiedEmail] = useState('');
     
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -29,7 +30,13 @@ export default function Login() {
             // Redirect back to intended target or home
             navigate(redirect);
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+            if (err.response?.status === 403) {
+                setError(err.response?.data?.message || 'Please verify your email.');
+                setUnverifiedEmail(err.response?.data?.email || email);
+            } else {
+                setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+                setUnverifiedEmail('');
+            }
         } finally {
             setLoading(false);
         }
@@ -128,7 +135,18 @@ export default function Login() {
                                     className="mb-8 p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-bold rounded-2xl flex items-center gap-3 overflow-hidden shadow-sm"
                                 >
                                     <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                                    <span>{error}</span>
+                                    <div className="flex-1">
+                                        <span>{error}</span>
+                                        {unverifiedEmail && (
+                                            <button 
+                                                type="button"
+                                                onClick={() => navigate(`/verify-otp?email=${encodeURIComponent(unverifiedEmail)}`)}
+                                                className="block mt-2 text-blue-600 underline hover:text-blue-800"
+                                            >
+                                                Verify Email Now
+                                            </button>
+                                        )}
+                                    </div>
                                 </motion.div>
                             )}
                         </AnimatePresence>

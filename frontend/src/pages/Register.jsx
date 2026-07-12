@@ -94,9 +94,7 @@ export default function Register() {
         setError('');
         try {
             const { data } = await api.post('/api/auth/register', { name, email, password });
-            localStorage.setItem('user', JSON.stringify(data));
-            localStorage.setItem('token', data.token);
-            navigate('/');
+            navigate(`/verify-otp?email=${encodeURIComponent(data.email)}`);
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed. Please try again.');
         } finally {

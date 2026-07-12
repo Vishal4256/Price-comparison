@@ -5,7 +5,7 @@ const Alert = require('../models/Alert');
 const scrapeAmazon = require('../scrapers/amazonScraper');
 const scrapeFlipkart = require('../scrapers/flipkartScraper');
 
-const { sendPriceAlert } = require('./emailService');
+const { sendPriceAlert } = require('../services/emailService');
 
 // Helper to extract Amazon ASIN
 const extractAmazonASIN = (url) => {
