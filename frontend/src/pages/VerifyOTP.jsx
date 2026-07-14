@@ -141,59 +141,41 @@ const VerifyOTP = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans flex flex-col relative overflow-hidden">
-      {/* Background pattern from image */}
-      <div className="absolute inset-0 bg-[#f1f3f8]" style={{
-        backgroundImage: 'radial-gradient(#d1d5db 1px, transparent 1px)',
-        backgroundSize: '24px 24px'
-      }}></div>
-      
-      {/* Header Logo */}
-      <div className="absolute top-8 left-8 flex items-center gap-2 z-20">
-        <TrendingUp className="w-6 h-6 text-[#0B1E36]" strokeWidth={2.5} />
-        <span className="text-xl font-bold text-[#0B1E36] tracking-tight">PriceWise</span>
+    <div className="min-h-screen bg-[#fafafb] font-sans flex flex-col relative overflow-hidden items-center justify-center p-4">
+      <div className="mb-8 text-center mt-[-10vh]">
+        <h2 className="text-[32px] font-extrabold text-[#111827] mb-3 tracking-tight">Verify your email</h2>
+        <p className="text-slate-500 text-[15px]">
+          We sent a 6-digit verification code to <span className="text-[#5046e5] font-medium">{email}</span>.
+        </p>
       </div>
 
-      <div className="flex-1 flex items-center justify-center p-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-[480px] bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-10 md:p-12 relative z-10"
-        >
-          <div className="text-center mb-10 flex flex-col items-center">
-            {/* Custom Envelope Icon matching the image */}
-            <div className="mb-6">
-              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#0B1E36" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                {/* Envelope body */}
-                <path d="M4 8h16a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2v-9a2 2 0 012-2z" />
-                <path d="M2 9l10 7 10-7" />
-                {/* Arrow coming out */}
-                <path d="M14 3h7v7" />
-                <path d="M12 12l9-9" />
-              </svg>
-            </div>
-            <h2 className="text-[28px] font-bold text-[#0B1E36] mb-3">Check your email</h2>
-            <p className="text-slate-600 text-[15px] leading-relaxed">
-              We sent a verification code to<br />
-              <span className="text-[#0B1E36] font-semibold">{email}</span>
-            </p>
-          </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-[440px] bg-white rounded-xl shadow-[0_2px_15px_rgba(0,0,0,0.04)] border border-slate-100 p-8 relative z-10"
+      >
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-6 p-3 bg-red-50 border border-red-100 rounded-lg"
+            >
+              <p className="text-red-600 text-[14px] text-center font-medium">{error}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <AnimatePresence>
-            {error && (
-              <motion.div 
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl"
-              >
-                <p className="text-red-600 text-sm text-center font-medium">{error}</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <form onSubmit={handleVerify}>
-            <div className="flex justify-between gap-3 mb-8" onPaste={handlePaste}>
+        <form onSubmit={handleVerify}>
+          <div className="mb-6">
+            <label className="block text-[14px] font-semibold text-[#374151] mb-2">
+              Verification Code
+            </label>
+            <div 
+              className="flex justify-between w-full border border-slate-200 rounded-lg bg-white h-[52px] items-center px-4 focus-within:border-[#5046e5] focus-within:ring-1 focus-within:ring-[#5046e5] transition-all shadow-sm"
+              onPaste={handlePaste}
+            >
               {otp.map((digit, index) => (
                 <input
                   key={index}
@@ -204,89 +186,64 @@ const VerifyOTP = () => {
                   value={digit}
                   onChange={(e) => handleChange(index, e)}
                   onKeyDown={(e) => handleKeyDown(index, e)}
-                  placeholder="0"
-                  className="w-12 h-14 sm:w-[52px] sm:h-[60px] bg-white border-[1.5px] border-[#0B1E36] rounded-[12px] text-center text-xl font-bold text-[#0B1E36] focus:border-[#0B1E36] focus:ring-1 focus:ring-[#0B1E36] outline-none transition-all placeholder:text-slate-200 shadow-sm"
+                  placeholder="-"
+                  className="w-8 h-10 text-center text-xl font-semibold text-[#111827] outline-none bg-transparent placeholder-slate-400"
                   disabled={loading}
                 />
               ))}
             </div>
-            
-            <div className="flex items-center justify-between text-[13px] mb-8 px-1">
-              <span className="text-slate-600 font-medium">
-                Code expires in: <span className={timeLeft < 60 ? "text-red-500 font-bold" : "text-[#0B1E36] font-bold"}>{formatTime(timeLeft)}</span>
-              </span>
-              <button
-                type="button"
-                onClick={handleResend}
-                disabled={resendCooldown > 0 || resending}
-                className={`flex items-center gap-1.5 font-medium transition-colors ${
-                  resendCooldown > 0 ? 'text-slate-400 cursor-not-allowed' : 'text-slate-600 hover:text-[#0B1E36]'
-                }`}
-              >
-                {resending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className={`w-3.5 h-3.5 ${resendCooldown > 0 ? '' : 'hover:rotate-180 transition-transform duration-300'}`} />}
-                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend Code'}
-              </button>
-            </div>
+          </div>
 
-            <button
-              type="submit"
-              disabled={loading || otp.join('').length !== 6}
-              className="w-full bg-[#008080] text-white py-4 rounded-[12px] font-semibold text-[15px] hover:bg-[#007070] focus:ring-2 focus:ring-[#008080]/50 outline-none transition-all flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed group shadow-md"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  Verify Account
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </>
-              )}
-            </button>
-          </form>
-
-          <AnimatePresence>
-            {success && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="absolute inset-0 z-50 bg-white rounded-[24px] flex flex-col items-center justify-center p-8 text-center"
-              >
-                <motion.div
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ type: 'spring', bounce: 0.5 }}
-                  className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mb-6"
-                >
-                  <CheckCircle className="w-10 h-10 text-green-500" />
-                </motion.div>
-                <motion.h3 
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.1 }}
-                  className="text-2xl font-bold text-[#0B1E36] mb-2"
-                >
-                  Verified!
-                </motion.h3>
-                <motion.p 
-                  initial={{ y: 10, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="text-slate-600 font-medium"
-                >
-                  {success}
-                </motion.p>
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.3, duration: 1 }}
-                  className="h-1.5 w-full bg-green-500 rounded-b-[24px] absolute bottom-0 left-0 origin-left"
-                />
-              </motion.div>
+          <button
+            type="submit"
+            disabled={loading || otp.join('').length !== 6}
+            className="w-full bg-[#5046e5] text-white py-[14px] rounded-lg font-medium text-[15px] hover:bg-[#4338ca] transition-colors flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-sm"
+          >
+            {loading ? (
+              <Loader2 className="w-5 h-5 animate-spin" />
+            ) : (
+              'Verify and Create Account'
             )}
-          </AnimatePresence>
-        </motion.div>
-      </div>
+          </button>
+        </form>
+
+        <div className="mt-8 text-center text-[14px]">
+          <span className="text-slate-500">Didn't receive the code? </span>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={resendCooldown > 0 || resending}
+            className={`font-medium transition-colors ${
+              resendCooldown > 0 ? 'text-[#8b85fa] cursor-not-allowed' : 'text-[#5046e5] hover:text-[#4338ca]'
+            }`}
+          >
+            {resending ? 'Sending...' : (resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend Code')}
+          </button>
+        </div>
+      </motion.div>
+
+      <AnimatePresence>
+        {success && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl"
+            >
+              <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-green-500" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Verified!</h3>
+              <p className="text-gray-500">{success}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
