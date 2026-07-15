@@ -118,10 +118,13 @@ export default function Register() {
                 password: data.password 
             });
             
-            setSuccessMsg('OTP has been sent to your email.');
+            localStorage.setItem('user', JSON.stringify(res.data));
+            localStorage.setItem('token', res.data.token);
+
+            setSuccessMsg('Account created successfully!');
             setTimeout(() => {
-                navigate(`/verify-otp?email=${encodeURIComponent(res.data.email)}`);
-            }, 1500);
+                navigate('/dashboard');
+            }, 1000);
             
         } catch (err) {
             setApiError(err.response?.data?.message || 'Registration failed. Please try again.');

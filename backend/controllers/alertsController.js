@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const Product = require('../models/Product');
 const Price = require('../models/Price');
-const { sendPriceAlert } = require('../services/emailService');
 
 // @desc  Create price alert
 // @route POST /api/alerts/create
@@ -65,15 +64,8 @@ const checkAllAlerts = async () => {
           const product = await Product.findById(alert.productId);
           const cheapestRecord = latestPrices.find((p) => p.price === minPrice);
 
-          await sendPriceAlert({
-            toEmail: user.email,
-            userName: user.name,
-            productName: product?.name || 'Product',
-            currentPrice: minPrice,
-            targetPrice: alert.targetPrice,
-            website: cheapestRecord?.website || 'Various',
-            link: cheapestRecord?.link || '#',
-          });
+          // Email alert removed. Instead of sending email, just log it.
+          console.log(`✉️ Alert triggered for ${user.email} on product ${product?.name}`);
 
           // Deactivate alert after firing
           alert.active = false;

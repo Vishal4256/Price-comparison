@@ -6,13 +6,10 @@ import ProductDetails from './pages/ProductDetails';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import ForgotPassword from './pages/ForgotPassword';
-import ResetPassword from './pages/ResetPassword';
 import About from './pages/About';
 import Terms from './pages/Terms';
 import Privacy from './pages/Privacy';
 import Contact from './pages/Contact';
-import VerifyOTP from './pages/VerifyOTP';
 import ProtectedRoute from './components/ProtectedRoute';
 import GuestRoute from './components/GuestRoute';
 
@@ -35,7 +32,6 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/verify-otp" element={<GuestRoute><VerifyOTP /></GuestRoute>} />
         
         {/* Protected Dashboard Route */}
         <Route 
@@ -61,22 +57,6 @@ function App() {
           element={
             <GuestRoute>
               <Register />
-            </GuestRoute>
-          } 
-        />
-        <Route 
-          path="/forgot-password" 
-          element={
-            <GuestRoute>
-              <ForgotPassword />
-            </GuestRoute>
-          } 
-        />
-        <Route 
-          path="/reset-password" 
-          element={
-            <GuestRoute>
-              <ResetPassword />
             </GuestRoute>
           } 
         />

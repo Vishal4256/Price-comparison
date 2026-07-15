@@ -5,8 +5,6 @@ const Alert = require('../models/Alert');
 const scrapeAmazon = require('../scrapers/amazonScraper');
 const scrapeFlipkart = require('../scrapers/flipkartScraper');
 
-const { sendPriceAlert } = require('../services/emailService');
-
 // Helper to extract Amazon ASIN
 const extractAmazonASIN = (url) => {
     if (!url) return null;
@@ -122,13 +120,7 @@ cron.schedule('0 0 * * *', async () => {
                         if (alert.active === false) continue;
 
                         if (alert.emailNotification) {
-                            await sendPriceAlert(
-                                alert.email, 
-                                product.title, 
-                                product.currentPrice, 
-                                alert.targetPrice, 
-                                product.url
-                            );
+                            console.log(`[Email Alert Simulation] Triggering notification for ${alert.userId} on ${product.title}`);
                         }
 
                         if (alert.browserNotification) {

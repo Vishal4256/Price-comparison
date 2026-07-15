@@ -19,9 +19,6 @@ const protect = async (req, res, next) => {
         return res.status(401).json({ success: false, message: 'Session expired. Please log in again.' });
     }
 
-    if (!req.user.isVerified) {
-        return res.status(403).json({ success: false, message: 'Please verify your email to access this resource.' });
-    }
     
     next();
   } catch (err) {

@@ -12,8 +12,6 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const [unverifiedEmail, setUnverifiedEmail] = useState('');
-    
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const redirect = decodeURIComponent(searchParams.get('redirect') || '/');
@@ -30,13 +28,7 @@ export default function Login() {
             // Redirect back to intended target or home
             navigate(redirect);
         } catch (err) {
-            if (err.response?.status === 403) {
-                setError(err.response?.data?.message || 'Please verify your email.');
-                setUnverifiedEmail(err.response?.data?.email || email);
-            } else {
-                setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
-                setUnverifiedEmail('');
-            }
+            setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
@@ -137,15 +129,6 @@ export default function Login() {
                                     <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
                                     <div className="flex-1">
                                         <span>{error}</span>
-                                        {unverifiedEmail && (
-                                            <button 
-                                                type="button"
-                                                onClick={() => navigate(`/verify-otp?email=${encodeURIComponent(unverifiedEmail)}`)}
-                                                className="block mt-2 text-blue-600 font-bold underline hover:text-blue-800"
-                                            >
-                                                Verify OTP
-                                            </button>
-                                        )}
                                     </div>
                                 </motion.div>
                             )}
@@ -178,7 +161,6 @@ export default function Login() {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center px-1">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">Password</label>
-                                    <Link to="/forgot-password" className="text-[10px] font-bold text-blue-600 hover:underline">Forgot password?</Link>
                                 </div>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
