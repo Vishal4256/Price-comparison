@@ -24,8 +24,11 @@ export default function Login({ setIsAuthenticated }) {
         setError('');
         try {
             const { data } = await api.post('/api/auth/login', { email, password, rememberMe });
-            localStorage.setItem('user', JSON.stringify(data));
-            localStorage.setItem('token', data.token);
+            // Backend response: { success: true, data: { _id, name, email, role, token } }
+            const token = data.data?.token;
+            const user = data.data;
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('token', token);
             if (setIsAuthenticated) setIsAuthenticated(true);
             
             // Redirect back to intended target or dashboard

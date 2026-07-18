@@ -119,8 +119,11 @@ export default function Register({ setIsAuthenticated }) {
                 confirmPassword: data.confirmPassword
             });
             
-            localStorage.setItem('user', JSON.stringify(res.data));
-            localStorage.setItem('token', res.data.token);
+            // Backend response: { success: true, data: { _id, name, email, token } }
+            const token = res.data.data?.token;
+            const user = res.data.data;
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('token', token);
             if (setIsAuthenticated) setIsAuthenticated(true);
 
             setSuccessMsg('Account created successfully!');
