@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { api } from '../api';
-import Navbar from '../components/Navbar';
 import { Search, Loader2, Sparkles, Trophy, AlertCircle, ArrowRightLeft, CheckCircle2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -38,8 +37,7 @@ export default function Compare() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-            <Navbar />
-            
+                        
             {/* Header Section */}
             <div className="bg-[#0B1E36] text-white pt-16 pb-24 px-4 text-center">
                 <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5 mb-6 backdrop-blur-sm">

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
-import Navbar from '../components/Navbar';
 import { Mail, Loader2, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function ForgotPassword() {
@@ -33,8 +32,7 @@ export default function ForgotPassword() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-            <Navbar />
-            
+                        
             <div className="flex-1 flex items-center justify-center p-4">
                 <div className="max-w-md w-full bg-white rounded-[32px] shadow-2xl shadow-slate-200/60 p-10 border border-slate-100">
                     <div className="mb-8 text-center">

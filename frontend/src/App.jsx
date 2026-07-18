@@ -17,11 +17,10 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const Insights = lazy(() => import('./pages/Insights'));
 
 // Components
-import Navbar from './components/Navbar';
+import AppLayout from './components/AppLayout';
 import GuestRoute from './components/GuestRoute';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
-import AIAssistantWidget from './components/assistant/AIAssistantWidget';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -44,47 +43,40 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col relative">
-        <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
-        
-        <main className="flex-grow">
-          <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold text-slate-400">Loading module...</div>}>
-            <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Landing isAuthenticated={isAuthenticated} />} />
-              
-              {/* Guest Routes (Only accessible if NOT logged in) */}
-              <Route element={<GuestRoute isAuthenticated={isAuthenticated} />}>
-                <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
-                <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
-                <Route path="/forgot-password" element={<ForgotPassword />} />
-                <Route path="/reset-password/:token" element={<ResetPassword />} />
-              </Route>
+      <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold text-slate-400">Loading module...</div>}>
+        <Routes>
+          <Route element={<AppLayout isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />}>
+            {/* Public Routes */}
+            <Route path="/" element={<Landing isAuthenticated={isAuthenticated} />} />
+            
+            {/* Guest Routes (Only accessible if NOT logged in) */}
+            <Route element={<GuestRoute isAuthenticated={isAuthenticated} />}>
+              <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+              <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+            </Route>
 
-              {/* Protected Routes (Only accessible if logged in) */}
-              <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
-                <Route path="/dashboard" element={<Home />} />
-                <Route path="/search" element={<Search />} />
-                <Route path="/product/:id" element={<ProductDetails />} />
-                <Route path="/compare" element={<Compare />} />
-                <Route path="/insights" element={<Insights />} />
-                <Route path="/profile" element={<Profile />} />
-              </Route>
+            {/* Protected Routes (Only accessible if logged in) */}
+            <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+              <Route path="/dashboard" element={<Home />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/product/:id" element={<ProductDetails />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/insights" element={<Insights />} />
+              <Route path="/profile" element={<Profile />} />
+            </Route>
 
-              {/* Admin Routes (Only accessible to role = admin) */}
-              <Route element={<AdminRoute isAuthenticated={isAuthenticated} />}>
-                <Route path="/admin" element={<AdminDashboard />} />
-              </Route>
+            {/* Admin Routes (Only accessible to role = admin) */}
+            <Route element={<AdminRoute isAuthenticated={isAuthenticated} />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
 
-              {/* 404 Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </main>
-
-        {/* Global AI Assistant Widget (Only for Authenticated Users) */}
-        {isAuthenticated && <AIAssistantWidget />}
-      </div>
+            {/* 404 Route */}
+            <Route path="*" element={<NotFound />} />
+          </Route>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 }

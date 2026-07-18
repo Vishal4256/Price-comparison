@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/Navbar';
 import { api } from '../api';
 import { User, Heart, Bell, Eye, Search, Sparkles, Tag, Package, Loader2 } from 'lucide-react';
 
@@ -78,8 +77,7 @@ export default function Dashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24 flex flex-col">
-            <Navbar />
-            
+                        
             {/* Header */}
             <div className="bg-[#0B1E36] text-white pt-16 pb-24 px-4">
                 <div className="max-w-7xl mx-auto">

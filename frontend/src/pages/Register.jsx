@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../api';
-import Navbar from '../components/Navbar';
 import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
@@ -134,8 +133,7 @@ export default function Register({ setIsAuthenticated }) {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-            <Navbar />
-            
+                        
             <div className="flex-1 flex items-center justify-center p-4 py-12 md:py-20">
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}

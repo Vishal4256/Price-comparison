@@ -1,5 +1,4 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 import DailyDeals from '../components/home/DailyDeals';
 import TrendingDeals from '../components/home/TrendingDeals';
 import FeaturedBrands from '../components/home/FeaturedBrands';
@@ -9,8 +8,7 @@ import { Calendar } from 'lucide-react';
 export default function Insights() {
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-            <Navbar />
-            
+                        
             {/* Header */}
             <div className="bg-[#0B1E36] text-white pt-16 pb-16 px-4">
                 <div className="max-w-7xl mx-auto">

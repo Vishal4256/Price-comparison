@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Search as SearchIcon, Loader2, Sparkles, Filter, AlertCircle, ShoppingCart } from 'lucide-react';
 import { api } from '../api';
-import Navbar from '../components/Navbar';
 import ProductCard from '../components/shared/ProductCard';
 import ProductCardSkeleton from '../components/shared/ProductCardSkeleton';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -70,8 +69,7 @@ export default function Search() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-            <Navbar />
-            
+                        
             {/* Search Header */}
             <div className="bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 py-6">

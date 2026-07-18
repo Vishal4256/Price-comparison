@@ -1,11 +1,9 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
 
 export default function About() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      <Navbar />
-      <div className="pt-24 pb-16 px-4 max-w-4xl mx-auto">
+            <div className="pt-24 pb-16 px-4 max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-6 text-[#0B1E36]">About Us</h1>
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
           <p className="text-slate-600 mb-4">

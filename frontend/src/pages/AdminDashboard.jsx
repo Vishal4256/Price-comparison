@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Navbar from '../components/Navbar';
 import { ShieldCheck, BarChart3, Users, Package, Store, Search, TrendingUp, AlertOctagon, Terminal, Activity } from 'lucide-react';
 
 // Import Tabs
@@ -47,8 +46,7 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24 flex flex-col">
-            <Navbar />
-            
+                        
             {/* Header */}
             <div className="bg-[#0B1E36] text-white pt-16 pb-24 px-4">
                 <div className="max-w-7xl mx-auto flex items-center gap-4">

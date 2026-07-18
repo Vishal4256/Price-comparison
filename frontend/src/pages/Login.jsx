@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../api';
-import Navbar from '../components/Navbar';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -39,8 +38,7 @@ export default function Login({ setIsAuthenticated }) {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col">
-            <Navbar />
-            
+                        
             <div className="flex-1 flex items-center justify-center p-4 py-12 md:py-20">
                 <motion.div 
                     initial={{ opacity: 0, y: 30 }}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Navbar from '../components/Navbar';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import { api } from '../api';
 
@@ -62,8 +61,7 @@ export default function ProductDetails() {
     if (error) {
         return (
             <div className="min-h-screen bg-slate-50 font-sans flex flex-col items-center justify-center">
-                <Navbar />
-                <h2 className="text-xl font-bold text-red-500 mb-4">{error}</h2>
+                                <h2 className="text-xl font-bold text-red-500 mb-4">{error}</h2>
                 <button onClick={() => navigate(-1)} className="text-indigo-600 underline font-bold">Go back</button>
             </div>
         );
@@ -71,8 +69,7 @@ export default function ProductDetails() {
 
     return (
         <div className="min-h-screen bg-slate-50 font-sans text-slate-900 pb-24">
-            <Navbar />
-            
+                        
             <div className="max-w-7xl mx-auto px-4 py-8">
                 {/* Back Navigation */}
                 <button 
