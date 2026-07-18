@@ -3,7 +3,8 @@ import api from '../../api';
 import FeedSkeleton from './FeedSkeleton';
 import EmptyStateFeed from './EmptyStateFeed';
 import FeedSection from './FeedSection';
-import { Sparkles, Clock } from 'lucide-react';
+import { Sparkles, Clock, RefreshCw } from 'lucide-react';
+import { getApiError } from '../../utils/errorHandler';
 
 const HomeFeed = () => {
     const [feedData, setFeedData] = useState(null);
@@ -13,11 +14,11 @@ const HomeFeed = () => {
     useEffect(() => {
         const fetchFeed = async () => {
             try {
-                const response = await api.get('/feed');
+                const response = await api.get('/api/feed');
                 setFeedData(response.data.data);
             } catch (err) {
                 console.error("Failed to fetch feed:", err);
-                setError(err.response?.data?.error?.message || "Could not load feed");
+                setError(getApiError(err, "Could not load feed. Please try again."));
             } finally {
                 setLoading(false);
             }
@@ -31,18 +32,28 @@ const HomeFeed = () => {
     if (error) {
         return (
             <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-                <p className="text-red-500 bg-red-50 p-4 rounded-xl border border-red-200">{error}</p>
+                <div className="bg-red-50 p-8 rounded-3xl border border-red-100 max-w-lg mx-auto">
+                    <p className="text-red-600 font-bold mb-4">{error}</p>
+                    <button 
+                        onClick={() => window.location.reload()}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors font-medium"
+                    >
+                        <RefreshCw className="w-4 h-4" /> Try Again
+                    </button>
+                </div>
             </div>
         );
     }
 
     if (!feedData) return null;
 
-    // Check if empty state (only trending deals exist, no personalized sections)
-    const isNewUser = feedData.sections.length === 1 && feedData.sections[0].type === 'trending_deals';
+    // Check if empty state (no personalized sections)
+    const isNewUser = feedData.sections.length === 0 || 
+                      (feedData.sections.length === 1 && feedData.sections[0].type === 'trending_deals');
 
     if (isNewUser) {
-        return <EmptyStateFeed trendingDeals={feedData.sections[0].items} />;
+        const trending = feedData.sections.find(s => s.type === 'trending_deals')?.items || [];
+        return <EmptyStateFeed trendingDeals={trending} />;
     }
 
     return (

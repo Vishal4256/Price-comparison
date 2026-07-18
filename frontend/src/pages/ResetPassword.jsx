@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { api } from '../api';
 import { Lock, Loader2, CheckCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { getApiError } from '../utils/errorHandler';
 import { motion } from 'framer-motion';
 
 export default function ResetPassword() {
@@ -37,7 +38,7 @@ export default function ResetPassword() {
             }, 3000);
             
         } catch (err) {
-            setError(err.response?.data?.message || 'Invalid or expired token.');
+            setError(getApiError(err, 'Invalid or expired token.'));
         } finally {
             setLoading(false);
         }

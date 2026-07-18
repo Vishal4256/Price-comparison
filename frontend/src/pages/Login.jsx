@@ -3,6 +3,7 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { api } from '../api';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
+import { getApiError } from '../utils/errorHandler';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Login({ setIsAuthenticated }) {
@@ -30,7 +31,7 @@ export default function Login({ setIsAuthenticated }) {
             // Redirect back to intended target or dashboard
             navigate(redirect === '/' ? '/dashboard' : redirect);
         } catch (err) {
-            setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+            setError(getApiError(err, 'Login failed. Please check your credentials.'));
         } finally {
             setLoading(false);
         }

@@ -4,6 +4,7 @@ import BarcodeScanner from './BarcodeScanner';
 import VisualSearchDropzone from './VisualSearchDropzone';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api';
+import { getApiError } from '../../utils/errorHandler';
 
 const VisionModal = ({ isOpen, onClose }) => {
     const [mode, setMode] = useState('upload'); // 'upload' or 'barcode'
@@ -37,13 +38,14 @@ const VisionModal = ({ isOpen, onClose }) => {
             const formData = new FormData();
             formData.append('image', file);
 
-            const response = await api.post('/vision/search', formData, {
+            const response = await api.post('/api/vision/search', formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
             handleVisionResponse(response.data.data);
         } catch (err) {
-            setError(err.response?.data?.error?.message || 'Failed to analyze image');
+            console.error('Vision search failed:', err);
+            setError(getApiError(err, 'Failed to analyze image'));
         } finally {
             setLoading(false);
         }
@@ -55,10 +57,11 @@ const VisionModal = ({ isOpen, onClose }) => {
         setLowConfidenceResult(null);
 
         try {
-            const response = await api.post('/vision/barcode', { barcode });
+            const response = await api.post('/api/vision/barcode', { barcode });
             handleVisionResponse(response.data.data);
         } catch (err) {
-            setError(err.response?.data?.error?.message || 'Failed to process barcode');
+            console.error('Barcode search failed:', err);
+            setError(getApiError(err, 'Failed to process barcode'));
         } finally {
             setLoading(false);
         }

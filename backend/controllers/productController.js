@@ -12,7 +12,10 @@ exports.getProductDetails = async (req, res) => {
                 category: "Laptops",
                 description: "Supercharged by M2, the MacBook Air features a gorgeous Liquid Retina display.",
                 gallery: ["https://images.unsplash.com/photo-1517336714731-489689fd1ca8"],
-                specifications: { "RAM": "8GB", "Storage": "256GB SSD", "Processor": "M2" }
+                specifications: { "RAM": "8GB", "Storage": "256GB SSD", "Processor": "M2" },
+                rating: 4.8,
+                reviews: 1245,
+                aiSummary: "This product is highly rated for its premium build quality and excellent battery life. Users frequently praise the seamless integration, though some note it is slightly heavier than previous models."
             },
             pricing: {
                 offers: [

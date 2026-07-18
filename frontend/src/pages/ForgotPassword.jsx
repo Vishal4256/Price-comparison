@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api';
 import { Mail, Loader2, ArrowLeft, CheckCircle, AlertCircle } from 'lucide-react';
+import { getApiError } from '../utils/errorHandler';
 
 export default function ForgotPassword() {
     const [email, setEmail] = useState('');
@@ -24,7 +25,7 @@ export default function ForgotPassword() {
                 setDevNote(data.dev_note);
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Something went wrong. Please try again later.');
+            setError(getApiError(err, 'Something went wrong. Please try again later.'));
         } finally {
             setLoading(false);
         }

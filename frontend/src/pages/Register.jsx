@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../api';
 import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
+import { getApiError } from '../utils/errorHandler';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -114,7 +115,8 @@ export default function Register({ setIsAuthenticated }) {
             const res = await api.post('/api/auth/register', { 
                 name: data.name, 
                 email: data.email, 
-                password: data.password 
+                password: data.password,
+                confirmPassword: data.confirmPassword
             });
             
             localStorage.setItem('user', JSON.stringify(res.data));
@@ -127,7 +129,7 @@ export default function Register({ setIsAuthenticated }) {
             }, 1000);
             
         } catch (err) {
-            setApiError(err.response?.data?.message || 'Registration failed. Please try again.');
+            setApiError(getApiError(err, 'Registration failed. Please try again.'));
         }
     };
 
