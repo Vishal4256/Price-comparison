@@ -41,21 +41,20 @@ api.interceptors.request.use(
 );
 
 // ─── Response Interceptor ─────────────────────────────────────────────────
-// Only redirects to /login on 401 when the failing request was NOT itself
-// an auth endpoint. This prevents auth pages from being caught in a redirect
-// loop and lets login/register/refresh handle their own 401 errors.
-const AUTH_PATHS = ['/api/auth/login', '/api/auth/register', '/api/auth/refresh'];
-
+// Only redirects to /login on 401 when the client actually had a valid token
+// stored. If no token existed, the 401 is expected (unauthenticated request)
+// and the caller handles it — preventing auth pages from being force-redirected.
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response?.status;
-    const requestUrl = error.config?.url || '';
 
-    const isAuthEndpoint = AUTH_PATHS.some((path) => requestUrl.includes(path));
+    const token = localStorage.getItem('token');
+    const hasValidToken = token && token !== 'undefined' && token !== 'null';
 
-    if (status === 401 && !isAuthEndpoint) {
-      // Clear session and redirect — only for protected API failures
+    if (status === 401 && hasValidToken) {
+      // A protected request returned 401 despite a stored token — session is
+      // expired or revoked on the server. Clear auth state and redirect.
       localStorage.removeItem('user');
       localStorage.removeItem('token');
       sessionStorage.clear();
