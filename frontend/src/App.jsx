@@ -1,70 +1,91 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Search from './pages/Search';
-import ProductDetails from './pages/ProductDetails';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
-import About from './pages/About';
-import Terms from './pages/Terms';
-import Privacy from './pages/Privacy';
-import Contact from './pages/Contact';
-import ProtectedRoute from './components/ProtectedRoute';
+import React, { useEffect, useState, Suspense, lazy } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
+// Lazy loaded Pages
+const Landing = lazy(() => import('./pages/Landing'));
+const Home = lazy(() => import('./pages/Home')); // This is the AI Dashboard
+const Search = lazy(() => import('./pages/Search'));
+const ProductDetails = lazy(() => import('./pages/ProductDetails'));
+const Compare = lazy(() => import('./pages/Compare'));
+const Login = lazy(() => import('./pages/Login'));
+const Register = lazy(() => import('./pages/Register'));
+const Profile = lazy(() => import('./pages/Profile'));
+const NotFound = lazy(() => import('./pages/NotFound'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
+const ResetPassword = lazy(() => import('./pages/ResetPassword'));
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const Insights = lazy(() => import('./pages/Insights'));
+
+// Components
+import Navbar from './components/Navbar';
 import GuestRoute from './components/GuestRoute';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+import AIAssistantWidget from './components/assistant/AIAssistantWidget';
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Basic auth check
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    
+    if (token && user) {
+      setIsAuthenticated(true);
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <div className="min-h-screen bg-slate-50 flex items-center justify-center font-sans text-[#0B1E36] font-bold">Loading PriceWise...</div>;
+  }
+
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/search" element={
-          <ProtectedRoute>
-            <Search />
-          </ProtectedRoute>
-        } />
-        <Route path="/product/:id" element={
-          <ProtectedRoute>
-            <ProductDetails />
-          </ProtectedRoute>
-        } />
-        <Route path="/about" element={<About />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/contact" element={<Contact />} />
+    <BrowserRouter>
+      <div className="min-h-screen bg-slate-50 font-sans text-slate-900 flex flex-col relative">
+        <Navbar isAuthenticated={isAuthenticated} setIsAuthenticated={setIsAuthenticated} />
         
-        {/* Protected Dashboard Route */}
-        <Route 
-          path="/dashboard" 
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          } 
-        />
-        
-        {/* Guest-only Auth Routes */}
-        <Route 
-          path="/login" 
-          element={
-            <GuestRoute>
-              <Login />
-            </GuestRoute>
-          } 
-        />
-        <Route 
-          path="/register" 
-          element={
-            <GuestRoute>
-              <Register />
-            </GuestRoute>
-          } 
-        />
-        
-        {/* Fallback to Home for now */}
-        <Route path="*" element={<Home />} />
-      </Routes>
-    </Router>
+        <main className="flex-grow">
+          <Suspense fallback={<div className="min-h-screen flex items-center justify-center font-bold text-slate-400">Loading module...</div>}>
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<Landing isAuthenticated={isAuthenticated} />} />
+              
+              {/* Guest Routes (Only accessible if NOT logged in) */}
+              <Route element={<GuestRoute isAuthenticated={isAuthenticated} />}>
+                <Route path="/login" element={<Login setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/register" element={<Register setIsAuthenticated={setIsAuthenticated} />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
+              </Route>
+
+              {/* Protected Routes (Only accessible if logged in) */}
+              <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+                <Route path="/dashboard" element={<Home />} />
+                <Route path="/search" element={<Search />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
+                <Route path="/compare" element={<Compare />} />
+                <Route path="/insights" element={<Insights />} />
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+
+              {/* Admin Routes (Only accessible to role = admin) */}
+              <Route element={<AdminRoute isAuthenticated={isAuthenticated} />}>
+                <Route path="/admin" element={<AdminDashboard />} />
+              </Route>
+
+              {/* 404 Route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Suspense>
+        </main>
+
+        {/* Global AI Assistant Widget */}
+        <AIAssistantWidget />
+      </div>
+    </BrowserRouter>
   );
 }
 

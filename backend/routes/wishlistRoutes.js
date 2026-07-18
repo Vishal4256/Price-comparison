@@ -1,11 +1,16 @@
 const express = require('express');
-const { getWishlist, addToWishlist, removeFromWishlist } = require('../controllers/wishlistController');
-const { protect } = require('../utils/authMiddleware');
 const router = express.Router();
+const wishlistController = require('../controllers/wishlistController');
+const { protect } = require('../middleware/auth');
 
-router.use(protect);
-router.get('/', getWishlist);
-router.post('/add', addToWishlist);
-router.delete('/remove/:productId', removeFromWishlist);
+router.use(protect); // All wishlist routes require authentication
+
+router.route('/')
+    .get(wishlistController.getWishlist)
+    .post(wishlistController.addItem);
+
+router.route('/:itemId')
+    .put(wishlistController.updateItem)
+    .delete(wishlistController.removeItem);
 
 module.exports = router;

@@ -1,33 +1,16 @@
 const express = require('express');
-const { protect } = require('../middleware/auth');
-const { 
-    getProfile, 
-    updateProfile, 
-    changePassword, 
-    logoutAll, 
-    deleteAccount,
-    getUserPriceHistory,
-    deletePriceHistory,
-    getSearchHistory,
-    deleteSearchHistory,
-    clearSearchHistory
-} = require('../controllers/userController');
-
 const router = express.Router();
+const userController = require('../controllers/userController');
+const { protect } = require('../middleware/auth');
 
-router.use(protect); // Apply protect middleware to all user routes
+// Apply auth middleware to all routes
+router.use(protect);
 
-router.get('/profile', getProfile);
-router.put('/profile', updateProfile);
-router.put('/change-password', changePassword);
-router.post('/logout-all', logoutAll);
-router.delete('/account', deleteAccount);
-
-router.get('/price-history', getUserPriceHistory);
-router.delete('/price-history/:id', deletePriceHistory);
-
-router.get('/search-history', getSearchHistory);
-router.delete('/search-history/:id', deleteSearchHistory);
-router.delete('/search-history', clearSearchHistory);
+// Profile routes
+router.get('/profile', userController.getProfile);
+router.put('/profile', userController.updateProfile);
+router.put('/change-password', userController.changePassword);
+router.delete('/account', userController.deleteAccount);
+router.post('/logout-all', userController.logoutAll);
 
 module.exports = router;

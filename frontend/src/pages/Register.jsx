@@ -183,7 +183,7 @@ export default function Register() {
                             transition={{ delay: 0.5, duration: 0.7 }}
                             className="relative h-64 rounded-3xl overflow-hidden border border-white/10 shadow-inner bg-white/5 p-6 backdrop-blur-sm"
                         >
-                            <img 
+                            <img loading="lazy" decoding="async"
                                 src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&q=80" 
                                 alt="Savings Chart" 
                                 className="w-full h-full object-contain opacity-80 filter brightness-110"

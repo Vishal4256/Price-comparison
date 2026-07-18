@@ -1,14 +1,13 @@
 const express = require('express');
-const PriceHistory = require('../models/PriceHistory');
 const router = express.Router();
+const historyController = require('../controllers/historyController');
+const { protect } = require('../middleware/auth');
 
-router.get('/:productId', async (req, res) => {
-    try {
-        const history = await PriceHistory.find({ productId: req.params.productId }).sort({ timestamp: 1 });
-        res.json(history);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+// Protected API routes
+router.get('/:id/history', protect, historyController.getHistory);
+router.get('/:id/statistics', protect, historyController.getStatistics);
+
+// Internal usage (can be protected differently later)
+router.post('/record', historyController.recordPrice);
 
 module.exports = router;

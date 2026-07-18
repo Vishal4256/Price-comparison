@@ -18,7 +18,10 @@ const userSchema = new mongoose.Schema({
     notificationPreferences: {
         email: { type: Boolean, default: true },
         browser: { type: Boolean, default: true }
-    }
+    },
+    refreshTokenHash: String,
+    resetPasswordToken: String,
+    resetPasswordExpire: Date
 }, { timestamps: true });
 
 

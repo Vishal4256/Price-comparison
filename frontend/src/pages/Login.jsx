@@ -16,17 +16,19 @@ export default function Login() {
     const [searchParams] = useSearchParams();
     const redirect = decodeURIComponent(searchParams.get('redirect') || '/');
 
+    const [rememberMe, setRememberMe] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         try {
-            const { data } = await api.post('/api/auth/login', { email, password });
+            const { data } = await api.post('/api/auth/login', { email, password, rememberMe });
             localStorage.setItem('user', JSON.stringify(data));
             localStorage.setItem('token', data.token);
             
-            // Redirect back to intended target or home
-            navigate(redirect);
+            // Redirect back to intended target or dashboard
+            navigate(redirect === '/' ? '/dashboard' : redirect);
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
         } finally {
@@ -101,7 +103,7 @@ export default function Login() {
                             transition={{ delay: 0.6, duration: 0.8 }}
                             className="mt-12 relative h-48 md:h-64 rounded-2xl overflow-hidden border border-white/10 shadow-2xl"
                         >
-                            <img 
+                            <img loading="lazy" decoding="async"
                                 src="https://images.unsplash.com/photo-1551288049-bbbda540d379?w=800&q=80" 
                                 alt="Dashboard Preview" 
                                 className="w-full h-full object-cover opacity-60"
@@ -161,6 +163,7 @@ export default function Login() {
                             <div className="space-y-2">
                                 <div className="flex justify-between items-center px-1">
                                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em]">Password</label>
+                                    <Link to="/forgot-password" className="text-xs font-bold text-blue-600 hover:underline">Forgot password?</Link>
                                 </div>
                                 <div className="relative">
                                     <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -183,7 +186,13 @@ export default function Login() {
                             </div>
 
                             <div className="flex items-center gap-3 px-1">
-                                <input type="checkbox" id="remember" className="w-4 h-4 rounded border-slate-300 text-[#0B1E36] focus:ring-[#0B1E36]" />
+                                <input 
+                                    type="checkbox" 
+                                    id="remember" 
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                    className="w-4 h-4 rounded border-slate-300 text-[#0B1E36] focus:ring-[#0B1E36]" 
+                                />
                                 <label htmlFor="remember" className="text-xs text-slate-400 font-bold">Remember this device for 30 days</label>
                             </div>
 
