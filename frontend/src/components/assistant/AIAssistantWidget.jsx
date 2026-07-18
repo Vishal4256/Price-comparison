@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Bot, Send, Loader2, Sparkles, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../../api';
+import { getApiError } from '../../utils/errorHandler';
 
 export default function AIAssistantWidget() {
     const [isOpen, setIsOpen] = useState(false);
@@ -40,11 +41,15 @@ export default function AIAssistantWidget() {
                 products: response.data.products 
             }]);
         } catch (error) {
-            let errorMsg = 'Oops, my connection to the PriceWise engine got interrupted. Try asking again!';
-            if (error.response?.status === 401) {
+            const status = error.response?.status;
+            let errorMsg;
+
+            if (status === 429 || error.response?.data?.error?.status === 'RESOURCE_EXHAUSTED') {
+                errorMsg = 'The AI assistant is temporarily unavailable because the current Gemini API quota has been reached. Core PriceWise features such as Search, Price Comparison, Wishlist, and Dashboard continue to work normally. Please try again later.';
+            } else if (status === 401) {
                 errorMsg = 'Your session has expired. Please log in again to use the assistant.';
-            } else if (error.response?.status === 429) {
-                errorMsg = 'I am receiving too many requests right now. Please wait a moment and try again.';
+            } else {
+                errorMsg = getApiError(error, 'I\'m having trouble connecting to the AI engine right now. Please try again in a moment.');
             }
             
             setMessages(prev => [...prev, { 

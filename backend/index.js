@@ -85,15 +85,35 @@ app.use('/api/engagement', require('./routes/engagementRoutes')); // Notificatio
 
 // Database Connection
 mongoose.connect(process.env.MONGODB_URI)
-    .then(() => logger.info('Connected to MongoDB'))
-    .catch(err => logger.error('MongoDB connection error:', err));
+    .then(() => {
+        logger.info('✅ MongoDB: Connected successfully');
+        
+        // Startup Diagnostics
+        const diag = {
+            environment:  process.env.NODE_ENV || 'development',
+            port:         process.env.PORT || 5000,
+            mongodb:      'connected',
+            gemini:       process.env.GEMINI_API_KEY ? 'configured' : '⚠️  NOT CONFIGURED — AI features disabled',
+            redis:        'disabled (planned)',
+            frontendUrl:  process.env.CLIENT_URL || 'not set',
+        };
+
+        logger.info('─────────────────────────────────────────');
+        logger.info('  PriceWise API — Startup Diagnostics');
+        logger.info('─────────────────────────────────────────');
+        Object.entries(diag).forEach(([k, v]) => logger.info(`  ${k.padEnd(15)}: ${v}`));
+        logger.info('─────────────────────────────────────────');
+    })
+    .catch(err => logger.error('❌ MongoDB connection error:', err));
 
 app.get('/', (req, res) => {
     res.send('PriceWise v2.0 API is running (Clean Foundation)...');
 });
 
-// Health Checks
-app.use('/health', require('./routes/healthRoutes'));
+// Health Checks (mounted at both /health and /api/health for compatibility)
+const healthRoutes = require('./routes/healthRoutes');
+app.use('/health', healthRoutes);
+app.use('/api/health', healthRoutes);
 
 // Sentry Error Handler (must be before any other error middleware)
 Sentry.setupExpressErrorHandler(app);

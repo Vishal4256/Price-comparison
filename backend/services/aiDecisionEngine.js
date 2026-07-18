@@ -245,8 +245,17 @@ class AIDecisionEngine {
             
             return response.data.candidates[0].content.parts[0].text;
         } catch (error) {
+            const status = error.response?.status;
+            const isQuotaExhausted = status === 429 || 
+                error.response?.data?.error?.status === 'RESOURCE_EXHAUSTED';
+
+            if (isQuotaExhausted) {
+                console.warn("[AI Assistant] Gemini quota exhausted (429).");
+                return "The AI assistant is temporarily unavailable because the current Gemini API quota has been reached. Core PriceWise features such as Search, Price Comparison, Wishlist, and Dashboard continue to work normally. Please try again later.";
+            }
+
             console.error("AI Assistant Chat failed.", error.message);
-            return "I'm sorry, I am currently unable to process your request. Please try again later.";
+            return "I'm having trouble connecting to the AI engine right now. Please try again in a moment.";
         }
     }
     async summarizeUserDashboard(metrics) {
