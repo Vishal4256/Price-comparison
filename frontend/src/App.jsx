@@ -82,8 +82,8 @@ function App() {
           </Suspense>
         </main>
 
-        {/* Global AI Assistant Widget */}
-        <AIAssistantWidget />
+        {/* Global AI Assistant Widget (Only for Authenticated Users) */}
+        {isAuthenticated && <AIAssistantWidget />}
       </div>
     </BrowserRouter>
   );

@@ -6,7 +6,7 @@ import Navbar from '../components/Navbar';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Login() {
+export default function Login({ setIsAuthenticated }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -26,6 +26,7 @@ export default function Login() {
             const { data } = await api.post('/api/auth/login', { email, password, rememberMe });
             localStorage.setItem('user', JSON.stringify(data));
             localStorage.setItem('token', data.token);
+            if (setIsAuthenticated) setIsAuthenticated(true);
             
             // Redirect back to intended target or dashboard
             navigate(redirect === '/' ? '/dashboard' : redirect);

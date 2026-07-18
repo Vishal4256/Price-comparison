@@ -27,40 +27,37 @@ export default function ProductDetails() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+
+        const fetchAiAnalysis = async () => {
+            setAiLoading(true);
+            try {
+                const aiRes = await api.get(`/api/products/${id}/analysis`);
+                setAiData(aiRes.data.analysis);
+            } catch (err) {
+                console.error('AI Analysis failed, but page will gracefully ignore:', err);
+                setAiData(null); 
+            } finally {
+                setAiLoading(false);
+            }
+        };
+
+        const fetchProductDetails = async () => {
+            setLoading(true);
+            setError('');
+            try {
+                const response = await api.get(`/api/products/${id}`);
+                setProductData(response.data);
+                setLoading(false);
+                fetchAiAnalysis();
+            } catch (err) {
+                console.error('Error fetching product:', err);
+                setError('Failed to load product details.');
+                setLoading(false);
+            }
+        };
+
         fetchProductDetails();
     }, [id]);
-
-    const fetchProductDetails = async () => {
-        setLoading(true);
-        setError('');
-        try {
-            // 1. Fetch factual data immediately
-            const response = await api.get(`/api/products/${id}`);
-            setProductData(response.data);
-            setLoading(false);
-            
-            // 2. Fire async AI analysis request so it doesn't block
-            fetchAiAnalysis();
-        } catch (err) {
-            console.error('Error fetching product:', err);
-            setError('Failed to load product details.');
-            setLoading(false);
-        }
-    };
-
-    const fetchAiAnalysis = async () => {
-        setAiLoading(true);
-        try {
-            const aiRes = await api.get(`/api/products/${id}/analysis`);
-            setAiData(aiRes.data.analysis);
-        } catch (err) {
-            console.error('AI Analysis failed, but page will gracefully ignore:', err);
-            // We do not set global error; page remains functional without AI
-            setAiData(null); 
-        } finally {
-            setAiLoading(false);
-        }
-    };
 
     if (error) {
         return (

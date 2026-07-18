@@ -40,9 +40,16 @@ export default function AIAssistantWidget() {
                 products: response.data.products 
             }]);
         } catch (error) {
+            let errorMsg = 'Oops, my connection to the PriceWise engine got interrupted. Try asking again!';
+            if (error.response?.status === 401) {
+                errorMsg = 'Your session has expired. Please log in again to use the assistant.';
+            } else if (error.response?.status === 429) {
+                errorMsg = 'I am receiving too many requests right now. Please wait a moment and try again.';
+            }
+            
             setMessages(prev => [...prev, { 
                 role: 'assistant', 
-                text: 'Oops, my connection to the PriceWise engine got interrupted. Try asking again!' 
+                text: errorMsg 
             }]);
         } finally {
             setLoading(false);

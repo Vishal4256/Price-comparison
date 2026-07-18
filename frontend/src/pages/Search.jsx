@@ -19,16 +19,6 @@ export default function Search() {
     const [intent, setIntent] = useState(null);
     const [error, setError] = useState('');
 
-    useEffect(() => {
-        if (initialQuery) {
-            setQuery(initialQuery);
-            performSearch(initialQuery);
-        } else {
-            setResults([]);
-            setIntent(null);
-        }
-    }, [initialQuery]);
-
     const performSearch = async (searchQuery) => {
         if (!searchQuery.trim()) return;
 
@@ -60,6 +50,16 @@ export default function Search() {
             setLoadingState('');
         }
     };
+
+    useEffect(() => {
+        if (initialQuery) {
+            performSearch(initialQuery);
+        } else {
+            setResults([]);
+            setIntent(null);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialQuery]);
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();

@@ -13,6 +13,9 @@ const register = {
         password: Joi.string().pattern(passwordPattern).required().messages({
             'string.pattern.base': 'Password must be at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char.'
         }),
+        confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
+            'any.only': 'Passwords do not match'
+        })
     }),
 };
 

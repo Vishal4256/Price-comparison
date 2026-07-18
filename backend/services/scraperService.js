@@ -8,16 +8,17 @@ const TIMEOUT_MS = 8000; // Global 8-second timeout for any individual scraper
 exports.searchAllRetailers = async (geminiParams) => {
     logger.info('[Retailer Engine] Orchestrating universal search for:', geminiParams.keywords);
 
-    const registeredRetailers = registry.getRegisteredRetailers();
+    const registeredRetailers = registry.getRetailers();
     const activePromises = [];
 
     // 1. Capability Filtering & Engine Spin-up
-    registeredRetailers.forEach(retailerName => {
+    registeredRetailers.forEach(retailer => {
+        const retailerName = retailer.name;
         const capability = capabilities[retailerName];
         
         // Check if the retailer supports searching
         if (capability && capability.canSearch) {
-            const adapter = registry.getAdapter(retailerName);
+            const adapter = registry.getRetailer(retailerName);
             if (adapter && adapter.search) {
                 logger.info(`[Retailer Engine] Spinning up adapter: ${retailerName}`);
                 // Wrap in timeout and push to active pool

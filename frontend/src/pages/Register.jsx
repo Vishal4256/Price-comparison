@@ -32,7 +32,7 @@ const registerSchema = z.object({
   path: ["confirmPassword"],
 });
 
-export default function Register() {
+export default function Register({ setIsAuthenticated }) {
     const { register, handleSubmit, watch, formState: { errors, isValid, isSubmitting } } = useForm({
         resolver: zodResolver(registerSchema),
         mode: 'onChange',
@@ -120,6 +120,7 @@ export default function Register() {
             
             localStorage.setItem('user', JSON.stringify(res.data));
             localStorage.setItem('token', res.data.token);
+            if (setIsAuthenticated) setIsAuthenticated(true);
 
             setSuccessMsg('Account created successfully!');
             setTimeout(() => {

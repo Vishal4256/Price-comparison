@@ -42,7 +42,7 @@ app.use(morgan('dev')); // Request logging
 // Secure CORS
 app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-        ? ['https://your-production-domain.vercel.app'] 
+        ? [process.env.CLIENT_URL] 
         : ['http://localhost:5173'],
     credentials: true
 }));
