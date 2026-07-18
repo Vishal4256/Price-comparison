@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import { api } from '../api';
+import { api, extractAuth } from '../api';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import { getApiError } from '../utils/errorHandler';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,12 +23,15 @@ export default function Login({ setIsAuthenticated }) {
         setLoading(true);
         setError('');
         try {
-            const { data } = await api.post('/api/auth/login', { email, password, rememberMe });
-            // Backend response: { success: true, data: { _id, name, email, role, token } }
-            const token = data.data?.token;
-            const user = data.data;
-            localStorage.setItem('user', JSON.stringify(user));
+            const response = await api.post('/api/auth/login', { email, password, rememberMe });
+            const { token, user } = extractAuth(response.data);
+
+            if (!token) {
+                throw new Error('Token missing from login response. Please try again.');
+            }
+
             localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
             if (setIsAuthenticated) setIsAuthenticated(true);
             
             // Redirect back to intended target or dashboard

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { api } from '../api';
+import { api, extractAuth } from '../api';
 import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Check, X, AlertCircle } from 'lucide-react';
 import { getApiError } from '../utils/errorHandler';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -119,11 +119,14 @@ export default function Register({ setIsAuthenticated }) {
                 confirmPassword: data.confirmPassword
             });
             
-            // Backend response: { success: true, data: { _id, name, email, token } }
-            const token = res.data.data?.token;
-            const user = res.data.data;
-            localStorage.setItem('user', JSON.stringify(user));
+            const { token, user } = extractAuth(res.data);
+
+            if (!token) {
+                throw new Error('Token missing from registration response. Please try again.');
+            }
+
             localStorage.setItem('token', token);
+            localStorage.setItem('user', JSON.stringify(user));
             if (setIsAuthenticated) setIsAuthenticated(true);
 
             setSuccessMsg('Account created successfully!');
