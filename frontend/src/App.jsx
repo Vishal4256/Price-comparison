@@ -15,6 +15,7 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const ResetPassword = lazy(() => import('./pages/ResetPassword'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const Insights = lazy(() => import('./pages/Insights'));
+const Wishlist = lazy(() => import('./pages/Wishlist'));
 
 // Components
 import AppLayout from './components/AppLayout';
@@ -61,6 +62,7 @@ function App() {
             <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
               <Route path="/dashboard" element={<Home />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/product/:id" element={<ProductDetails />} />
               <Route path="/compare" element={<Compare />} />
               <Route path="/insights" element={<Insights />} />
