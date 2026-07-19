@@ -1,13 +1,13 @@
 const registry = require('./registry');
 
-// Import Adapters
+// Real scrapers (Cheerio-based, return [] when blocked — never mock data)
 const amazonRetailer = require('./adapters/amazon');
-// const flipkartRetailer = require('./adapters/flipkart');
+const flipkartRetailer = require('./adapters/flipkart');
 
-// Register them all
+// Register all active retailers
 registry.register(amazonRetailer);
-// registry.register(flipkartRetailer);
+registry.register(flipkartRetailer);
 
-console.log('[Retailer Module] Initialized and registered adapters.');
+console.log('[Retailer Module] Initialized and registered adapters: Amazon, Flipkart');
 
 module.exports = registry;
