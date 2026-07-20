@@ -1,0 +1,830 @@
+{"level":"error","message":"Error connecting to MongoDB: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017","timestamp":"2026-07-19T07:50:03.526Z"}
+{"level":"error","message":"Error connecting to MongoDB: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017","timestamp":"2026-07-19T08:45:55.773Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:46:29.266Z"}
+{"level":"error","message":"Error connecting to MongoDB: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017","timestamp":"2026-07-19T08:46:33.732Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:50:11.132Z"}
+{"level":"error","message":"Error connecting to MongoDB: bad auth : authentication failed","timestamp":"2026-07-19T08:50:11.972Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:52:42.376Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T08:52:43.212Z"}
+{"ip":"::1","level":"info","message":"[f0faff42-27c3-437c-8d6c-1cb0cc0889e6] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:52:55.950Z"}
+{"level":"error","message":"[f0faff42-27c3-437c-8d6c-1cb0cc0889e6] Unexpected Error:  Cannot set property query of #<IncomingMessage> which has only a getter","stack":"TypeError: Cannot set property query of #<IncomingMessage> which has only a getter\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:113:18\n    at Array.forEach (<anonymous>)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:110:44\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:291:5)\n    at compression (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\compression\\index.js:243:5)\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-07-19T08:52:55.956Z"}
+{"duration":"24ms","ip":"::1","level":"info","message":"[f0faff42-27c3-437c-8d6c-1cb0cc0889e6] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":500,"timestamp":"2026-07-19T08:52:55.975Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[229a4950-cf07-46b9-b410-6b0889db0e10] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:52:55.981Z"}
+{"level":"error","message":"[229a4950-cf07-46b9-b410-6b0889db0e10] Unexpected Error:  Cannot set property query of #<IncomingMessage> which has only a getter","stack":"TypeError: Cannot set property query of #<IncomingMessage> which has only a getter\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:113:18\n    at Array.forEach (<anonymous>)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:110:44\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:291:5)\n    at compression (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\compression\\index.js:243:5)\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-07-19T08:52:55.985Z"}
+{"duration":"8ms","ip":"::1","level":"info","message":"[229a4950-cf07-46b9-b410-6b0889db0e10] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":500,"timestamp":"2026-07-19T08:52:55.989Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[5220b1f9-96cc-440b-b898-bdf9e6d518fe] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:52:58.352Z"}
+{"level":"error","message":"[5220b1f9-96cc-440b-b898-bdf9e6d518fe] Unexpected Error:  Cannot set property query of #<IncomingMessage> which has only a getter","stack":"TypeError: Cannot set property query of #<IncomingMessage> which has only a getter\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:113:18\n    at Array.forEach (<anonymous>)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:110:44\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:291:5)\n    at compression (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\compression\\index.js:243:5)\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-07-19T08:52:58.355Z"}
+{"duration":"5ms","ip":"::1","level":"info","message":"[5220b1f9-96cc-440b-b898-bdf9e6d518fe] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":500,"timestamp":"2026-07-19T08:52:58.357Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[4c9272c6-e338-49ba-8950-b7c59fc056f6] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:52:58.359Z"}
+{"level":"error","message":"[4c9272c6-e338-49ba-8950-b7c59fc056f6] Unexpected Error:  Cannot set property query of #<IncomingMessage> which has only a getter","stack":"TypeError: Cannot set property query of #<IncomingMessage> which has only a getter\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:113:18\n    at Array.forEach (<anonymous>)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\express-mongo-sanitize\\index.js:110:44\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:291:5)\n    at compression (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\compression\\index.js:243:5)\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)","timestamp":"2026-07-19T08:52:58.360Z"}
+{"duration":"3ms","ip":"::1","level":"info","message":"[4c9272c6-e338-49ba-8950-b7c59fc056f6] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":500,"timestamp":"2026-07-19T08:52:58.362Z","userId":"unauthenticated"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:53:44.265Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:53:44.267Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T08:53:45.035Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T08:53:45.047Z"}
+{"ip":"::1","level":"info","message":"[55555e98-ae3e-4821-9afe-4959b8b389b4] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:53:57.161Z"}
+{"level":"error","message":"[55555e98-ae3e-4821-9afe-4959b8b389b4] Unexpected Error:  Cannot set property query of #<IncomingMessage> which has only a getter","stack":"TypeError: Cannot set property query of #<IncomingMessage> which has only a getter\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\xss-clean\\lib\\index.js:8:30\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:291:5)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\middlewares\\security.js:52:5\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9","timestamp":"2026-07-19T08:53:57.166Z"}
+{"duration":"17ms","ip":"::1","level":"info","message":"[55555e98-ae3e-4821-9afe-4959b8b389b4] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":500,"timestamp":"2026-07-19T08:53:57.178Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[c538b2a9-1364-442c-bf1a-40decffbcb69] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:53:57.181Z"}
+{"level":"error","message":"[c538b2a9-1364-442c-bf1a-40decffbcb69] Unexpected Error:  Cannot set property query of #<IncomingMessage> which has only a getter","stack":"TypeError: Cannot set property query of #<IncomingMessage> which has only a getter\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\xss-clean\\lib\\index.js:8:30\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9\n    at processParams (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:582:12)\n    at next (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:291:5)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\middlewares\\security.js:52:5\n    at Layer.handleRequest (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\lib\\layer.js:152:17)\n    at trimPrefix (C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:342:13)\n    at C:\\Users\\visha\\OneDrive\\Desktop\\price detect1\\server\\node_modules\\router\\index.js:297:9","timestamp":"2026-07-19T08:53:57.184Z"}
+{"duration":"8ms","ip":"::1","level":"info","message":"[c538b2a9-1364-442c-bf1a-40decffbcb69] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":500,"timestamp":"2026-07-19T08:53:57.189Z","userId":"unauthenticated"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:54:34.119Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T08:54:34.125Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T08:54:34.695Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T08:54:34.702Z"}
+{"ip":"::1","level":"info","message":"[fedd9ff4-a122-468f-85be-081ce1300a35] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:54:51.664Z"}
+{"duration":"72ms","ip":"::1","level":"info","message":"[fedd9ff4-a122-468f-85be-081ce1300a35] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:54:51.735Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[2058c0af-42ad-4f7e-bcd5-3e813b5bd448] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:54:51.738Z"}
+{"duration":"41ms","ip":"::1","level":"info","message":"[2058c0af-42ad-4f7e-bcd5-3e813b5bd448] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:54:51.779Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[bceea58a-0b4d-425b-8956-57f8e3a3b371] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:55:31.737Z"}
+{"duration":"86ms","ip":"::1","level":"info","message":"[bceea58a-0b4d-425b-8956-57f8e3a3b371] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:55:31.819Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[6109ffe8-59a5-4911-85eb-3eeea764a7fb] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:55:31.822Z"}
+{"duration":"46ms","ip":"::1","level":"info","message":"[6109ffe8-59a5-4911-85eb-3eeea764a7fb] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:55:31.869Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[d8451a5b-b47a-46f5-9d20-a6d317af5dc9] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:58:00.008Z"}
+{"duration":"70ms","ip":"::1","level":"info","message":"[d8451a5b-b47a-46f5-9d20-a6d317af5dc9] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:58:00.076Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[569981ea-6988-4f56-83af-cfd334276cd2] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:58:00.079Z"}
+{"duration":"40ms","ip":"::1","level":"info","message":"[569981ea-6988-4f56-83af-cfd334276cd2] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:58:00.119Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[1cfd16fb-9420-4f6e-8bb2-10a248ccc1cc] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:58:35.481Z"}
+{"duration":"45ms","ip":"::1","level":"info","message":"[1cfd16fb-9420-4f6e-8bb2-10a248ccc1cc] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:58:35.526Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[53649348-e450-474e-baba-9ab66a621c5d] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T08:58:35.535Z"}
+{"duration":"43ms","ip":"::1","level":"info","message":"[53649348-e450-474e-baba-9ab66a621c5d] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T08:58:35.578Z","userId":"unauthenticated"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:00.470Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:00.470Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:01.074Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:01.085Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:11.045Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:11.045Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:12.630Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:12.649Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:23.501Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:23.510Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:23.938Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:23.965Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:37.636Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:00:37.676Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:38.086Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:00:38.134Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:01:09.840Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:01:09.841Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:01:10.464Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:01:10.476Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:01:39.026Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:01:39.025Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:01:39.499Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:01:39.546Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:01:54.879Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:01:54.876Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:01:55.482Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:01:55.476Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:09:45.014Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:09:45.015Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:09:47.163Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:09:47.166Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:09:47.626Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:09:47.625Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:09:56.868Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:09:56.868Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:09:57.330Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:09:57.337Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:25.906Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:25.907Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:26.339Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:26.349Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:34.416Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:34.416Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:34.846Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:34.864Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:43.343Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:43.342Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:43.807Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:43.852Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:51.338Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:10:51.339Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:51.790Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:10:51.801Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:00.293Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:00.297Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:00.725Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:00.755Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:14.016Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:14.015Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:14.474Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:14.483Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:33.537Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:33.538Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:33.996Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:34.009Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:51.135Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:11:51.138Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:51.626Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:11:51.639Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:09.273Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:09.274Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:09.717Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:09.735Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:20.502Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:20.502Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:20.987Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:21.001Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:37.523Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:37.552Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:38.016Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:38.029Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:48.917Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:12:48.916Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:49.485Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:12:49.487Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:13:23.090Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:13:23.090Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:13:23.673Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:13:23.695Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:13:32.411Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:13:32.416Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:13:32.882Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:13:32.888Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:13:59.196Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:13:59.195Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:13:59.688Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:13:59.693Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:14:09.290Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:14:09.291Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:14:09.936Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:14:09.943Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:00.439Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:00.438Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:00.913Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:00.936Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:04.601Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:04.609Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:05.144Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:05.181Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:13.824Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:13.823Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:14.312Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:14.330Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:22.530Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:22.533Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:22.986Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:23.016Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:31.868Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:18:31.869Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:32.331Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:18:32.353Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:19:06.088Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:19:06.088Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:19:06.624Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:19:06.624Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:19:16.996Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:19:16.997Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:19:17.491Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:19:17.490Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:19:50.521Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:19:50.520Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:19:50.972Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:19:51.002Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:20:28.501Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:20:28.503Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:20:29.067Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:20:29.074Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:20:37.689Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:20:37.696Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:20:38.167Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:20:38.184Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:20:51.724Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:20:51.737Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:20:52.154Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:20:52.194Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:21:31.945Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:21:31.945Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:21:32.476Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:21:32.482Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:21:49.704Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:21:49.707Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:21:50.168Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:21:50.191Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:01.190Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:01.192Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:01.685Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:01.687Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:19.083Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:19.079Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:19.527Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:19.550Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:28.223Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:28.223Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:28.648Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:28.672Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:38.298Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:38.301Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:38.893Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:38.911Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:52.437Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:22:52.440Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:52.895Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:22:52.907Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:23:11.216Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:23:11.216Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:23:11.720Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:23:11.740Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:23:29.402Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:23:29.403Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:23:29.464Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:23:29.464Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:23:29.898Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:23:29.909Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:28:16.388Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:28:16.450Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:28:16.387Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:28:16.450Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:28:16.954Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:28:16.989Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:03.451Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:03.451Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:03.522Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:03.520Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:04.368Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:04.368Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:14.354Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:14.446Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:14.354Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:14.447Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:14.912Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:14.927Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:25.076Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:25.099Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:25.077Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:25.101Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:25.643Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:25.668Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:49.024Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:49.023Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:49.113Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:49.113Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:49.594Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:49.609Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:59.135Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:59.159Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:29:59.144Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:29:59.172Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:59.620Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:29:59.668Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T09:30:00.002Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Starting...","timestamp":"2026-07-19T09:30:00.009Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Starting...","timestamp":"2026-07-19T09:30:00.015Z"}
+{"level":"info","message":"[CacheRefreshJob] Starting proactive cache refresh for popular searches...","timestamp":"2026-07-19T09:30:00.015Z"}
+{"level":"info","message":"[CacheRefreshJob] Starting proactive cache refresh for popular searches...","timestamp":"2026-07-19T09:30:00.011Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T09:30:00.015Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 193ms [COMPLETED]","timestamp":"2026-07-19T09:30:00.196Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Finished in 209ms [COMPLETED]","timestamp":"2026-07-19T09:30:00.219Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Finished in 211ms [COMPLETED]","timestamp":"2026-07-19T09:30:00.226Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 228ms [COMPLETED]","timestamp":"2026-07-19T09:30:00.245Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:30:22.426Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:30:22.425Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:30:22.452Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:30:22.452Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:30:22.901Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:30:22.921Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:30:34.741Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:30:34.766Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:30:34.740Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:30:34.767Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:30:35.290Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:30:35.299Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:30:46.655Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:30:46.678Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:30:46.654Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:30:46.677Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:30:47.156Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:30:47.198Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T09:45:00.094Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T09:45:00.097Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 134ms [COMPLETED]","timestamp":"2026-07-19T09:45:00.261Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 149ms [COMPLETED]","timestamp":"2026-07-19T09:45:00.265Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:58:19.299Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:58:19.560Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:58:19.291Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:58:19.553Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:58:20.493Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:58:20.585Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:58:35.661Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:58:35.662Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:58:35.786Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:58:35.787Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:58:36.576Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:58:36.589Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:58:45.365Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:58:45.512Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T09:58:45.389Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T09:58:45.511Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:58:46.096Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T09:58:46.130Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T10:00:00.012Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T10:00:00.027Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 67ms [COMPLETED]","timestamp":"2026-07-19T10:00:00.081Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 71ms [COMPLETED]","timestamp":"2026-07-19T10:00:00.108Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:01:11.732Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:01:11.732Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:01:11.746Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:01:11.748Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:01:11.872Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:01:11.746Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:01:11.748Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:01:11.873Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:01:12.468Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:01:12.487Z"}
+{"ip":"::1","level":"info","message":"[3143cf22-ae53-46bd-806e-692fa6436e10] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T10:02:28.972Z"}
+{"duration":"233ms","ip":"::1","level":"info","message":"[3143cf22-ae53-46bd-806e-692fa6436e10] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T10:02:29.201Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[adc06b82-0614-4760-aae3-bdd2a734622b] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T10:02:29.209Z"}
+{"duration":"55ms","ip":"::1","level":"info","message":"[adc06b82-0614-4760-aae3-bdd2a734622b] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T10:02:29.264Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[2954701f-85ba-43eb-867b-0b264a842c3c] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T10:02:32.306Z"}
+{"duration":"50ms","ip":"::1","level":"info","message":"[2954701f-85ba-43eb-867b-0b264a842c3c] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T10:02:32.356Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[99c100ed-21fa-4af5-a3e5-acd3125905ec] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T10:02:32.360Z"}
+{"duration":"52ms","ip":"::1","level":"info","message":"[99c100ed-21fa-4af5-a3e5-acd3125905ec] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T10:02:32.412Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[0e561eaf-a848-4cba-b7c2-f426cc78f599] Incoming request","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","timestamp":"2026-07-19T10:02:41.852Z"}
+{"level":"info","message":"Classifying intent via Gemini for: \"iphone 15\"","timestamp":"2026-07-19T10:02:41.863Z"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:02:41.865Z"}
+{"level":"warn","message":"GeminiClassifier failed, falling back to RuleBasedClassifier: AI Provider not configured","timestamp":"2026-07-19T10:02:41.867Z"}
+{"level":"info","message":"[AmazonScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:02:41.922Z"}
+{"level":"info","message":"[BrowserPool] Launching new Playwright browser instance.","timestamp":"2026-07-19T10:02:41.926Z"}
+{"level":"info","message":"[FlipkartScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:02:42.031Z"}
+{"level":"info","message":"[BrowserPool] Launching new Playwright browser instance.","timestamp":"2026-07-19T10:02:42.032Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:02:47.362Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:02:47.406Z"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:02:55.423Z"}
+{"level":"warn","message":"GeminiRecommendation failed: AI Provider not configured. Using fallback.","timestamp":"2026-07-19T10:02:55.424Z"}
+{"duration":"13724ms","ip":"::1","level":"info","message":"[0e561eaf-a848-4cba-b7c2-f426cc78f599] Request completed","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","statusCode":200,"timestamp":"2026-07-19T10:02:55.576Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[c3b31df0-f70f-4a0d-9874-2de604a18850] Incoming request","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","timestamp":"2026-07-19T10:02:55.579Z"}
+{"level":"info","message":"Classifying intent via Gemini for: \"iphone 15\"","timestamp":"2026-07-19T10:02:55.584Z"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:02:55.585Z"}
+{"level":"warn","message":"GeminiClassifier failed, falling back to RuleBasedClassifier: AI Provider not configured","timestamp":"2026-07-19T10:02:55.586Z"}
+{"level":"info","message":"[AmazonScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:02:55.648Z"}
+{"level":"info","message":"[FlipkartScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:02:55.649Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:02:55.650Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:02:55.651Z"}
+{"ip":"::1","level":"info","message":"[d39fb773-919f-47ff-ad70-eb733e477b91] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T10:03:06.378Z"}
+{"duration":"68ms","ip":"::1","level":"info","message":"[d39fb773-919f-47ff-ad70-eb733e477b91] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T10:03:06.446Z","userId":"unauthenticated"}
+{"ip":"::1","level":"info","message":"[2300c972-5150-43c3-bc7d-d2cc22d0098d] Incoming request","method":"GET","originalUrl":"/api/v1/home","timestamp":"2026-07-19T10:03:06.447Z"}
+{"duration":"72ms","ip":"::1","level":"info","message":"[2300c972-5150-43c3-bc7d-d2cc22d0098d] Request completed","method":"GET","originalUrl":"/api/v1/home","statusCode":200,"timestamp":"2026-07-19T10:03:06.519Z","userId":"unauthenticated"}
+{"level":"warn","message":"[RetryPolicy] Amazon Search failed (Attempt 1/3): Network or Navigation Timeout","timestamp":"2026-07-19T10:03:08.509Z"}
+{"level":"info","message":"[RetryPolicy] Backing off for 2000ms before retry...","timestamp":"2026-07-19T10:03:08.511Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:03:10.516Z"}
+{"ip":"::1","level":"info","message":"[65a82713-34fa-40ec-a925-de5b2ee597f7] Incoming request","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","timestamp":"2026-07-19T10:03:22.591Z"}
+{"level":"info","message":"Classifying intent via Gemini for: \"iphone 15\"","timestamp":"2026-07-19T10:03:22.595Z"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:03:22.595Z"}
+{"level":"warn","message":"GeminiClassifier failed, falling back to RuleBasedClassifier: AI Provider not configured","timestamp":"2026-07-19T10:03:22.596Z"}
+{"ip":"::1","level":"info","message":"[c6ef412c-196d-407c-85cd-b9cecd00ac59] Incoming request","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","timestamp":"2026-07-19T10:03:22.603Z"}
+{"level":"info","message":"Classifying intent via Gemini for: \"iphone 15\"","timestamp":"2026-07-19T10:03:22.607Z"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:03:22.608Z"}
+{"level":"warn","message":"GeminiClassifier failed, falling back to RuleBasedClassifier: AI Provider not configured","timestamp":"2026-07-19T10:03:22.609Z"}
+{"level":"info","message":"[AmazonScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:03:22.662Z"}
+{"level":"info","message":"[FlipkartScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:03:22.663Z"}
+{"level":"info","message":"[AmazonScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:03:22.678Z"}
+{"level":"info","message":"[FlipkartScraper] Searching for \"iphone 15\"","timestamp":"2026-07-19T10:03:22.678Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:03:22.679Z"}
+{"level":"info","message":"[BrowserPool] Creating new isolated context.","timestamp":"2026-07-19T10:03:22.681Z"}
+{"level":"warn","message":"[RetryPolicy] Amazon Search failed (Attempt 2/3): Network or Navigation Timeout","timestamp":"2026-07-19T10:03:22.750Z"}
+{"level":"info","message":"[RetryPolicy] Backing off for 4000ms before retry...","timestamp":"2026-07-19T10:03:22.751Z"}
+{"level":"warn","message":"[RetryPolicy] Amazon Search failed (Attempt 1/3): Scrape parsing or structural failure","timestamp":"2026-07-19T10:03:23.174Z"}
+{"level":"error","message":"Scraper failed for amazon:","timestamp":"2026-07-19T10:03:23.177Z"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:03:26.729Z"}
+{"level":"warn","message":"GeminiRecommendation failed: AI Provider not configured. Using fallback.","timestamp":"2026-07-19T10:03:26.730Z"}
+{"duration":"4154ms","ip":"::1","level":"info","message":"[65a82713-34fa-40ec-a925-de5b2ee597f7] Request completed","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","statusCode":200,"timestamp":"2026-07-19T10:03:26.744Z","userId":"unauthenticated"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:03:27.483Z"}
+{"level":"warn","message":"GeminiRecommendation failed: AI Provider not configured. Using fallback.","timestamp":"2026-07-19T10:03:27.489Z"}
+{"duration":"4939ms","ip":"::1","level":"info","message":"[c6ef412c-196d-407c-85cd-b9cecd00ac59] Request completed","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","statusCode":200,"timestamp":"2026-07-19T10:03:27.541Z","userId":"unauthenticated"}
+{"level":"warn","message":"GeminiProvider skipped: GEMINI_API_KEY is missing","timestamp":"2026-07-19T10:03:29.214Z"}
+{"level":"warn","message":"GeminiRecommendation failed: AI Provider not configured. Using fallback.","timestamp":"2026-07-19T10:03:29.215Z"}
+{"duration":"33649ms","ip":"::1","level":"info","message":"[c3b31df0-f70f-4a0d-9874-2de604a18850] Request completed","method":"GET","originalUrl":"/api/v1/search?q=iphone+15&page=1","statusCode":200,"timestamp":"2026-07-19T10:03:29.228Z","userId":"unauthenticated"}
+{"level":"info","message":"[BrowserPool] Browser idle for 60000ms. Cleaning up.","timestamp":"2026-07-19T10:04:29.235Z"}
+{"level":"info","message":"[BrowserPool] All browsers closed.","timestamp":"2026-07-19T10:04:30.141Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:05:33.462Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:05:33.475Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:05:33.477Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:05:33.606Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:05:33.462Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:05:33.476Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:05:33.478Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:05:33.605Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:05:36.333Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:05:36.388Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:05:50.887Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:05:50.930Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:05:50.940Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:05:51.285Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:05:51.231Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:05:51.263Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:05:51.280Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:05:51.544Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:05:53.696Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:05:53.710Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:06:06.603Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:06:06.608Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:06:06.610Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:06:06.665Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:06:06.621Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:06:06.626Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:06:06.628Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:06:06.688Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:06:07.320Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:06:07.375Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:06:42.042Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:06:42.054Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:06:42.059Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:06:42.061Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:06:42.161Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:06:42.058Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:06:42.059Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:06:42.161Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:06:42.784Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:06:42.823Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:06:52.342Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:06:52.347Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:06:52.348Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:06:52.395Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:06:52.343Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:06:52.347Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:06:52.349Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:06:52.403Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:06:52.930Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:06:52.974Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:07:03.833Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:07:03.839Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:07:03.842Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:07:03.901Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:07:03.899Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:07:03.906Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:07:03.909Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:07:03.964Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:07:04.428Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:07:04.576Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:07:37.883Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:07:37.891Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:07:37.892Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:07:37.942Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:07:37.912Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:07:37.917Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:07:37.919Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:07:37.966Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:07:38.514Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:07:38.521Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:07:50.903Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:07:50.908Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:07:50.910Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:07:50.978Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:07:50.939Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:07:50.945Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:07:50.947Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:07:51.020Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:07:51.603Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:07:51.676Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:08:03.702Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:08:03.710Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:08:03.713Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:08:03.715Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:08:03.715Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:08:03.716Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:08:03.801Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:08:03.802Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:08:04.527Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:08:04.534Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:08:27.256Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:08:27.259Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:08:27.262Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:08:27.263Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:08:27.323Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:08:27.263Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:08:27.265Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:08:27.321Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:08:28.090Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:08:28.090Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:08:38.258Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:08:38.270Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:08:38.272Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:08:38.330Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:08:38.289Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:08:38.295Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:08:38.297Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:08:38.351Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:08:38.885Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:08:38.930Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:09:03.250Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:09:03.209Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:09:03.242Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:09:03.250Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:09:03.552Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:09:03.289Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:09:03.295Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:09:03.554Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:09:04.534Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:09:04.692Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:09:18.780Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:09:18.782Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:09:18.793Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:09:18.797Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:09:18.963Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:09:18.794Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:09:18.801Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:09:18.974Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:09:19.804Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:09:19.806Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:09:45.590Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:09:45.581Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:09:45.610Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:09:45.619Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:09:45.813Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:09:45.600Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:09:45.609Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:09:45.816Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:09:47.064Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:09:47.127Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:10:04.838Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:10:04.842Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:10:04.856Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:10:04.861Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:10:04.863Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:10:05.048Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:10:04.874Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:10:05.054Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:10:05.889Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:10:05.935Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T10:15:00.125Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-19T10:15:00.136Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 300ms [COMPLETED]","timestamp":"2026-07-19T10:15:00.472Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 311ms [COMPLETED]","timestamp":"2026-07-19T10:15:00.509Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:15:56.104Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:15:56.117Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:15:56.118Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:15:56.212Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:15:56.105Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:15:56.117Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:15:56.119Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:15:56.211Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:15:56.941Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:15:56.942Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:16:12.286Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:16:12.290Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:16:12.292Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:16:12.336Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-19T10:16:12.306Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-19T10:16:12.311Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-19T10:16:12.313Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-19T10:16:12.360Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:16:12.887Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-19T10:16:12.925Z"}
+{"level":"warn","message":"MongoDB disconnected","timestamp":"2026-07-19T14:42:37.455Z"}
+{"level":"warn","message":"MongoDB disconnected","timestamp":"2026-07-19T14:42:37.515Z"}
+{"level":"warn","message":"MongoDB disconnected","timestamp":"2026-07-20T03:47:42.796Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-20T04:00:00.156Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-20T04:00:00.160Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 913ms [COMPLETED]","timestamp":"2026-07-20T04:00:01.109Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 944ms [COMPLETED]","timestamp":"2026-07-20T04:00:01.130Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-20T04:15:00.107Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-20T04:15:00.103Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 94ms [COMPLETED]","timestamp":"2026-07-20T04:15:00.236Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 96ms [COMPLETED]","timestamp":"2026-07-20T04:15:00.240Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:26:19.140Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:26:19.153Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:26:19.155Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:26:19.283Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:26:19.139Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:26:19.153Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:26:19.155Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:26:19.283Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:26:20.098Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:26:20.118Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:29:38.888Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:29:38.889Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:29:38.894Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:29:38.895Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:29:38.977Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:29:38.893Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:29:38.894Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:29:38.977Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:29:39.600Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:29:39.605Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-20T04:30:00.040Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Starting...","timestamp":"2026-07-20T04:30:00.052Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Starting...","timestamp":"2026-07-20T04:30:00.091Z"}
+{"level":"info","message":"[CacheRefreshJob] Starting proactive cache refresh for popular searches...","timestamp":"2026-07-20T04:30:00.093Z"}
+{"level":"info","message":"[CacheRefreshJob] Starting proactive cache refresh for popular searches...","timestamp":"2026-07-20T04:30:00.071Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Starting...","timestamp":"2026-07-20T04:30:00.098Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 89ms [COMPLETED]","timestamp":"2026-07-20T04:30:00.137Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Finished in 77ms [COMPLETED]","timestamp":"2026-07-20T04:30:00.141Z"}
+{"level":"info","message":"[Job: CacheRefreshJob] Finished in 84ms [COMPLETED]","timestamp":"2026-07-20T04:30:00.176Z"}
+{"level":"info","message":"[Job: PriceRefreshJob] Finished in 87ms [COMPLETED]","timestamp":"2026-07-20T04:30:00.186Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:34:39.350Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:34:39.359Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:34:39.361Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:34:39.421Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:34:39.350Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:34:39.359Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:34:39.360Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:34:39.420Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:34:40.014Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:34:40.029Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:34:49.596Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:34:49.599Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:34:49.600Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:34:49.622Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:34:49.596Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:34:49.600Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:34:49.601Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:34:49.623Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:34:50.119Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:34:50.123Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:35:00.287Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:35:00.290Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:35:00.291Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:35:00.314Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:35:00.284Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:35:00.287Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:35:00.288Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:35:00.312Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:35:00.717Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:35:00.751Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:35:16.301Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:35:16.671Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:35:16.671Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:35:16.671Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:35:16.702Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:35:16.302Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:35:16.671Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:35:16.672Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:35:16.672Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:35:16.703Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:35:17.097Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:35:17.115Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:39:33.370Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:39:33.371Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:39:33.761Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:39:33.762Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:39:33.763Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:39:33.834Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:39:33.764Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:39:33.764Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:39:33.765Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:39:33.837Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:39:34.387Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:39:34.384Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:40:51.944Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:40:51.947Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:40:52.407Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:40:52.407Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:40:52.408Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:40:52.408Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:40:52.409Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:40:52.472Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:40:52.410Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:40:52.474Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:40:52.953Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:40:52.974Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:05.310Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:05.303Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:05.593Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:05.594Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:05.594Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:05.619Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:05.593Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:05.593Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:05.594Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:05.620Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:06.045Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:06.065Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:14.690Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:15.166Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:15.168Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:15.170Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:15.207Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:14.692Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:15.198Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:15.199Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:15.200Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:15.235Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:15.633Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:15.674Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:27.656Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:27.988Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:27.989Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:27.989Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:28.015Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:27.656Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:27.988Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:27.989Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:27.990Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:28.015Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:28.423Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:28.437Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:37.178Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:41:37.174Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:37.546Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:37.547Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:37.548Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:37.571Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:41:37.546Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:41:37.546Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:41:37.547Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:41:37.570Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:37.974Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:41:37.988Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:42:19.239Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:42:19.239Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:42:19.724Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:42:19.725Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:42:19.726Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:42:19.809Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:42:19.724Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:42:19.724Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:42:19.725Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:42:19.808Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:42:20.320Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:42:20.334Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:42:44.398Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:42:44.398Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:42:44.914Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:42:44.914Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:42:44.915Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:42:44.982Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:42:44.914Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:42:44.915Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:42:44.916Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:42:44.982Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:42:45.432Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-01.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:42:45.450Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:42:58.595Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:42:58.937Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:42:58.937Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:42:58.938Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:42:58.967Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:42:58.603Z"}
+{"level":"info","message":"Registered scraper for amazon with Health Monitoring.","timestamp":"2026-07-20T04:42:58.940Z"}
+{"level":"info","message":"Registered scraper for flipkart with Health Monitoring.","timestamp":"2026-07-20T04:42:58.941Z"}
+{"level":"info","message":"Starting CronScheduler...","timestamp":"2026-07-20T04:42:58.941Z"}
+{"level":"info","message":"Server running in development mode on port 5000","timestamp":"2026-07-20T04:42:58.966Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-00.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:42:59.416Z"}
+{"level":"info","message":"MongoDB Connected: ac-ql3bm05-shard-00-02.pwccdnp.mongodb.net","timestamp":"2026-07-20T04:42:59.440Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:43:08.219Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:43:08.232Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:43:58.220Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:43:58.221Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:44:12.188Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:44:12.189Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:44:22.136Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:44:22.136Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:46:52.554Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:46:52.555Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:47:01.614Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:47:01.613Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:47:09.912Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:47:09.926Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:52:15.018Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:52:15.018Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:52:17.361Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:52:17.381Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:52:45.712Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:52:45.711Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:01.097Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:01.097Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:03.356Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:03.358Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:23.034Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:23.034Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:26.234Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:26.235Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:28.017Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:28.030Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:29.994Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:53:30.016Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:05.559Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:05.559Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:33.380Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:33.383Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:35.215Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:35.216Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:38.187Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:54:38.181Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:24.235Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:24.235Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:45.068Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:45.067Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:46.866Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:46.871Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:48.971Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:58:48.978Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:00.868Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:00.869Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:02.704Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:02.697Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:24.684Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:24.684Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:27.502Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:27.508Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:29.808Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:29.808Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:31.866Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:31.856Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:34.073Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T04:59:34.098Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T05:00:56.587Z"}
+{"level":"info","message":"WebPushProvider configured successfully with VAPID keys.","timestamp":"2026-07-20T05:00:56.588Z"}
+{"level":"info","message":"Registered Agent: SearchAgent","timestamp":"2026-07-20T05:01:00.888Z"}
+{"level":"info","message":"Registered Agent: SearchAgent","timestamp":"2026-07-20T05:01:00.887Z"}
